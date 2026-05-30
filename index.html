@@ -327,6 +327,7 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
   <div class="menu-item" id="import-db">📥 Import Database (File)</div>
   <div class="menu-item" id="import-paste">📥 Import Database (Text)</div>
   <div class="menu-item" id="export-db">📤 Export Database</div>
+  <div class="menu-item" id="github-sync">☁️ GitHub Sync</div>
   <div class="menu-item" id="edit-chars">✏️ Edit Characters</div>
   <div class="menu-item" id="edit-compounds">✏️ Edit Compounds</div>
   <div class="menu-item" id="edit-sentences">✏️ Edit Sentences</div>
@@ -417,6 +418,32 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
       <button onclick="document.getElementById('edit-dictionary-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
       <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
       <button class="btn btn-primary" id="save-dictionary-edit" style="margin-left:auto;padding:8px 12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="github-sync-modal">
+  <div class="modal-content" style="max-width:400px">
+    <button class="modal-close" onclick="closeModal('github-sync-modal')">×</button>
+    <div class="modal-header">☁️ GitHub Gist Sync</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:12px">Token dan Gist ID disimpan di browser (localStorage) dan tidak dikirim ke mana pun selain GitHub.</div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Personal Access Token</label>
+      <input type="password" id="gh-token" placeholder="ghp_..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Gist ID</label>
+      <input type="text" id="gh-gist-id" placeholder="bd8f01caecb1c151f6b625d924fd939c" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Nama File di Gist</label>
+      <input type="text" id="gh-filename" placeholder="mandarin-database.txt" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div id="gh-status" style="font-size:11px;color:var(--gray);margin-bottom:12px;min-height:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" id="gh-save-settings" style="flex:1">💾 Simpan Setting</button>
+      <button class="btn btn-primary" id="gh-pull" style="flex:1">⬇️ Pull</button>
+      <button class="btn btn-primary" id="gh-push" style="flex:1;background:var(--success)">⬆️ Push</button>
     </div>
   </div>
 </div>
@@ -521,7 +548,7 @@ function setupEvents(){
     document.getElementById('import-paste-modal').classList.add('show');
     toggleMenu();
   });
-  document.getElementById('export-db').addEventListener('click',exportDB);
+  document.getElementById('github-sync').addEventListener('click',openGithubSync);
   document.getElementById('edit-chars').addEventListener('click',()=>editDatabase('characters'));
   document.getElementById('edit-compounds').addEventListener('click',()=>editDatabase('compounds'));
   document.getElementById('edit-sentences').addEventListener('click',editSentences);
@@ -1610,43 +1637,7 @@ function parseCSV(lines){
 }
 
 function exportDB(){
-  let txt='========================================\n=== CHARACTERS ===\n========================================\n';
-  txt+='id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
-  db.characters.forEach(c=>{
-    txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-  });
-
-  txt+='\n========================================\n=== COMPOUNDS ===\n========================================\n';
-  txt+='id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
-  db.compounds.forEach(c=>{
-    txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-  });
-
-  txt+='\n========================================\n=== SENTENCES ===\n========================================\n';
-  txt+='sentence_id,sentence_text,translation,hsk_level,category,completed\n';
-  db.sentences.forEach(s=>{
-    txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
-  });
-
-  txt+='\n========================================\n=== NEW_WORDS ===\n========================================\n';
-  txt+='id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n';
-  db.newWords.forEach(w=>{
-    txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
-  });
-
-  if(db.dictionary&&db.dictionary.length>0){
-    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
-    txt+='hanzi,pinyin,meaning\n';
-    db.dictionary.forEach(d=>{
-      txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
-    });
-  }
-
-  if(db.notes&&db.notes.length>0&&db.notes[0].content){
-    txt+='\n========================================\n=== NOTES ===\n========================================\n';
-    txt+=db.notes[0].content+'\n';
-  }
-
+  const txt=generateExportTXT();
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
   if(isIOS){
     document.getElementById('export-text').value=txt;
@@ -1779,6 +1770,154 @@ function saveDictionaryEdit(){
     closeModal('edit-dictionary-modal');
     showSaveModal('Dictionary tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total entri</span><strong>${db.dictionary.length}</strong></div>`);
   }catch(e){alert('Error parsing CSV.');}
+}
+
+// ========================================
+// GITHUB GIST SYNC
+// ========================================
+function openGithubSync(){
+  // Load saved settings
+  const saved=JSON.parse(localStorage.getItem('gh-settings')||'{}');
+  document.getElementById('gh-token').value=saved.token||'';
+  document.getElementById('gh-gist-id').value=saved.gistId||'';
+  document.getElementById('gh-filename').value=saved.filename||'mandarin-database.txt';
+  document.getElementById('gh-status').textContent='';
+  document.getElementById('github-sync-modal').classList.add('show');
+  toggleMenu();
+
+  document.getElementById('gh-save-settings').onclick=saveGhSettings;
+  document.getElementById('gh-pull').onclick=ghPull;
+  document.getElementById('gh-push').onclick=ghPush;
+}
+
+function getGhSettings(){
+  return JSON.parse(localStorage.getItem('gh-settings')||'{}');
+}
+
+function saveGhSettings(){
+  const settings={
+    token:document.getElementById('gh-token').value.trim(),
+    gistId:document.getElementById('gh-gist-id').value.trim(),
+    filename:document.getElementById('gh-filename').value.trim()||'mandarin-database.txt'
+  };
+  localStorage.setItem('gh-settings',JSON.stringify(settings));
+  document.getElementById('gh-status').textContent='✅ Setting tersimpan';
+  document.getElementById('gh-status').style.color='var(--success)';
+}
+
+function ghSetStatus(msg,color='var(--gray)'){
+  const el=document.getElementById('gh-status');
+  el.textContent=msg;
+  el.style.color=color;
+}
+
+async function ghPull(){
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
+  ghSetStatus('⏳ Mengambil data dari Gist...');
+  try{
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      headers:{'Authorization':`token ${s.token}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    const data=await res.json();
+    const filename=s.filename||'mandarin-database.txt';
+    const file=data.files[filename];
+    if(!file)throw new Error(`File "${filename}" tidak ditemukan di Gist`);
+
+    db.filename=filename;
+    parseTXT(file.content);
+    saveToStorage();
+    updateCardFontSize();
+    render();
+    renderSentences();
+    closeModal('github-sync-modal');
+
+    // Tampilkan modal statistik
+    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+    document.getElementById('import-stats').innerHTML=`
+      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata inti</span><strong>${vocabChars+vocabCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata pendukung</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata baru</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0">
+        <span>Kalimat</span><strong>${db.sentences.length}</strong>
+      </div>
+    `;
+    document.getElementById('import-success-modal').classList.add('show');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
+}
+
+async function ghPush(){
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
+  ghSetStatus('⏳ Menyimpan ke Gist...');
+  try{
+    // Generate TXT content sama seperti exportDB
+    const txt=generateExportTXT();
+    const filename=s.filename||'mandarin-database.txt';
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      method:'PATCH',
+      headers:{
+        'Authorization':`token ${s.token}`,
+        'Accept':'application/vnd.github.v3+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({files:{[filename]:{content:txt}}})
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    ghSetStatus('✅ Berhasil disimpan ke Gist','var(--success)');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
+}
+
+function generateExportTXT(){
+  let txt='========================================\n=== CHARACTERS ===\n========================================\n';
+  txt+='id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.characters.forEach(c=>{
+    txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== COMPOUNDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.compounds.forEach(c=>{
+    txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== SENTENCES ===\n========================================\n';
+  txt+='sentence_id,sentence_text,translation,hsk_level,category,completed\n';
+  db.sentences.forEach(s=>{
+    txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+  });
+  txt+='\n========================================\n=== NEW_WORDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n';
+  db.newWords.forEach(w=>{
+    txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
+  });
+  if(db.dictionary&&db.dictionary.length>0){
+    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
+    txt+='hanzi,pinyin,meaning\n';
+    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
+  }
+  if(db.notes&&db.notes.length>0&&db.notes[0].content){
+    txt+='\n========================================\n=== NOTES ===\n========================================\n';
+    txt+=db.notes[0].content+'\n';
+  }
+  return txt;
 }
 </script>
 </body>
