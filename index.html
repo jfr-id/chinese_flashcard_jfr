@@ -2,623 +2,1923 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog Jastip</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mandarin Flashcard - by jfr v6</title>
 <style>
-:root {
-  --bg:#f5f2ee;--surface:#ffffff;--surface2:#f0ece6;--border:#e0d8cc;
-  --accent:#a07840;--accent2:#b88c50;--text:#1a1614;--text2:#6b5e50;--text3:#9a8e80;
-  --green:#2e7d52;--red:#c0392b;--radius:12px;
-}
-body.dark {
-  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
-  --accent:#c8a96e;--accent2:#e8c98e;--text:#f0ede8;--text2:#9a9590;--text3:#6a6560;
-  --green:#4caf7d;--red:#e05c5c;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;}
-
-/* HEADER */
-header{padding:28px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(15,15,15,0.96);backdrop-filter:blur(12px);z-index:100;}
-.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
-.brand{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:0.02em;color:var(--accent);}
-.brand-sub{font-size:11px;color:rgba(255,255,255,0.75);margin-left:1px;margin-bottom:12px;line-height:1.5;display:none;}
-.brand-sub.visible{display:block;}
-.filter-bar{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-top:12px;}
-.filter-bar::-webkit-scrollbar{display:none;}
-.chip{flex-shrink:0;padding:6px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.chip:hover{border-color:var(--accent);color:var(--accent);}
-.chip.active{background:var(--accent);border-color:var(--accent);color:#0f0f0f;font-weight:500;}
-
-/* FEATURED */
-.featured-wrap{overflow:hidden;border-bottom:1px solid var(--border);}
-.featured-track-outer{overflow:hidden;width:100%;}
-.featured-track-outer::after{content:'';position:absolute;top:0;right:0;width:32px;height:100%;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;z-index:2;}
-.featured-track{display:flex;gap:12px;padding:16px 0 16px 20px;will-change:transform;}
-.featured-card{flex-shrink:0;width:140px;cursor:pointer;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:var(--surface);transition:border-color 0.2s;}
-.featured-card:hover{border-color:var(--accent);}
-.featured-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--surface2);}
-.featured-card-body{padding:8px 10px;}
-.featured-card-name{font-size:11px;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.featured-card-price{font-family:'Playfair Display',serif;font-size:12px;color:var(--accent);margin-top:3px;}
-.featured-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:12px 20px 0;}
-
-/* MAIN GRID */
-.main{padding:20px 16px;max-width:960px;margin:0 auto;}
-.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.count{font-size:12px;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase;}
-.sort-btn{font-size:12px;color:var(--text2);background:transparent;border:1px solid var(--border);border-radius:999px;padding:4px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.sort-btn:hover{border-color:var(--accent);color:var(--accent);}
-.sort-btn.active{background:var(--surface2);color:var(--accent);border-color:var(--accent);}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
-.card{background:var(--surface);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;border:1px solid var(--border);animation:fadeIn 0.3s ease both;}
-.card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.4);border-color:var(--accent);}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.card-img-wrap{position:relative;aspect-ratio:1;background:var(--surface2);}
-.card-img{width:100%;height:100%;object-fit:cover;display:block;}
-.card-body{padding:12px;}
-.card-merk{font-size:10px;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2px;}
-.card-name{font-size:13px;font-weight:400;line-height:1.4;color:var(--text);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.card-price{font-family:'Playfair Display',serif;font-size:15px;color:var(--accent);}
-.card-kategori{font-size:11px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:0.08em;}
-
-/* MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;}
-.overlay.open{display:flex;}
-.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1);scrollbar-width:thin;scrollbar-color:var(--border) transparent;position:relative;}
-@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;}
-.modal-close{position:absolute;top:10px;right:10px;width:36px;height:36px;background:var(--red);border:none;border-radius:50%;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;font-weight:500;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
-.modal-close:hover{background:#c04040;}
-
-/* CAROUSEL */
-.carousel{position:relative;background:var(--surface2);}
-.carousel-track{display:flex;overflow:hidden;}
-.carousel-slide{flex-shrink:0;width:100%;}
-.carousel-slide img{width:100%;max-height:200px;object-fit:scale-down;display:block;}
-.carousel-dots{display:flex;justify-content:center;gap:6px;padding:10px 0 6px;}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--border);cursor:pointer;transition:all 0.2s;border:none;}
-.dot.active{background:var(--accent);width:18px;border-radius:3px;}
-.carousel-prev,.carousel-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;z-index:5;}
-.carousel-prev{left:8px;}
-.carousel-next{right:8px;}
-.carousel-prev:hover,.carousel-next:hover{background:rgba(0,0,0,0.8);}
-
-/* MODAL CONTENT */
-.modal-content{padding:16px 20px 32px;}
-.modal-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;}
-.modal-kategori{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:0.12em;}
-.modal-merk{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;}
-.modal-name{font-family:'Playfair Display',serif;font-size:20px;line-height:1.3;margin-bottom:10px;}
-.modal-price{font-family:'Playfair Display',serif;font-size:24px;color:var(--accent);margin-bottom:20px;}
-.size-section{margin-bottom:20px;}
-.size-title{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:10px;}
-.color-filter{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
-.color-filter::-webkit-scrollbar{display:none;}
-.color-chip{flex-shrink:0;padding:5px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;transition:all 0.15s;}
-.color-chip:hover{border-color:var(--accent);color:var(--accent);}
-.color-chip.active{background:var(--accent);border-color:var(--accent);color:#0f0f0f;font-weight:500;}
-.size-table{width:100%;border-collapse:collapse;font-size:13px;}
-.size-table th{text-align:center;padding:8px 10px;background:var(--surface2);color:var(--text3);font-size:11px;font-weight:400;text-transform:uppercase;letter-spacing:0.06em;}
-.size-table th:first-child{border-radius:6px 0 0 6px;text-align:left;}
-.size-table th:last-child{border-radius:0 6px 6px 0;}
-.size-table td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);text-align:center;}
-.size-table td:first-child{text-align:left;} .size-table td:nth-child(2){text-align:left;}
-.size-table tr:last-child td{border-bottom:none;}
-.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:500;}
-.badge-true{background:rgba(76,175,125,0.15);color:var(--green);}
-.badge-false{background:rgba(224,92,92,0.15);color:var(--red);}
-.modal-order{display:block;width:100%;padding:14px;background:var(--accent);color:#0f0f0f;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;text-align:center;margin-top:8px;transition:background 0.2s;text-decoration:none;}
-.modal-order:hover{background:var(--accent2);}
-
-/* LOADING / EMPTY */
-.loading{text-align:center;padding:60px 20px;color:var(--text3);}
-.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.error-msg{background:rgba(224,92,92,0.1);border:1px solid rgba(224,92,92,0.3);color:var(--red);padding:16px;border-radius:var(--radius);font-size:13px;text-align:center;margin:24px 0;}
-.empty{text-align:center;padding:60px 20px;color:var(--text3);}
-
-@media(min-width:480px){
-  .grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
-  .overlay{align-items:center;padding:20px;}
-  .modal{border-radius:20px;max-height:88vh;}
-  .modal-handle{display:none;}
+/* ========================================
+   POLISHING ZONE - Safe to edit colors, fonts, spacing
+   ======================================== */
+:root{
+  --primary:#3b82f6;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --success:#10b981;
+  --bg:#fff;
+  --text:#1f2937;
+  --border:#e5e7eb;
+  --gray:#6b7280;
 }
 
-/* ZOOM OVERLAY */
-.zoom-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
-.zoom-overlay.open{display:flex;}
-.zoom-box{position:relative;max-width:min(480px,92vw);max-height:80vh;}
-.zoom-box img{width:100%;max-height:80vh;object-fit:contain;border-radius:12px;display:block;}
-.zoom-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;background:var(--red);border:none;border-radius:50%;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:500;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
-/* zoom btn on carousel */
-.zoom-trigger{position:absolute;bottom:8px;left:8px;width:28px;height:28px;background:rgba(0,0,0,0.55);border:none;border-radius:50%;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:6;backdrop-filter:blur(2px);transition:background 0.2s;}
-.zoom-trigger:hover{background:rgba(0,0,0,0.8);}
+/* ========================================
+   FUNCTIONAL ZONE - Layout structure, don't touch
+   ======================================== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;color:var(--text);background:#f9fafb;overflow-x:hidden}
+.header{background:var(--bg);border-bottom:2px solid var(--border);padding:6px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:8px}
+.header-title{font-size:16px;font-weight:700}
+.header-author{font-size:9px;color:var(--gray)}
+.menu-btn{background:none;border:none;font-size:24px;padding:4px 8px}
+.tabs{display:flex;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:36px;z-index:101;overflow-x:auto}
+.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent}
+.tab-btn.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:600}
+.tab-content{display:none;padding:12px;min-height:calc(100vh - 112px);padding-bottom:80px}
+.tab-content.active{display:block}
 
-#featured-section{display:block;width:100%;overflow:hidden;}
+/* ========================================
+   POLISHING ZONE - Component styles
+   ======================================== */
+.filters{background:white;padding:12px;border-radius:8px;margin-bottom:12px}
+.filter-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;white-space:nowrap}
+.filter-row::-webkit-scrollbar{height:4px}
+.filter-row::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.filter-label{font-size:12px;font-weight:600;color:var(--gray);width:45px;flex-shrink:0;position:sticky;left:0;background:white;z-index:10}
+.filter-buttons-scroll::-webkit-scrollbar{display:none}
+.checkbox-scroll::-webkit-scrollbar{display:none}
+.filter-btn{padding:6px 10px;border:1px solid var(--border);background:white;border-radius:4px;font-size:11px;min-width:36px;text-align:center}
+.filter-btn[data-value="all"]{min-width:60px}
+.filter-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.card{
+  background:white;
+  border:2px solid var(--border);
+  border-radius:8px;
+  padding:12px;
+  height:140px;
+  position:relative;
+  transition:all .2s;
+  overflow:hidden;
+}
+.card.forgot{border-color:var(--warning);background:#fffbeb}
+.card-front{display:flex;align-items:center;justify-content:center;font-size:var(--card-font-size,36px);font-weight:700;height:100%}
+.card-front .hanzi-char{display:inline-block;margin:0 2px;cursor:pointer;padding:2px;color:#4b5563;text-decoration:underline dotted #9ca3af}
+.card-back{display:none;font-size:11px;line-height:1.4;height:100%;overflow-y:auto}
+.card.expanded .card-front{display:none}
+.card.expanded .card-back{display:block}
+.forgot-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid var(--danger);font-size:12px;display:flex;align-items:center;justify-content:center;z-index:10}
+.forgot-btn.marked{background:var(--warning);border-color:var(--warning);color:white}
+.components{margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.component{display:inline-block;padding:3px 6px;margin:2px;background:#f3f4f6;border-radius:3px;font-size:10px}
+
+.balloon{position:fixed;background:white;border:2px solid var(--primary);border-radius:8px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:1000;max-width:320px;display:none;width:max-content}
+.balloon.show{display:block}
+.balloon .also-in{font-size:11px;line-height:1.6}
+.balloon h3,.balloon .hanzi-title{font-size:14px;font-weight:600;margin-bottom:4px}
+
+.back-to-top{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(--primary);color:white;border:none;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-size:20px;cursor:pointer;z-index:999;display:none;opacity:0;transition:opacity 0.3s}
+.back-to-top.show{display:flex;align-items:center;justify-content:center;opacity:0.8}
+.back-to-top:active{opacity:1;transform:translateX(-50%) scale(0.95)}
+
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--primary);color:white;border:none;font-size:24px;box-shadow:0 4px 12px rgba(59,130,246,0.4);z-index:200;display:flex;align-items:center;justify-content:center;cursor:move;touch-action:none}
+
+.slide-panel{position:fixed;top:0;right:-100%;width:85%;max-width:320px;height:100%;background:white;box-shadow:-4px 0 12px rgba(0,0,0,0.2);z-index:300;transition:right .3s;display:flex;flex-direction:column}
+.slide-panel.open{right:0}
+.panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:250;display:none}
+.panel-overlay.show{display:block}
+.panel-header{padding:16px;background:var(--primary);color:white;display:flex;justify-content:space-between;align-items:center}
+.panel-close{background:none;border:none;color:white;font-size:24px}
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);background:#f9fafb}
+.panel-tab{flex:1;padding:12px 8px;border:none;background:none;font-size:12px;border-bottom:3px solid transparent}
+.panel-tab.active{background:white;border-bottom-color:var(--primary);color:var(--primary);font-weight:600}
+.panel-content{flex:1;overflow-y:auto;padding:12px}
+.list-item{padding:10px;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+
+.menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:400;display:none}
+.menu-overlay.show{display:block}
+.menu-panel{position:fixed;top:0;left:-280px;width:260px;height:100%;background:white;box-shadow:4px 0 12px rgba(0,0,0,0.1);z-index:401;transition:left .3s;overflow-y:auto;padding-bottom:50px;display:flex;flex-direction:column}
+.menu-panel.open{left:0}
+.menu-header{padding:16px;background:var(--primary);color:white;font-weight:700}
+.menu-item{padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer}
+.menu-divider{border-top:2px solid var(--border);margin:8px 0}
+.db-info-item{position:absolute;bottom:0;left:0;right:0;padding:10px 16px;font-size:11px;color:var(--gray);background:#f9fafb;border-top:2px solid var(--border)}
+
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:500;display:none;padding:20px}
+.modal.show{display:block}
+.modal-content{background:white;border-radius:8px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;padding:50px 20px 20px}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:28px;color:var(--gray);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.modal-header{font-size:16px;font-weight:700;margin-bottom:12px}
+.export-text{width:100%;height:200px;font-family:monospace;font-size:10px;padding:10px;border:1px solid var(--border);border-radius:4px}
+
+.btn{border:none;border-radius:6px;font-size:13px;font-weight:600;padding:8px 12px}
+.btn-primary{background:var(--primary);color:white}
+.btn-secondary{background:var(--gray);color:white}
+
+.search-bar{width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:12px;font-size:14px}
+input[type="checkbox"]{margin-right:4px}
+label{font-size:12px;display:flex;align-items:center;gap:4px}
+
+.sentence-list{background:white;border-radius:8px;padding:12px}
+.sentence-item{padding:16px;padding-right:70px;margin-bottom:12px;border:1px solid var(--border);border-radius:8px;position:relative}
+.sentence-item.hidden{display:none}
+.sentence-text{font-size:18px;line-height:1.8;margin-bottom:8px;font-family:'SimSun',serif}
+.word{display:inline-block;padding:2px 4px;margin:0 2px;border-radius:2px;cursor:pointer}
+.word.known{color:var(--text)}
+.word.forgot{background:#fef3c7}
+/* merah = tidak ada di vocab inti (characters/compounds) */
+.word.new{color:var(--danger);font-weight:600}
+/* dictionary = juga merah, tapi balloon bisa tampil */
+.word.dict{color:var(--danger);font-weight:600}
+.sentence-translation{font-size:12px;color:var(--gray);display:none;margin-top:4px;margin-left:-16px;margin-right:-70px;padding:10px 16px 10px 26px;border-top:1px solid var(--border);background:#f9fafb;border-radius:4px}
+.sentence-translation.show{display:block}
+.full-translation{margin-top:8px;font-weight:600;color:var(--text);font-size:13px}
+
+.db-table{width:100%;border-collapse:collapse;background:white;font-size:11px}
+.db-table th,.db-table td{padding:8px 4px;border:1px solid var(--border);text-align:left}
+.db-table th{background:#f3f4f6;font-weight:600;text-align:center}
+.db-table th:nth-child(1),.db-table td:nth-child(1){width:40px;text-align:center}
+.db-table th:nth-child(2),.db-table td:nth-child(2){width:60px}
+.db-table th:nth-child(3),.db-table td:nth-child(3){width:80px}
+.db-table th:nth-child(4),.db-table td:nth-child(4){min-width:100px}
+.db-table th:nth-child(5),.db-table td:nth-child(5){width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-table th:nth-child(6),.db-table td:nth-child(6){width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-top">
-    <div class="brand">Jastip <span style="font-size:10px;color:var(--text3);font-family:'DM Sans',sans-serif;font-weight:300;margin-left:6px;letter-spacing:0.12em;text-transform:uppercase;">by jfr</span></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button id="theme-toggle" title="Toggle tema" style="background:transparent;border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;">🌙</button>
-      <a class="modal-order" id="wa-header" href="#" target="_blank" style="display:none;width:auto;padding:7px 16px;font-size:13px;margin-top:0;">Order via WA</a>
-    </div>
-  </div>
-  <div class="brand-sub" id="brand-sub"></div>
-  <div class="filter-bar" id="filter-bar">
-    <button class="chip active" data-cat="Semua">Semua</button>
-  </div>
-</header>
-
-<div id="featured-section" style="display:none;">
-  <div class="featured-label">✦ Featured</div>
-  <div class="featured-wrap">
-    <div class="featured-track-outer">
-      <div class="featured-track" id="featured-track"></div>
+<div class="header">
+  <div class="header-left">
+    <button class="menu-btn" id="menu-toggle">☰</button>
+    <div>
+      <span class="header-title">FLASHCARD</span>
+      <span class="header-author">by jfr</span>
     </div>
   </div>
 </div>
 
-<main class="main">
-  <div class="loading" id="loading"><div class="spinner"></div><div>Memuat katalog...</div></div>
-  <div id="error-container"></div>
-  <div class="toolbar" id="toolbar" style="display:none;">
-    <div class="count" id="count"></div>
-    <div style="display:flex;gap:6px;">
-      <button class="sort-btn" id="sort-name" data-sort="name">A–Z Nama</button>
-      <button class="sort-btn" id="sort-cat"  data-sort="cat">A–Z Kategori</button>
+<div class="tabs">
+  <button class="tab-btn active" data-tab="flashcard">Flashcard</button>
+  <button class="tab-btn" data-tab="sentence">Sentence</button>
+  <button class="tab-btn" data-tab="database">Database</button>
+</div>
+
+<div id="flashcard-tab" class="tab-content active">
+  <div class="filters">
+    <div class="filter-row">
+      <span class="filter-label">HSK:</span>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
+        <button class="filter-btn active" data-filter-type="hsk" data-value="all">Semua</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="1">1</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="2">2</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="3">3</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="4">4</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="5">5</button>
+        <button class="filter-btn" data-filter-type="hsk" data-value="6">6</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">A-Z:</span>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
+        <button class="filter-btn active" data-filter-type="letter" data-value="all">Semua</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="a">A</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="b">B</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="c">C</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="d">D</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="e">E</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="f">F</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="g">G</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="h">H</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="i">I</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="j">J</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="k">K</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="l">L</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="m">M</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="n">N</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="o">O</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="p">P</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="q">Q</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="r">R</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="s">S</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="t">T</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="u">U</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="v">V</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="w">W</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="x">X</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="y">Y</button>
+        <button class="filter-btn" data-filter-type="letter" data-value="z">Z</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div style="display:flex;gap:12px;overflow-x:auto;flex:1;scrollbar-width:none;-webkit-overflow-scrolling:touch" class="checkbox-scroll">
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-forgot"> Forgot Only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-new"> New Only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-isolated"> Isolated Only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="show-pinyin" checked> Pinyin</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="show-meaning" checked> Meaning</label>
+      </div>
     </div>
   </div>
-  <div class="grid" id="grid"></div>
-</main>
+  <div class="grid" id="flashcard-grid"></div>
+</div>
 
-<!-- MODAL -->
-<div class="overlay" id="overlay">
-  <div class="modal" id="modal">
-    <div class="modal-handle"></div>
-    <button class="modal-close" id="modal-close">✕</button>
-    <div id="modal-carousel"></div>
-    <div class="modal-content" id="modal-content"></div>
+<div id="sentence-tab" class="tab-content">
+  <div class="filters">
+    <div class="filter-row">
+      <label><input type="checkbox" id="sentence-hide-done" checked> Hide Done</label>
+      <label><input type="checkbox" id="sentence-known-only"> Tanpa kata baru</label>
+      <button class="btn btn-secondary" id="reset-sentences" style="width:auto;padding:8px 16px;margin:0;margin-left:auto">Reset All</button>
+    </div>
+  </div>
+  <div class="sentence-list" id="sentence-list"></div>
+</div>
+
+<div id="database-tab" class="tab-content">
+  <input type="text" class="search-bar" id="db-search" placeholder="Search...">
+  <div class="filters">
+    <div class="filter-row">
+      <span class="filter-label">HSK:</span>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
+        <button class="filter-btn active" data-filter-type="db-hsk" data-value="all">Semua</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="1">1</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="2">2</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="3">3</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="4">4</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="5">5</button>
+        <button class="filter-btn" data-filter-type="db-hsk" data-value="6">6</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">A-Z:</span>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
+        <button class="filter-btn active" data-filter-type="db-letter" data-value="all">Semua</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="a">A</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="b">B</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="c">C</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="d">D</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="e">E</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="f">F</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="g">G</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="h">H</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="i">I</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="j">J</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="k">K</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="l">L</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="m">M</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="n">N</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="o">O</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="p">P</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="q">Q</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="r">R</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="s">S</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="t">T</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="u">U</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="v">V</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="w">W</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="x">X</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="y">Y</button>
+        <button class="filter-btn" data-filter-type="db-letter" data-value="z">Z</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <label><input type="checkbox" id="db-filter-forgot"> Forgot Only</label>
+      <label><input type="checkbox" id="db-filter-new"> New Only</label>
+      <label><input type="checkbox" id="db-filter-isolated"> Isolated Only</label>
+      <select id="db-filter-showlist" style="margin-left:auto;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:white">
+        <option value="all">Semua</option>
+        <option value="1">Vocab inti</option>
+        <option value="0">Pendukung</option>
+      </select>
+    </div>
+  </div>
+  <div style="overflow-x:auto;-webkit-transform:translateZ(0);transform:translateZ(0)">
+    <table class="db-table">
+      <thead><tr><th>#</th><th>Hanzi</th><th>Pinyin</th><th>Meaning</th><th>Related</th><th>Antonym</th></tr></thead>
+      <tbody id="db-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<button class="fab" id="fab-btn">📝</button>
+
+<div class="panel-overlay" id="panel-overlay"></div>
+<div class="slide-panel" id="slide-panel">
+  <div class="panel-header">
+    <h3>Quick Access</h3>
+    <button class="panel-close" id="panel-close">×</button>
+  </div>
+  <div class="panel-tabs">
+    <button class="panel-tab active" data-panel="notes">Notes</button>
+    <button class="panel-tab" data-panel="forgot">Forgot (<span id="forgot-count">0</span>)</button>
+    <button class="panel-tab" data-panel="new">New (<span id="new-count">0</span>)</button>
+  </div>
+  <div class="panel-content">
+    <div id="panel-notes" class="panel-section"></div>
+    <div id="panel-forgot" class="panel-section" style="display:none"></div>
+    <div id="panel-new" class="panel-section" style="display:none"></div>
+  </div>
+</div>
+
+<div class="balloon" id="balloon"></div>
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+<div class="menu-overlay" id="menu-overlay"></div>
+<div class="menu-panel" id="menu-panel">
+  <div class="menu-header">Menu</div>
+  <div class="menu-item" id="import-db">📥 Import Database (File)</div>
+  <div class="menu-item" id="import-paste">📥 Import Database (Text)</div>
+  <div class="menu-item" id="export-db">📤 Export Database</div>
+  <div class="menu-item" id="github-sync">☁️ GitHub Sync</div>
+  <div class="menu-item" id="edit-chars">✏️ Edit Characters</div>
+  <div class="menu-item" id="edit-compounds">✏️ Edit Compounds</div>
+  <div class="menu-item" id="edit-sentences">✏️ Edit Sentences</div>
+  <div class="menu-item" id="edit-newwords">✏️ Edit New Words</div>
+  <div class="menu-item" id="edit-dictionary">✏️ Edit Dictionary</div>
+  <div style="flex:1"></div>
+  <div class="menu-item" id="reset-db" style="color:var(--danger);border-top:1px solid var(--border);padding-top:12px">🗑️ Reset Data</div>
+  <div class="db-info-item" id="db-info">No database loaded</div>
+</div>
+
+<div class="modal" id="export-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('export-modal')">×</button>
+    <div class="modal-header">Export (iOS: Copy & Paste)</div>
+    <textarea class="export-text" id="export-text" readonly></textarea>
+    <button class="btn btn-primary" id="copy-export">📋 Copy</button>
+  </div>
+</div>
+
+<div class="modal" id="edit-db-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('edit-db-modal')">×</button>
+    <div class="modal-header" id="edit-db-title">Edit Database</div>
+    <textarea id="edit-db-text" style="width:100%;height:300px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="document.getElementById('edit-db-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-db-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button class="btn btn-primary" id="save-db-edit" style="margin-left:auto;padding:8px 12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="reset-modal">
+  <div class="modal-content" style="max-width:400px">
+    <div style="text-align:center;font-size:48px;margin-bottom:16px">⚠️</div>
+    <div class="modal-header" style="text-align:center">Reset All Progress?</div>
+    <div style="font-size:13px;color:var(--text);margin:20px 0;line-height:1.6">
+      <p style="margin-bottom:12px">This will permanently clear:</p>
+      <ul style="list-style:none;padding:0;margin:0 0 12px 0">
+        <li style="padding:4px 0">❌ Forgot marks</li>
+        <li style="padding:4px 0">❌ Completed sentences</li>
+        <li style="padding:4px 0">❌ New words list</li>
+      </ul>
+      <p style="margin-bottom:0">✅ Vocabulary data will remain</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closeModal('reset-modal')" style="flex:1;padding:10px;background:var(--gray);color:white;border:none;border-radius:6px;font-size:14px;font-weight:600">Cancel</button>
+      <button onclick="confirmReset()" style="flex:1;padding:10px;background:var(--danger);color:white;border:none;border-radius:6px;font-size:14px;font-weight:600">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="edit-sentences-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('edit-sentences-modal')">×</button>
+    <div class="modal-header">Edit Sentences</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: sentence_id,sentence_text,translation,hsk_level,category,completed</div>
+    <textarea id="edit-sentences-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="document.getElementById('edit-sentences-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-sentences-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button class="btn btn-primary" id="save-sentences-edit" style="margin-left:auto;padding:8px 12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="edit-newwords-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('edit-newwords-modal')">×</button>
+    <div class="modal-header">Edit New Words</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: id,word,pinyin,meaning,first_seen_sentence,status,user_notes</div>
+    <textarea id="edit-newwords-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="document.getElementById('edit-newwords-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-newwords-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button class="btn btn-primary" id="save-newwords-edit" style="margin-left:auto;padding:8px 12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="edit-dictionary-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('edit-dictionary-modal')">×</button>
+    <div class="modal-header">Edit Dictionary</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: hanzi,pinyin,meaning &nbsp;|&nbsp; Kata di sini tetap <span style="color:var(--danger);font-weight:600">merah</span> di Sentences</div>
+    <textarea id="edit-dictionary-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="document.getElementById('edit-dictionary-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button class="btn btn-primary" id="save-dictionary-edit" style="margin-left:auto;padding:8px 12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="github-sync-modal">
+  <div class="modal-content" style="max-width:400px">
+    <button class="modal-close" onclick="closeModal('github-sync-modal')">×</button>
+    <div class="modal-header">☁️ GitHub Gist Sync</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:12px">Token dan Gist ID disimpan di browser (localStorage) dan tidak dikirim ke mana pun selain GitHub.</div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Personal Access Token</label>
+      <input type="password" id="gh-token" placeholder="ghp_..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Gist ID</label>
+      <input type="text" id="gh-gist-id" placeholder="bd8f01caecb1c151f6b625d924fd939c" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Nama File di Gist</label>
+      <input type="text" id="gh-filename" placeholder="mandarin-database.txt" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    </div>
+    <div id="gh-status" style="font-size:11px;color:var(--gray);margin-bottom:12px;min-height:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" id="gh-save-settings" style="flex:1">💾 Simpan Setting</button>
+      <button class="btn btn-primary" id="gh-pull" style="flex:1">⬇️ Pull</button>
+      <button class="btn btn-primary" id="gh-push" style="flex:1;background:var(--success)">⬆️ Push</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="import-paste-modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('import-paste-modal')">×</button>
+    <div class="modal-header">Import Database (Paste)</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Paste isi file TXT database di bawah, lalu tekan Import.</div>
+    <textarea id="import-paste-text" style="width:100%;height:300px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px" placeholder="Paste database TXT di sini..."></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="document.getElementById('import-paste-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('import-paste-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button class="btn btn-primary" id="save-import-paste" style="margin-left:auto;padding:8px 12px">Import</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="import-success-modal">
+  <div class="modal-content" style="max-width:320px;text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">✅</div>
+    <div class="modal-header" style="text-align:center;margin-bottom:16px">Import Berhasil</div>
+    <div id="import-stats" style="font-size:13px;line-height:2;text-align:left;background:#f9fafb;border-radius:6px;padding:12px;margin-bottom:16px"></div>
+    <button onclick="closeModal('import-success-modal')" class="btn btn-primary" style="width:100%">OK</button>
+  </div>
+</div>
+
+<div class="modal" id="save-success-modal">
+  <div class="modal-content" style="max-width:280px;text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">✅</div>
+    <div class="modal-header" style="text-align:center;margin-bottom:12px" id="save-success-title">Tersimpan</div>
+    <div id="save-success-stats" style="font-size:13px;background:#f9fafb;border-radius:6px;padding:10px;margin-bottom:16px;text-align:left"></div>
+    <button onclick="closeModal('save-success-modal')" class="btn btn-primary" style="width:100%">OK</button>
   </div>
 </div>
 
 <script>
-const SHEET_ID = '1fEYltDCjE5ReKyuWI_rjSLmrDwj5KGaouXt689gYHkU';
-const WA_NUMBER = '62xxxxxxxxxx';
-const GIDS = { products_public:'120988448', variants:'212657426', settings:'795819937' };
+// ========================================
+// DATA LAYER
+// ========================================
+let db={characters:[],compounds:[],sentences:[],newWords:[],notes:[],dictionary:[],filename:''};
+let state={hskFilters:[],letterFilters:[],dbHskFilters:[],dbLetterFilters:[],expandedCard:null,notesEditMode:false,activeBalloonEl:null,scrollPos:{flashcard:0,sentence:0,database:0}};
 
-let products=[], variants=[], settings={};
-let activeCategory='Semua', activeSort='name';
-let savedScrollY=0, savedCategory='Semua';
-let featuredTimer=null, featuredOffset=0;
+document.addEventListener('DOMContentLoaded',init);
 
-// ── FETCH CSV ────────────────────────────────────────────────────────────────
-async function fetchSheet(name) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GIDS[name]}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return parseCSV(await res.text());
+function init(){
+  loadFromStorage();
+  setupEvents();
+  setupFABDrag();
+  render();
 }
 
-function parseCSV(csv) {
-  const lines = csv.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = splitLine(lines[0]);
-  return lines.slice(1).map(l => {
-    const v = splitLine(l), obj = {};
-    headers.forEach((h,i) => obj[h.trim()] = (v[i]||'').trim());
-    return obj;
-  }).filter(r => Object.values(r).some(v => v));
+function loadFromStorage(){
+  try{
+    const saved=localStorage.getItem('mandarin-db');
+    if(saved){
+      db=JSON.parse(saved);
+      if(!db.notes)db.notes=[];
+      if(!db.dictionary)db.dictionary=[];
+      // Normalisasi show_in_list — item tanpa field atau undefined default ke '1'
+      db.characters.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+      db.compounds.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+      updateDBInfo();
+    }
+  }catch(e){}
 }
 
-function splitLine(line) {
-  const res=[]; let cur='', inQ=false;
-  for (let i=0;i<line.length;i++) {
-    const c=line[i];
-    if (c==='"'&&!inQ){inQ=true;continue;}
-    if (c==='"'&&inQ&&line[i+1]==='"'){cur+='"';i++;continue;}
-    if (c==='"'&&inQ){inQ=false;continue;}
-    if (c===','&&!inQ){res.push(cur);cur='';continue;}
-    cur+=c;
+function saveToStorage(){
+  localStorage.setItem('mandarin-db',JSON.stringify(db));
+  updateDBInfo();
+}
+
+function updateDBInfo(){
+  if(!db.filename){
+    document.getElementById('db-info').innerHTML='No database loaded';
+    return;
   }
-  res.push(cur); return res;
+  const vocabChars=db.characters.filter(c=>c.show_in_list==1||c.show_in_list=='1'||!('show_in_list' in c)).length;
+  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==1||c.show_in_list=='1'||!('show_in_list' in c)).length;
+  const totalVocab=vocabChars+vocabCompounds;
+  document.getElementById('db-info').innerHTML=`
+    <div style="font-weight:600;margin-bottom:4px">${db.filename}</div>
+    <div style="font-size:10px;color:var(--gray)">
+      Vocabulary: ${totalVocab} (${vocabChars} chars + ${vocabCompounds} words)
+    </div>
+  `;
 }
 
-// ── FORMAT ───────────────────────────────────────────────────────────────────
-function formatIDR(v) {
-  const n = typeof v==='string'? parseFloat(v.replace(/[^0-9.]/g,'')) : v;
-  if (!n||isNaN(n)) return '-';
-  return 'Rp '+n.toLocaleString('id-ID');
-}
+// ========================================
+// EVENT LISTENERS
+// ========================================
+function setupEvents(){
+  document.getElementById('menu-toggle').addEventListener('click',toggleMenu);
+  document.getElementById('menu-overlay').addEventListener('click',toggleMenu);
+  document.getElementById('import-db').addEventListener('click',importDB);
+  document.getElementById('import-paste').addEventListener('click',()=>{
+    document.getElementById('import-paste-text').value='';
+    document.getElementById('import-paste-modal').classList.add('show');
+    toggleMenu();
+  });
+  document.getElementById('github-sync').addEventListener('click',openGithubSync);
+  document.getElementById('edit-chars').addEventListener('click',()=>editDatabase('characters'));
+  document.getElementById('edit-compounds').addEventListener('click',()=>editDatabase('compounds'));
+  document.getElementById('edit-sentences').addEventListener('click',editSentences);
+  document.getElementById('edit-newwords').addEventListener('click',editNewWords);
+  document.getElementById('edit-dictionary').addEventListener('click',editDictionary);
+  document.getElementById('reset-db').addEventListener('click',()=>{
+    document.getElementById('reset-modal').classList.add('show');
+  });
 
-function getImages(p) {
-  const imgs = [p.image_url_direct,p.images_1_direct,p.images_2_direct,p.images_3_direct,p.images_4_direct,p.images_5_direct]
-    .filter(u => u && u.trim() && u.startsWith('http'));
-  return imgs;
-}
+  window.confirmReset=()=>{
+    db.characters.forEach(c=>{c.forgot=0;c.forgot_count=0;c.last_reviewed=''});
+    db.compounds.forEach(c=>{c.forgot=0;c.forgot_count=0;c.last_reviewed=''});
+    db.sentences.forEach(s=>{s.completed=0});
+    db.newWords=[];
+    saveToStorage();
+    location.reload();
+  };
 
-function isActive(p) { return String(p.aktif).toUpperCase()!=='FALSE'; }
-function isFeatured(p) { return String(p.featured).toUpperCase()==='TRUE'; }
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>switchTab(btn.dataset.tab));
+  });
 
-// ── FILTER & SORT ────────────────────────────────────────────────────────────
-function getFiltered() {
-  let list = products.filter(isActive);
-  if (activeCategory !== 'Semua') list = list.filter(p => p.kategori===activeCategory);
-  if (activeSort==='name') list = [...list].sort((a,b)=>a.nama.localeCompare(b.nama,'id'));
-  else if (activeSort==='cat') list = [...list].sort((a,b)=>a.kategori.localeCompare(b.kategori,'id')||a.nama.localeCompare(b.nama,'id'));
-  else list = [...list].sort((a,b)=>(Number(a.urutan)||99)-(Number(b.urutan)||99));
-  return list;
-}
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>toggleFilter(btn));
+  });
 
-// ── RENDER GRID ──────────────────────────────────────────────────────────────
-function renderGrid() {
-  const grid=document.getElementById('grid');
-  const count=document.getElementById('count');
-  const toolbar=document.getElementById('toolbar');
-  const filtered=getFiltered();
-  toolbar.style.display='flex';
-  count.textContent=`${filtered.length} produk`;
-  grid.innerHTML='';
-  if (!filtered.length){grid.innerHTML='<div class="empty">Tidak ada produk.</div>';return;}
-  filtered.forEach((p,i)=>{
-    const imgs=getImages(p);
-    const card=document.createElement('div');
-    card.className='card';
-    card.style.animationDelay=`${i*40}ms`;
-    card.innerHTML=`
-      <div class="card-img-wrap">
-        ${imgs[0]?`<img class="card-img" src="${imgs[0]}" alt="${p.nama}" loading="lazy" onerror="this.style.display='none'">`:''}
-      </div>
-      <div class="card-body">
-        ${p.merk?`<div class="card-merk">${p.merk}</div>`:''}
-        <div class="card-name">${p.nama}</div>
-        <div class="card-price">${formatIDR(p.harga_jual_idr)}</div>
-        <div class="card-kategori">${p.kategori||''}</div>
-      </div>`;
-    card.onclick=()=>openModal(p);
-    grid.appendChild(card);
+  document.querySelectorAll('.filter-buttons-scroll').forEach(el=>{
+    el.addEventListener('wheel',e=>{
+      e.preventDefault();
+      el.scrollLeft+=e.deltaY;
+    },{passive:false});
+  });
+
+  document.getElementById('filter-forgot').addEventListener('change',renderFlashcards);
+  document.getElementById('filter-new').addEventListener('change',renderFlashcards);
+  document.getElementById('filter-isolated').addEventListener('change',renderFlashcards);
+  document.getElementById('show-pinyin').addEventListener('change',render);
+  document.getElementById('show-meaning').addEventListener('change',render);
+
+  document.getElementById('panel-close').addEventListener('click',togglePanel);
+  document.getElementById('panel-overlay').addEventListener('click',togglePanel);
+
+  document.querySelectorAll('.panel-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>switchPanelTab(btn.dataset.panel));
+  });
+
+  document.getElementById('copy-export').addEventListener('click',copyExport);
+  document.getElementById('save-import-paste').addEventListener('click',importFromPaste);
+  document.getElementById('save-db-edit').addEventListener('click',saveDBEdit);
+  document.getElementById('save-sentences-edit').addEventListener('click',saveSentencesEdit);
+  document.getElementById('save-newwords-edit').addEventListener('click',saveNewWordsEdit);
+  document.getElementById('save-dictionary-edit').addEventListener('click',saveDictionaryEdit);
+
+  document.getElementById('reset-sentences').addEventListener('click',resetSentences);
+  document.getElementById('sentence-hide-done').addEventListener('change',renderSentences);
+  document.getElementById('sentence-known-only').addEventListener('change',renderSentences);
+
+  // Listener sentences — dipasang sekali di sini, tidak di renderSentences
+  document.getElementById('sentence-list').addEventListener('click',handleSentenceClick);
+
+  document.getElementById('db-search').addEventListener('input',renderDatabase);
+  document.getElementById('db-filter-forgot').addEventListener('change',renderDatabase);
+  document.getElementById('db-filter-new').addEventListener('change',renderDatabase);
+  document.getElementById('db-filter-isolated').addEventListener('change',renderDatabase);
+  document.getElementById('db-filter-showlist').addEventListener('change',renderDatabase);
+
+  window.addEventListener('scroll',closeBalloon);
+  // Tidak tutup balloon saat scroll sentences — supaya translation tetap terbuka
+
+  let backToTopTimer;
+  window.addEventListener('scroll',()=>{
+    const btn=document.getElementById('back-to-top');
+    const scrolled=window.scrollY>200;
+    if(scrolled){
+      btn.classList.add('show');
+      clearTimeout(backToTopTimer);
+      backToTopTimer=setTimeout(()=>{
+        if(window.scrollY>200)btn.classList.remove('show');
+      },1500);
+    }else{
+      btn.classList.remove('show');
+    }
   });
 }
 
-// ── FILTER CHIPS ─────────────────────────────────────────────────────────────
-function buildFilters() {
-  const bar=document.getElementById('filter-bar');
-  const cats=['Semua',...new Set(products.filter(isActive).map(p=>p.kategori).filter(Boolean))];
-  bar.innerHTML='';
-  cats.forEach(cat=>{
-    const btn=document.createElement('button');
-    btn.className='chip'+(cat===activeCategory?' active':'');
-    btn.dataset.cat=cat; btn.textContent=cat;
-    btn.onclick=()=>{ activeCategory=cat; buildFilters(); renderGrid(); };
-    bar.appendChild(btn);
+function setupFABDrag(){
+  const fab=document.getElementById('fab-btn');
+  let isDragging=false,startX,startY,startLeft,startTop;
+
+  fab.addEventListener('mousedown',e=>{
+    startX=e.clientX;startY=e.clientY;
+    const rect=fab.getBoundingClientRect();
+    startLeft=rect.left;startTop=rect.top;
+    isDragging=false;
+    const onMove=e=>{
+      isDragging=true;
+      fab.style.left=(startLeft+e.clientX-startX)+'px';
+      fab.style.top=(startTop+e.clientY-startY)+'px';
+      fab.style.right='auto';fab.style.bottom='auto';
+    };
+    const onUp=()=>{
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+      if(!isDragging)togglePanel();
+    };
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
+
+  fab.addEventListener('touchstart',e=>{
+    const touch=e.touches[0];
+    startX=touch.clientX;startY=touch.clientY;
+    const rect=fab.getBoundingClientRect();
+    startLeft=rect.left;startTop=rect.top;
+    isDragging=false;
+  });
+
+  fab.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    const touch=e.touches[0];
+    const dx=touch.clientX-startX;
+    const dy=touch.clientY-startY;
+    // Hanya dianggap drag jika bergerak lebih dari 8px
+    if(Math.abs(dx)>8||Math.abs(dy)>8){
+      isDragging=true;
+      fab.style.left=(startLeft+dx)+'px';
+      fab.style.top=(startTop+dy)+'px';
+      fab.style.right='auto';fab.style.bottom='auto';
+    }
+  });
+
+  fab.addEventListener('touchend',()=>{if(!isDragging)togglePanel()});
+}
+
+// ========================================
+// UI
+// ========================================
+function toggleMenu(){
+  document.getElementById('menu-overlay').classList.toggle('show');
+  document.getElementById('menu-panel').classList.toggle('open');
+}
+
+function switchTab(tab){
+  // Simpan scroll position tab aktif sebelum pindah
+  const activeTab=document.querySelector('.tab-content.active');
+  if(activeTab){
+    const activeKey=activeTab.id.replace('-tab','');
+    state.scrollPos[activeKey]=window.scrollY;
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById(`${tab}-tab`).classList.add('active');
+
+  if(tab==='sentence') renderSentences();
+  if(tab==='database') renderDatabase();
+
+  // Restore scroll position
+  requestAnimationFrame(()=>{
+    window.scrollTo(0,state.scrollPos[tab]||0);
   });
 }
 
-// ── FEATURED CAROUSEL ────────────────────────────────────────────────────────
-function buildFeatured() {
-  const featured=products.filter(p=>isActive(p)&&isFeatured(p));
-  const section=document.getElementById('featured-section');
-  if (!featured.length){section.style.display='none';return;}
-  section.style.display='block';
-  const track=document.getElementById('featured-track');
-  // Duplicate enough times to always exceed viewport
-  const minCards = Math.ceil(2000 / (140+12)) + featured.length;
-  const repeatCount = Math.ceil(minCards / featured.length);
-  const items = Array.from({length: repeatCount}, ()=>featured).flat();
-  track.innerHTML='';
-  items.forEach(p=>{
-    const imgs=getImages(p);
-    const card=document.createElement('div');
-    card.className='featured-card';
-    card.innerHTML=`
-      ${imgs[0]?`<img src="${imgs[0]}" alt="${p.nama}" onerror="this.style.display='none'">`:'<div style="aspect-ratio:1;background:var(--surface2)"></div>'}
-      <div class="featured-card-body">
-        <div class="featured-card-name">${p.nama}</div>
-        <div class="featured-card-price">${formatIDR(p.harga_jual_idr)}</div>
-      </div>`;
-    card.onclick=()=>openModal(p);
-    track.appendChild(card);
-  });
-  startFeaturedScroll(track, featured.length);
+function toggleFilter(btn){
+  const type=btn.dataset.filterType;
+  const value=btn.dataset.value;
+
+  if(value==='all'){
+    if(type==='hsk')state.hskFilters=[];
+    else if(type==='letter')state.letterFilters=[];
+    else if(type==='db-hsk')state.dbHskFilters=[];
+    else if(type==='db-letter')state.dbLetterFilters=[];
+    document.querySelectorAll(`[data-filter-type="${type}"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }else{
+    let arr;
+    if(type==='hsk')arr=state.hskFilters;
+    else if(type==='letter')arr=state.letterFilters;
+    else if(type==='db-hsk')arr=state.dbHskFilters;
+    else if(type==='db-letter')arr=state.dbLetterFilters;
+
+    const val=(type==='hsk'||type==='db-hsk')?parseInt(value):value;
+    const idx=arr.indexOf(val);
+    if(idx>-1)arr.splice(idx,1);
+    else arr.push(val);
+    btn.classList.toggle('active');
+
+    const allBtn=document.querySelector(`[data-filter-type="${type}"][data-value="all"]`);
+    if(arr.length>0)allBtn.classList.remove('active');
+    else allBtn.classList.add('active');
+  }
+
+  if(type==='db-hsk'||type==='db-letter')renderDatabase();
+  else renderFlashcards();
 }
 
-function startFeaturedScroll(track, count) {
-  if (featuredTimer) clearInterval(featuredTimer);
-  const cardW = 140 + 12;
-  // loopW = one full set of original cards
-  // We rendered many duplicates; loop point is after first full set
-  const loopW = cardW * count;
-  featuredOffset = 0;
-  track.style.transition = 'none';
-  track.style.transform = 'translateX(0px)';
+function togglePanel(){
+  const panel=document.getElementById('slide-panel');
+  const overlay=document.getElementById('panel-overlay');
+  if(panel.classList.contains('open')){
+    panel.classList.remove('open');
+    overlay.classList.remove('show');
+  }else{
+    panel.classList.add('open');
+    overlay.classList.add('show');
+    renderNotesList();
+    renderForgotList();
+    renderNewList();
+  }
+}
 
-  // Wait for paint before starting
-  requestAnimationFrame(() => {
-    featuredTimer = setInterval(()=>{
-      featuredOffset += 0.4;
-      // When we've scrolled one full set, snap back to start seamlessly
-      if (featuredOffset >= loopW) {
-        featuredOffset -= loopW;
+function switchPanelTab(tab){
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`[data-panel="${tab}"]`).classList.add('active');
+  document.getElementById('panel-notes').style.display=tab==='notes'?'block':'none';
+  document.getElementById('panel-forgot').style.display=tab==='forgot'?'block':'none';
+  document.getElementById('panel-new').style.display=tab==='new'?'block':'none';
+}
+
+function render(){
+  updateCardFontSize();
+  renderFlashcards();
+  renderDatabase();
+  updateCounts();
+}
+
+function updateCardFontSize(){
+  // Cari kata terpanjang di characters + compounds + newWords
+  const allWords=[...db.characters,...db.compounds,...db.newWords];
+  const maxLen=allWords.reduce((max,i)=>{
+    const w=(i.hanzi||i.word||'').length;
+    return w>max?w:max;
+  },1);
+  // Font size berdasarkan panjang terpanjang
+  let fs=48;
+  if(maxLen>=3) fs=32;
+  else if(maxLen>=2) fs=40;
+  document.documentElement.style.setProperty('--card-font-size',fs+'px');
+}
+
+
+// Top-level card render helper — dipakai oleh renderFlashcards
+function renderCardHTML(item,isNewWord,showPinyin,showMeaning){
+  const display=isNewWord?(item.word||item.hanzi||''):(item.word?item.word:item.hanzi);
+  const isForgot=item.forgot==1;
+  const cardId=isNewWord?`nw_${item.id||item.word}`:item.id;
+
+  let frontHTML;
+  if(display&&display.length>1){
+    frontHTML=display.split('').map((char)=>{
+      const charData=db.characters.find(c=>c.hanzi===char);
+      if(!charData)return `<span>${char}</span>`;
+
+      let otherCompounds;
+      if(isNewWord){
+        // New word card: cek 598 + newWords lain
+        const pool=[...db.compounds,...db.newWords.filter(w=>w.word&&w.word.length>1)];
+        otherCompounds=pool.filter(c=>{
+          const cid=String(c.id||c.word);
+          return cid!==String(item.id||item.word)&&(c.char_id_1==charData.id||c.char_id_2==charData.id||c.char_id_3==charData.id);
+        });
+      }else{
+        // 598 card: hanya cek db.compounds saja
+        otherCompounds=db.compounds.filter(c=>
+          c.id!=item.id&&(c.char_id_1==charData.id||c.char_id_2==charData.id||c.char_id_3==charData.id)
+        );
       }
-      track.style.transform = `translateX(-${featuredOffset}px)`;
-    }, 16);
+
+        return otherCompounds.length>0
+        ?`<span class="hanzi-char" data-char-id="${charData.id}" data-compound-id="${cardId}" data-is-newword="${isNewWord?'1':'0'}">${char}</span>`
+        :`<span>${char}</span>`;
+    }).join('');
+  }else{
+    frontHTML=`<span>${display}</span>`;
+  }
+
+  let backHTML=`
+    <div style="font-weight:600;margin-bottom:4px">${display} ${showPinyin?`(${item.pinyin})`:''}</div>
+    ${showMeaning?`<div style="margin-bottom:6px">${item.meaning}</div>`:''}
+  `;
+
+  const relatedIds=(item.related_ids||'').split(',').filter(id=>id.trim());
+  const antonymIds=(item.antonym_ids||'').split(',').filter(id=>id.trim());
+  if(relatedIds.length>0||antonymIds.length>0){
+    backHTML+='<div style="font-size:10px;line-height:1.6">';
+    if(relatedIds.length>0){
+      const relatedItems=relatedIds.map(id=>{
+        const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
+        return rel?`${rel.hanzi||rel.word} (${rel.pinyin} | ${rel.meaning})`:'';
+      }).filter(Boolean);
+      if(relatedItems.length>0){
+        backHTML+=`<div style="background:#dbeafe;padding:6px 8px;border-radius:4px;margin-bottom:4px;line-height:1.5">${relatedItems.join(', ')}</div>`;
+      }
+    }
+    if(antonymIds.length>0){
+      const antonymItems=antonymIds.map(id=>{
+        const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
+        return ant?`${ant.hanzi||ant.word} (${ant.pinyin} | ${ant.meaning})`:'';
+      }).filter(Boolean);
+      if(antonymItems.length>0){
+        backHTML+=`<div style="background:#fed7aa;padding:6px 8px;border-radius:4px;line-height:1.5">${antonymItems.join(', ')}</div>`;
+      }
+    }
+    backHTML+='</div>';
+  }
+
+  return `
+    <div class="card ${isForgot?'forgot':''} ${state.expandedCard==cardId?'expanded':''}" data-card-id="${cardId}">
+      <div class="forgot-btn ${isForgot?'marked':''}" data-item-id="${cardId}">${isForgot?'✓':'❌'}</div>
+      <div class="card-front">${frontHTML}</div>
+      <div class="card-back">${backHTML}</div>
+    </div>
+  `;
+}
+
+function renderFlashcards(){
+  const grid=document.getElementById('flashcard-grid');
+  const showPinyin=document.getElementById('show-pinyin').checked;
+  const showMeaning=document.getElementById('show-meaning').checked;
+  const forgotOnly=document.getElementById('filter-forgot').checked;
+  const newOnly=document.getElementById('filter-new').checked;
+  const isolatedOnly=document.getElementById('filter-isolated').checked;
+
+  let items=[...db.characters,...db.compounds].filter(i=>i.show_in_list==='1');
+
+  if(state.hskFilters.length>0){
+    items=items.filter(i=>state.hskFilters.includes(parseInt(i.hsk_level)));
+  }
+  if(state.letterFilters.length>0){
+    items=items.filter(i=>{
+      const base=i.pinyin.normalize('NFD').replace(/[\u0300-\u036f]/g,'')[0].toLowerCase();
+      return state.letterFilters.includes(base);
+    });
+  }
+  if(forgotOnly) items=items.filter(i=>i.forgot==1);
+  // newOnly: sembunyikan core items, hanya tampilkan nwItems di bawah
+  if(newOnly) items=[];
+  if(isolatedOnly){
+    items=items.filter(i=>{
+      const isChar=!!i.hanzi;
+      if(isChar) return !db.compounds.some(c=>c.char_id_1==i.id||c.char_id_2==i.id||c.char_id_3==i.id);
+      else return !(i.related_ids&&i.related_ids.trim());
+    });
+  }
+
+  // New words di paling bawah
+  let nwItems=[];
+  if(!isolatedOnly){
+    nwItems=[...db.newWords].sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+    if(forgotOnly) nwItems=nwItems.filter(w=>w.forgot==1);
+    if(state.hskFilters.length>0) nwItems=[];
+    if(state.letterFilters.length>0){
+      nwItems=nwItems.filter(w=>{
+        const base=removeTones(w.pinyin||'')[0]?.toLowerCase();
+        return state.letterFilters.includes(base);
+      });
+    }
+  }
+
+  if(items.length===0&&nwItems.length===0){grid.innerHTML='';return;}
+
+  // Tanpa separator garis
+  grid.innerHTML=items.map(item=>renderCardHTML(item,false,showPinyin,showMeaning)).join('')
+    +nwItems.map(item=>renderCardHTML(item,true,showPinyin,showMeaning)).join('');
+
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click',e=>{
+      if(e.target.classList.contains('forgot-btn')||e.target.classList.contains('hanzi-char'))return;
+      toggleCard(card.dataset.cardId);
+    });
+  });
+
+  grid.querySelectorAll('.forgot-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      markForgot(btn.dataset.itemId);
+    });
+  });
+
+  grid.querySelectorAll('.hanzi-char').forEach(char=>{
+    char.addEventListener('click',e=>{
+      e.stopPropagation();
+      showBalloon(char.dataset.charId,char.dataset.compoundId,e.target);
+    });
   });
 }
 
-// ── CAROUSEL MODAL ───────────────────────────────────────────────────────────
-function buildCarousel(imgs) {
-  const container=document.getElementById('modal-carousel');
-  if(!imgs.length){container.innerHTML='';return;}
+function toggleCard(id){
+  state.expandedCard=state.expandedCard==id?null:id;
+  renderFlashcards();
+}
 
-  if(imgs.length===1){
-    const _w=document.createElement('div');
-    _w.className='carousel';
-    const _i=document.createElement('img');
-    _i.style.cssText='width:100%;max-height:200px;object-fit:scale-down;display:block;';
-    _i.alt=''; _i.src=imgs[0];
-    _i.onerror=()=>_w.style.display='none';
-    _i.onclick=()=>openZoom(imgs[0]);
-    _i.style.cursor='pointer';
-    const _z=document.createElement('button');
-    _z.className='zoom-trigger'; _z.innerHTML='⤢';
-    _z.onclick=()=>openZoom(imgs[0]);
-    _w.appendChild(_i); _w.appendChild(_z);
-    container.innerHTML=''; container.appendChild(_w);
+function markForgot(id){
+  let item;
+  if(String(id).startsWith('nw_')){
+    const key=String(id).replace('nw_','');
+    item=db.newWords.find(i=>(i.id||i.word)==key);
+  }else{
+    item=db.characters.find(i=>i.id==id)||db.compounds.find(i=>i.id==id);
+  }
+  if(!item)return;
+  item.forgot=item.forgot==1?0:1;
+  item.forgot_count=parseInt(item.forgot_count||0)+(item.forgot==1?1:-1);
+  saveToStorage();
+  renderFlashcards();
+  updateCounts();
+}
+
+function showBalloon(charId,compoundId,element){
+  // Toggle: klik elemen yang sama = tutup
+  if(state.activeBalloonEl===element){
+    closeBalloon();
     return;
   }
 
-  container.innerHTML=`<div class="carousel">
-    <div class="carousel-track" id="c-track"></div>
-    <button class="carousel-prev" id="c-prev" style="display:none">‹</button>
-    <button class="carousel-next" id="c-next" style="display:none">›</button>
-    <div class="carousel-dots" id="c-dots"></div>
-  </div>`;
+  const char=db.characters.find(c=>c.id==charId);
+  if(!char)return;
 
-  const track=document.getElementById('c-track');
-  const dotsEl=document.getElementById('c-dots');
-  const prevBtn=document.getElementById('c-prev');
-  const nextBtn=document.getElementById('c-next');
-  let current=0;
+  const isNewWordCard=element.dataset.isNewword==='1';
 
-  const slides=imgs.map(src=>{
-    const slide=document.createElement('div');
-    slide.className='carousel-slide';
-    const img=document.createElement('img');
-    img.alt=''; img.src=src;
-    slide.appendChild(img);
-    track.appendChild(slide);
-    return {slide,img,src};
-  });
+  // 598 card: hanya cek db.compounds
+  // newWord card: cek db.compounds + db.newWords
+  const coreMatches=db.compounds.filter(c=>
+    c.id!=compoundId&&
+    (c.char_id_1==charId||c.char_id_2==charId||c.char_id_3==charId||c.char_id_4==charId)
+  );
 
-  let settled=0;
-  function onSettle(){
-    settled++;
-    if(settled<imgs.length) return;
-    const good=slides.filter(s=>s.img.naturalWidth>0);
-    track.innerHTML='';
-    good.forEach(s=>track.appendChild(s.slide));
-    const total=good.length;
-    if(!total){container.style.display='none';return;}
-    if(total>1){prevBtn.style.display='flex';nextBtn.style.display='flex';}
-
-    dotsEl.innerHTML='';
-    good.forEach((_,i)=>{
-      const dot=document.createElement('button');
-      dot.className='dot'+(i===0?' active':'');
-      dot.onclick=()=>goTo(i);
-      dotsEl.appendChild(dot);
-    });
-
-    function goTo(n){
-      current=((n%total)+total)%total;
-      track.style.transform=`translateX(-${current*100}%)`;
-      track.style.transition='transform 0.3s ease';
-      dotsEl.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
-    }
-
-    prevBtn.onclick=()=>goTo(current-1);
-    nextBtn.onclick=()=>goTo(current+1);
-
-    // click image = zoom current slide
-    good.forEach(s=>{
-      s.img.style.cursor='pointer';
-      s.img.onclick=()=>{ if(good[current]) openZoom(good[current].src); };
-    });
-
-    // zoom button
-    const zBtn=document.createElement('button');
-    zBtn.className='zoom-trigger'; zBtn.innerHTML='⤢';
-    zBtn.onclick=()=>{ if(good[current]) openZoom(good[current].src); };
-    container.querySelector('.carousel').appendChild(zBtn);
-
-    // swipe
-    let tx=0, moved=false;
-    track.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;moved=false;},{passive:true});
-    track.addEventListener('touchmove',e=>{
-      if(Math.abs(e.touches[0].clientX-tx)>10) moved=true;
-    },{passive:true});
-    track.addEventListener('touchend',e=>{
-      if(!moved) return;
-      const diff=tx-e.changedTouches[0].clientX;
-      if(Math.abs(diff)>40) goTo(diff>0?current+1:current-1);
-    },{passive:true});
+  let nwMatches=[];
+  if(isNewWordCard){
+    nwMatches=db.newWords.filter(w=>
+      String(w.id||w.word)!==String(compoundId).replace('nw_','')&&
+      w.word&&w.word.length>1&&
+      (w.char_id_1==charId||w.char_id_2==charId||w.char_id_3==charId||w.char_id_4==charId)
+    );
   }
 
-  slides.forEach(s=>{
-    if(s.img.complete) onSettle();
-    else{ s.img.onload=onSettle; s.img.onerror=onSettle; }
-  });
+  if(coreMatches.length===0&&nwMatches.length===0)return;
+
+  document.removeEventListener('click',closeBalloonOutside);
+  const balloon=document.getElementById('balloon');
+
+  let html='<div class="also-in">';
+  if(coreMatches.length>0){
+    html+=coreMatches.map(c=>`${c.word} (${c.pinyin} | ${c.meaning})`).join(', ');
+  }
+  if(nwMatches.length>0){
+    if(coreMatches.length>0)html+=', ';
+    html+=nwMatches.map(w=>`<span style="color:var(--warning)">${w.word} (${w.pinyin} | ${w.meaning})</span>`).join(', ');
+  }
+  html+='</div>';
+
+  balloon.innerHTML=html;
+  const rect=element.getBoundingClientRect();
+  let left=rect.left;
+  const balloonWidth=300;
+  if(left+balloonWidth>window.innerWidth)left=window.innerWidth-balloonWidth-10;
+  if(left<10)left=10;
+  balloon.style.left=left+'px';
+  balloon.style.top=rect.bottom+'px';
+  balloon.classList.add('show');
+  state.activeBalloonEl=element;
+  requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
 }
 
+// ========================================
+// TOKENIZER - KUNCI PERUBAHAN v6
+// token.source: 'core' | 'dict' | null
+// 'core'  = dari characters/compounds → hitam di sentences
+// 'dict'  = dari dictionary           → TETAP MERAH di sentences, tapi balloon bisa tampil
+// null    = tidak ditemukan di mana pun → merah, balloon kosong
+// ========================================
+function tokenize(text){
+  const tokens=[];
+  let i=0;
+  const puncts=/^[，。！？、：；]/;
 
-// ── MODAL ────────────────────────────────────────────────────────────────────
-let activeColor=null;
+  while(i<text.length){
+    // Tanda baca — render langsung tanpa lookup
+    if(puncts.test(text[i])){
+      tokens.push({text:text[i],found:false,source:'punct',item:null});
+      i++;continue;
+    }
 
-function openModal(product) {
-  savedScrollY=window.scrollY;
-  const pVariants=variants.filter(v=>v.product_id===product.id);
-  const colors=[...new Set(pVariants.map(v=>v.warna).filter(v=>v&&v!=='-'))];
-  activeColor=colors[0]||null;
-  const imgs=getImages(product);
-  buildCarousel(imgs);
-  renderModalContent(product, pVariants, colors);
-  document.getElementById('overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+    let matched=false;
+    for(let len=4;len>=1;len--){
+      const substr=text.substr(i,len);
+
+      // Cek vocab inti dulu (characters + compounds)
+      let item=db.compounds.find(c=>c.word===substr)||db.characters.find(c=>c.hanzi===substr);
+      if(item){
+        tokens.push({text:substr,found:true,source:'core',item});
+        i+=len;matched=true;break;
+      }
+
+      // Cek new words
+      const newEntry=db.newWords.find(w=>w.word===substr);
+      if(newEntry){
+        const newItem={hanzi:newEntry.word,pinyin:newEntry.pinyin,meaning:newEntry.meaning,id:newEntry.word};
+        tokens.push({text:substr,found:true,source:'new',item:newItem});
+        i+=len;matched=true;break;
+      }
+
+      // Fallback ke dictionary
+      const dictEntry=db.dictionary.find(d=>d.hanzi===substr);
+      if(dictEntry){
+        const dictItem={hanzi:dictEntry.hanzi,pinyin:dictEntry.pinyin,meaning:dictEntry.meaning,id:dictEntry.hanzi};
+        tokens.push({text:substr,found:true,source:'dict',item:dictItem});
+        i+=len;matched=true;break;
+      }
+    }
+    if(!matched){
+      tokens.push({text:text[i],found:false,source:null,item:null});
+      i++;
+    }
+  }
+  return tokens;
 }
 
-function renderModalContent(product, pVariants, colors) {
-  const content=document.getElementById('modal-content');
-  const waText=encodeURIComponent(`Halo, saya tertarik order:\n*${product.nama}*\nHarga: ${formatIDR(product.harga_jual_idr)}${activeColor?'\nWarna: '+activeColor:''}\n\nMohon info ketersediaan 🙏`);
-  const waLink=`https://wa.me/${WA_NUMBER}?text=${waText}`;
+function renderSentences(){
+  const container=document.getElementById('sentence-list');
+  const hideDone=document.getElementById('sentence-hide-done').checked;
+  const knownOnly=document.getElementById('sentence-known-only').checked;
 
-  const colorHTML=colors.length?`
-    <div class="size-section">
-      <div class="size-title">Pilih Warna</div>
-      <div class="color-filter">
-        ${colors.map(c=>`<button class="color-chip ${c===activeColor?'active':''}" data-color="${c}">${c}</button>`).join('')}
+  if(db.sentences.length===0){
+    container.innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No sentences. Import database.</p>';
+    return;
+  }
+
+  container.innerHTML=db.sentences.map((s,idx)=>{
+    const isCompleted=s.completed==1;
+    const tokens=tokenize(s.sentence_text);
+
+    // Filter known-only: sembunyikan kalimat yang ada token merah (bukan punct)
+    const hasNew=tokens.some(t=>t.source!=='core'&&t.source!=='punct');
+    if(knownOnly&&hasNew)return '';
+
+    const hideClass=hideDone&&isCompleted?'hidden':'';
+
+    const tokenHTML=tokens.map(t=>{
+      if(t.source==='punct'){
+        return `<span style="font-size:18px">${t.text}</span>`;
+      }
+      let cls='new';
+      if(t.source==='core'){
+        cls=t.item.forgot==1?'forgot':'known';
+      }
+      const charId=t.found?(t.item.id||t.item.hanzi||t.item.word||t.text):t.text;
+      return `<span class="word ${cls}" data-char-id="${charId}" data-text="${t.text}" data-source="${t.source||''}">${t.text}</span>`;
+    }).join('');
+
+    // Hanya tampilkan translation dari TXT (kolom translation)
+    const translation=s.translation||'';
+
+    return `
+      <div class="sentence-item ${hideClass}" data-idx="${idx}" style="position:relative${isCompleted?';background:#f0fdf4;border-color:#86efac':''}">
+        <div style="position:absolute;top:8px;right:12px;text-align:right">
+          <div style="font-size:10px;color:var(--gray);margin-bottom:2px">#${s.sentence_id||idx+1}</div>
+          <div style="display:flex;gap:8px">
+            <button data-action="toggle-trans" data-idx="${idx}" style="background:none;border:none;font-size:20px;padding:4px;cursor:pointer;line-height:1" title="Lihat Arti">👁</button>
+            <button data-action="mark-done" data-idx="${idx}" style="background:none;border:none;font-size:20px;padding:4px;cursor:pointer;line-height:1" title="Sudah">${isCompleted?'✅':'✓'}</button>
+          </div>
+        </div>
+        <div class="sentence-text">${tokenHTML}</div>
+        <div class="sentence-translation" id="trans-${idx}">${translation?`<div style="font-size:12px;color:var(--text)">${translation}</div>`:''}</div>
       </div>
-    </div>`:'';
+    `;
+  }).join('');
 
-  const shown=activeColor?pVariants.filter(v=>v.warna===activeColor):pVariants;
-  const hasSize=shown.some(v=>v.ukuran&&v.ukuran!=='-');
-  const hasVariants=pVariants.length>0;
-
-  const sizeHTML=hasVariants?`
-    <div class="size-section">
-      <div class="size-title">Ukuran Tersedia</div>
-      ${shown.length?`
-      <table class="size-table">
-        <thead><tr>
-          ${hasSize?'<th>Ukuran</th>':''}
-          <th>Keterangan</th>
-          <th>Status</th>
-        </tr></thead>
-        <tbody>
-          ${shown.map(v=>`<tr>
-            ${hasSize?`<td><strong>${v.ukuran||'-'}</strong></td>`:''}
-            <td style="color:var(--text2);font-size:12px">${v.keterangan||'-'}</td>
-            <td><span class="badge badge-${String(v.tersedia).toUpperCase()==='TRUE'?'true':'false'}">${String(v.tersedia).toUpperCase()==='TRUE'?'Tersedia':'Habis'}</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>`:'<div style="color:var(--text3);font-size:13px;padding:8px 0">Pilih warna untuk melihat ukuran</div>'}
-    </div>`:'';
-
-  content.innerHTML=`
-    <div class="modal-top-row">
-      <div class="modal-kategori">${product.kategori||''}</div>
-      ${product.merk?`<div class="modal-merk">${product.merk}</div>`:''}
-    </div>
-    <div class="modal-name">${product.nama}</div>
-    <div class="modal-price">${formatIDR(product.harga_jual_idr)}</div>
-    ${colorHTML}${sizeHTML}
-    <a class="modal-order" href="${waLink}" target="_blank" style="display:none">💬 Order via WhatsApp</a>`;
-
-  content.querySelectorAll('.color-chip').forEach(btn=>{
-    btn.onclick=()=>{ activeColor=btn.dataset.color; renderModalContent(product,pVariants,colors); };
-  });
+  // Listener dipasang sekali di setupEvents via handleSentenceClick
 }
 
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  document.body.style.overflow='';
-  requestAnimationFrame(()=>window.scrollTo({top:savedScrollY,behavior:'instant'}));
-}
-
-document.getElementById('modal-close').onclick=closeModal;
-document.getElementById('overlay').onclick=e=>{ if(e.target===document.getElementById('overlay')) closeModal(); };
-
-// ── SORT BUTTONS ─────────────────────────────────────────────────────────────
-document.querySelectorAll('.sort-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    const s=btn.dataset.sort;
-    activeSort=activeSort===s?null:s;
-    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.toggle('active',b.dataset.sort===activeSort));
-    renderGrid();
-  };
-});
-
-// ── ZOOM ─────────────────────────────────────────────────────────────────────
-function openZoom(src) {
-  const overlay=document.getElementById('zoom-overlay');
-  const img=document.getElementById('zoom-img');
-  if(!overlay||!img) return;
-  img.src=src;
-  overlay.classList.add('open');
-}
-
-// ── THEME ─────────────────────────────────────────────────────────────────────
-function initTheme() {
-  const btn=document.getElementById('theme-toggle');
-  if(!btn) return;
-  const saved=localStorage.getItem('jfr-theme');
-  // Default light; dark class added for dark mode
-  if(saved==='dark'){document.body.classList.add('dark');btn.textContent='🌙';}
-  else{btn.textContent='☀️';}
-  btn.onclick=()=>{
-    const isDark=document.body.classList.toggle('dark');
-    btn.textContent=isDark?'🌙':'☀️';
-    localStorage.setItem('jfr-theme',isDark?'dark':'light');
-  };
-}
-
-function initZoom() {
-  const closeBtn=document.getElementById('zoom-close');
-  const overlay=document.getElementById('zoom-overlay');
-  if(closeBtn) closeBtn.onclick=()=>overlay.classList.remove('open');
-  if(overlay) overlay.onclick=e=>{ if(e.target===overlay) overlay.classList.remove('open'); };
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-async function init() {
-  try {
-    const [prods, vars, sets] = await Promise.all([
-      fetchSheet('products_public'),
-      fetchSheet('variants'),
-      fetchSheet('settings')
-    ]);
-
-    products = prods.filter(p=>p.id);
-    variants  = vars.filter(v=>v.product_id);
-    sets.forEach(row=>{ if(row.key) settings[row.key]=row.value; });
-
-    // Subtitle
-    const sub=document.getElementById('brand-sub');
-    if(settings.subtitle&&settings.subtitle.trim()){
-      sub.textContent=settings.subtitle;
-      sub.classList.add('visible');
+function handleSentenceClick(e){
+  // Tombol toggle translation
+  const btn=e.target.closest('button[data-action]');
+  if(btn){
+    const action=btn.dataset.action;
+    const idx=parseInt(btn.dataset.idx);
+    if(action==='toggle-trans'){
+      toggleTranslation(idx);
+    }else if(action==='mark-done'){
+      markSentenceDone(idx);
     }
+    return;
+  }
 
-    document.getElementById('loading').style.display='none';
-    initTheme();
-    initZoom();
-    // Set default sort button active
-    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.toggle('active',b.dataset.sort===activeSort));
-    buildFilters();
-    buildFeatured();
-    renderGrid();
-  } catch(err) {
-    document.getElementById('loading').style.display='none';
-    document.getElementById('error-container').innerHTML=`
-      <div class="error-msg">Gagal memuat data. Pastikan Google Sheet sudah di-share "Anyone with link can view".<br><small style="opacity:.7">${err.message}</small></div>`;
-    console.error(err);
+  // Klik word untuk balloon
+  if(e.target.classList.contains('word')){
+    const charId=e.target.dataset.charId;
+    const source=e.target.dataset.source;
+    // Toggle: jika balloon sudah terbuka untuk elemen ini, tutup
+    if(state.activeBalloonEl===e.target){
+      closeBalloon();
+      return;
+    }
+    if(charId)showBalloonSentence(charId,e.target,source);
   }
 }
 
-init();
+function showBalloonSentence(charId,element,source){
+  const text=element.dataset.text||element.textContent.trim();
+
+  let char=db.characters.find(c=>c.id==charId||c.hanzi==text)||
+           db.compounds.find(c=>c.id==charId||c.word==text)||
+           db.newWords.find(w=>w.word==text)||
+           db.dictionary.find(d=>d.hanzi==text);
+
+  // Jika tidak ada data sama sekali
+  if(!char){
+    if(text.length===1&&/[\u4e00-\u9fff]/.test(text)){
+      char={hanzi:text,pinyin:'-',meaning:'Unknown'};
+    }else{
+      return;
+    }
+  }
+
+  document.removeEventListener('click',closeBalloonOutside);
+
+  const showPinyin=document.getElementById('show-pinyin').checked;
+  const showMeaning=document.getElementById('show-meaning').checked;
+
+  const hanzi=char.hanzi||char.word||text;
+  const isForgot=char.forgot==1;
+  const itemId=char.id;
+
+  const balloon=document.getElementById('balloon');
+  balloon.innerHTML=`
+    <div style="font-size:13px;line-height:1.6">
+      <div class="hanzi-title">${hanzi}</div>
+      ${showPinyin&&char.pinyin&&char.pinyin!=='-'?`<div style="font-size:11px;color:var(--gray)">${char.pinyin}</div>`:''}
+      ${showMeaning&&char.meaning?`<div style="font-size:11px">${char.meaning}</div>`:''}
+      ${itemId?`<div onclick="markForgotFromBalloon('${itemId}')" style="text-align:center;margin-top:4px;cursor:pointer;user-select:none">${isForgot?'✓':'❌'}</div>`:''}
+    </div>
+  `;
+
+  // Balloon pakai position:fixed — koordinat viewport murni, tanpa scrollY
+  const rect=element.getBoundingClientRect();
+  const balloonMaxWidth=200;
+  let left=rect.left;
+  let top=rect.bottom+4;
+  if(left+balloonMaxWidth>window.innerWidth) left=window.innerWidth-balloonMaxWidth-10;
+  if(left<10)left=10;
+  balloon.style.left=left+'px';
+  balloon.style.top=top+'px';
+  balloon.classList.add('show');
+  state.activeBalloonEl=element;
+  requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
+}
+
+function markForgotFromBalloon(itemId){
+  let item=db.characters.find(i=>i.id==itemId)||db.compounds.find(i=>i.id==itemId);
+  if(!item)return;
+  item.forgot=item.forgot==1?0:1;
+  item.forgot_count=parseInt(item.forgot_count||0)+(item.forgot==1?1:-1);
+  saveToStorage();
+  updateCounts();
+  // Update warna kata di sentences secara targeted tanpa re-render
+  const hanzi=item.hanzi||item.word||'';
+  document.querySelectorAll(`#sentence-list .word[data-char-id="${itemId}"], #sentence-list .word[data-text="${hanzi}"]`).forEach(span=>{
+    if(span.dataset.source==='core'){
+      span.className='word '+(item.forgot==1?'forgot':'known');
+    }
+  });
+  closeBalloon();
+}
+
+function closeBalloon(){
+  const balloon=document.getElementById('balloon');
+  balloon.classList.remove('show');
+  balloon.style.top='0';
+  balloon.style.left='0';
+  state.activeBalloonEl=null;
+  document.removeEventListener('click',closeBalloonOutside);
+}
+
+function closeBalloonOutside(e){
+  const balloon=document.getElementById('balloon');
+  if(!balloon.contains(e.target))closeBalloon();
+}
+
+function toggleTranslation(idx){
+  document.getElementById(`trans-${idx}`).classList.toggle('show');
+}
+
+function markSentenceDone(idx){
+  db.sentences[idx].completed=db.sentences[idx].completed==1?0:1;
+  saveToStorage();
+  renderSentences();
+}
+
+function resetSentences(){
+  db.sentences.forEach(s=>s.completed=0);
+  saveToStorage();
+  renderSentences();
+}
+
+function renderDatabase(){
+  const tbody=document.getElementById('db-tbody');
+  const search=document.getElementById('db-search').value.toLowerCase();
+  const forgotOnly=document.getElementById('db-filter-forgot').checked;
+  const newOnly=document.getElementById('db-filter-new').checked;
+  const isolatedOnly=document.getElementById('db-filter-isolated').checked;
+  const showListFilter=document.getElementById('db-filter-showlist').value;
+
+  let items;
+  if(showListFilter==='1'){
+    items=[...db.characters,...db.compounds].filter(i=>i.show_in_list==='1');
+  }else if(showListFilter==='0'){
+    items=[...db.characters,...db.compounds].filter(i=>i.show_in_list==='0');
+  }else{
+    items=[...db.characters,...db.compounds];
+  }
+
+  if(state.dbHskFilters.length>0){
+    items=items.filter(i=>state.dbHskFilters.includes(parseInt(i.hsk_level)));
+  }
+  if(state.dbLetterFilters.length>0){
+    items=items.filter(i=>{
+      const base=removeTones(i.pinyin)[0].toLowerCase();
+      return state.dbLetterFilters.includes(base);
+    });
+  }
+  if(search){
+    const searchNorm=removeTones(search);
+    items=items.filter(i=>{
+      const hanzi=(i.hanzi||i.word||'').toLowerCase();
+      const pinyin=(i.pinyin||'').toLowerCase();
+      const pinyinNorm=removeTones(pinyin);
+      const meaning=(i.meaning||'').toLowerCase();
+      return hanzi.includes(search)||pinyin.includes(search)||pinyinNorm.includes(searchNorm)||meaning.includes(search);
+    });
+  }
+  if(forgotOnly) items=items.filter(i=>i.forgot==1);
+  if(newOnly) items=[];
+  if(isolatedOnly){
+    items=items.filter(i=>{
+      const isChar=!!i.hanzi;
+      if(isChar) return !db.compounds.some(c=>c.char_id_1==i.id||c.char_id_2==i.id||c.char_id_3==i.id);
+      else return !(i.related_ids&&i.related_ids.trim());
+    });
+  }
+
+  // Sort: HSK asc, lalu pinyin A→Z
+  items.sort((a,b)=>{
+    const hskDiff=parseInt(a.hsk_level||0)-parseInt(b.hsk_level||0);
+    if(hskDiff!==0)return hskDiff;
+    return removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||''));
+  });
+
+  // New words di paling bawah — hanya tampil saat "Semua" atau newOnly
+  let nwRows='';
+  if(showListFilter==='all'||newOnly){
+    let nwItems=[...db.newWords].sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+    if(forgotOnly) nwItems=nwItems.filter(w=>w.forgot==1);
+    if(search){
+      const searchNorm=removeTones(search);
+      nwItems=nwItems.filter(w=>{
+        const hanzi=(w.word||'').toLowerCase();
+        const pinyin=(w.pinyin||'').toLowerCase();
+        const meaning=(w.meaning||'').toLowerCase();
+        return hanzi.includes(search)||pinyin.includes(search)||removeTones(pinyin).includes(searchNorm)||meaning.includes(search);
+      });
+    }
+    if(state.dbLetterFilters.length>0){
+      nwItems=nwItems.filter(w=>{
+        const base=removeTones(w.pinyin||'')[0]?.toLowerCase();
+        return state.dbLetterFilters.includes(base);
+      });
+    }
+    if(state.dbHskFilters.length>0) nwItems=[];
+    if(nwItems.length>0){
+      const offset=items.length;
+      nwRows=`<tr><td colspan="6" style="background:#f9fafb;font-size:10px;color:var(--gray);text-align:center;padding:6px;border-top:2px dashed var(--border)">New Words</td></tr>`
+        +nwItems.map((w,i)=>{
+          const related=[w.char_id_1,w.char_id_2,w.char_id_3,w.char_id_4].filter(Boolean).map(id=>{
+            const c=db.characters.find(c=>c.id==id);
+            return c?c.hanzi:'';
+          }).filter(Boolean).join(', ');
+          return `<tr style="background:#fffbeb">
+            <td>${offset+i+1}</td>
+            <td>${w.word||''}</td>
+            <td>${w.pinyin||''}</td>
+            <td>${w.meaning||''}</td>
+            <td title="${related}">${related}</td>
+            <td></td>
+          </tr>`;
+        }).join('');
+    }
+  }
+
+  tbody.innerHTML=items.map((i,idx)=>{
+    const related=(i.related_ids||'').split(',').filter(id=>id.trim()).map(id=>{
+      const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
+      return rel?(rel.hanzi||rel.word):'';
+    }).filter(Boolean).join(', ');
+    const antonym=(i.antonym_ids||'').split(',').filter(id=>id.trim()).map(id=>{
+      const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
+      return ant?(ant.hanzi||ant.word):'';
+    }).filter(Boolean).join(', ');
+    return `
+      <tr${i.forgot==1?' style="background:#fef2f2"':''}>
+        <td>${idx+1}</td>
+        <td>${i.hanzi||i.word}</td>
+        <td>${i.pinyin}</td>
+        <td>${i.meaning}</td>
+        <td title="${related}">${related}</td>
+        <td title="${antonym}">${antonym}</td>
+      </tr>
+    `;
+  }).join('')+nwRows;
+}
+
+function removeTones(text){
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+
+function renderNotesList(){
+  const container=document.getElementById('panel-notes');
+  const noteContent=db.notes.length>0?db.notes[0].content:'';
+  const isEditMode=!noteContent||state.notesEditMode;
+
+  if(isEditMode){
+    container.innerHTML=`
+      <textarea id="notes-textarea" style="width:100%;height:300px;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:13px;font-family:monospace;margin-bottom:8px" placeholder="Type hanzi here...">${noteContent}</textarea>
+      <button class="btn btn-primary" id="save-notes-btn">💾 Save & Preview</button>
+    `;
+    document.getElementById('save-notes-btn').addEventListener('click',()=>{
+      saveNotes();
+      state.notesEditMode=false;
+      renderNotesList();
+    });
+  }else{
+    container.innerHTML=`
+      <div id="notes-display" style="border:1px solid var(--border);padding:12px;border-radius:4px;background:#f9fafb;min-height:200px;line-height:2;font-size:14px;margin-bottom:8px"></div>
+      <button class="btn btn-secondary" id="edit-notes-btn">✏️ Edit</button>
+    `;
+    renderNotesWithRuby(noteContent);
+    document.getElementById('edit-notes-btn').addEventListener('click',()=>{
+      state.notesEditMode=true;
+      renderNotesList();
+    });
+  }
+}
+
+function saveNotes(){
+  const content=document.getElementById('notes-textarea').value;
+  if(db.notes.length===0) db.notes.push({title:'My Notes',content});
+  else db.notes[0].content=content;
+  saveToStorage();
+}
+
+function renderNotesWithRuby(content){
+  const display=document.getElementById('notes-display');
+  if(!display)return;
+  const lines=content.split('\n');
+  let html='';
+  lines.forEach(line=>{
+    let lineHTML='';
+    for(let i=0;i<line.length;i++){
+      const char=line[i];
+      if(/[\u4e00-\u9fff]/.test(char)){
+        const item=db.characters.find(c=>c.hanzi===char)||
+                   db.compounds.find(c=>c.word===char)||
+                   db.dictionary.find(d=>d.hanzi===char);
+        if(item&&item.pinyin){
+          lineHTML+=`<ruby>${char}<rt style="font-size:7px">${item.pinyin}</rt></ruby>`;
+        }else{
+          lineHTML+=`<ruby>${char}<rt style="font-size:7px">-</rt></ruby>`;
+        }
+      }else{
+        lineHTML+=char;
+      }
+    }
+    html+=lineHTML+'<br>';
+  });
+  display.innerHTML=html;
+  display.style.fontSize='20px';
+}
+
+function renderForgotList(){
+  const forgot=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1);
+  if(forgot.length===0){
+    document.getElementById('panel-forgot').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No forgot words! 🎉</p>';
+    return;
+  }
+  // Sort pinyin A→Z
+  forgot.sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
+  forgot.forEach(i=>{
+    html+=`<tr><td>${i.hanzi||i.word}</td><td>${i.pinyin}</td><td>${i.meaning}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('panel-forgot').innerHTML=html;
+}
+
+function renderNewList(){
+  if(db.newWords.length===0){
+    document.getElementById('panel-new').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No new words yet.</p>';
+    return;
+  }
+  const sorted=[...db.newWords].sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
+  sorted.forEach(w=>{
+    html+=`<tr><td>${w.word||''}</td><td>${w.pinyin||''}</td><td>${w.meaning||'?'}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('panel-new').innerHTML=html;
+}
+
+function updateCounts(){
+  const forgotCount=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1).length;
+  document.getElementById('forgot-count').textContent=forgotCount;
+  document.getElementById('new-count').textContent=db.newWords.length;
+}
+
+// ========================================
+// IMPORT / EXPORT
+// ========================================
+function importFromPaste(){
+  const text=document.getElementById('import-paste-text').value.trim();
+  if(!text){alert('Textarea kosong.');return;}
+  // Coba ambil nama file dari baris pertama jika ada, atau pakai default
+  const firstLine=text.split('\n')[0];
+  db.filename=firstLine.startsWith('===')?'mandarin-database-paste.txt':firstLine.trim()||'mandarin-database-paste.txt';
+  parseTXT(text);
+  saveToStorage();
+  updateCardFontSize();
+  render();
+  renderSentences();
+  closeModal('import-paste-modal');
+
+  const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+  const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+  const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+  const totalInti=vocabChars+vocabCompounds;
+  const totalSupport=supportChars+supportCompounds;
+  const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+  const totalBaru=db.newWords.length;
+
+  document.getElementById('import-stats').innerHTML=`
+    <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
+    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span>Kata inti</span><strong>${totalInti}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span>Kata pendukung</span><strong style="color:var(--gray)">${totalSupport}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+      <span>Kata baru</span><strong style="color:var(--danger)">${totalBaru}</strong>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:4px 0">
+      <span>Kalimat</span><strong>${db.sentences.length}</strong>
+    </div>
+  `;
+  document.getElementById('import-success-modal').classList.add('show');
+}
+
+function importDB(){
+  const input=document.createElement('input');
+  input.type='file';
+  input.accept='.txt';
+  input.onchange=e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    db.filename=file.name;
+    const reader=new FileReader();
+    reader.onload=event=>{
+      parseTXT(event.target.result);
+      saveToStorage();
+      updateCardFontSize();
+      render();
+      renderSentences();
+      toggleMenu();
+
+      // Hitung statistik
+      const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+      const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+      const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+      const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+      const totalInti=vocabChars+vocabCompounds;
+      const totalSupport=supportChars+supportCompounds;
+      const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+      const totalBaru=db.newWords.length;
+
+      document.getElementById('import-stats').innerHTML=`
+        <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Kata inti</span><strong>${totalInti}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Kata pendukung</span><strong style="color:var(--gray)">${totalSupport}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Kata baru</span><strong style="color:var(--danger)">${totalBaru}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0">
+          <span>Kalimat</span><strong>${db.sentences.length}</strong>
+        </div>
+      `;
+      document.getElementById('import-success-modal').classList.add('show');
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function parseTXT(content){
+  const sections=content.split(/={40,}/);
+  let currentType=null;
+
+  sections.forEach(section=>{
+    const raw=section.trim();
+    if(!raw)return;
+
+    if(raw.includes('=== CHARACTERS ===')){currentType='characters';return}
+    else if(raw.includes('=== COMPOUNDS ===')){currentType='compounds';return}
+    else if(raw.includes('=== SENTENCES ===')){currentType='sentences';return}
+    else if(raw.includes('=== NEW_WORDS ===')){currentType='newwords';return}
+    else if(raw.includes('=== DICTIONARY ===')){currentType='dictionary';return}
+    else if(raw.includes('=== NOTES ===')){currentType='notes';return}
+
+    if(!currentType)return;
+
+    if(currentType==='notes'){
+      const lines=raw.split('\n').filter(l=>l.trim()&&!l.includes('=== NOTES ==='));
+      if(lines.length>0) db.notes=[{title:'My Notes',content:lines.join('\n')}];
+      currentType=null;return;
+    }
+
+    const lines=raw.split('\n').filter(l=>l.trim());
+    if(lines.length<2){currentType=null;return}
+
+    if(currentType==='characters'){
+      db.characters=parseCSV(lines);
+      db.characters.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+    }
+    else if(currentType==='compounds'){
+      db.compounds=parseCSV(lines);
+      db.compounds.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+    }
+    else if(currentType==='sentences'){
+      db.sentences=parseCSV(lines);
+      db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
+    }
+    else if(currentType==='newwords') db.newWords=parseCSV(lines);
+    else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
+
+    currentType=null;
+  });
+}
+
+function parseCSV(lines){
+  if(lines.length===0)return[];
+  const headers=lines[0].split(',').map(h=>h.trim());
+  return lines.slice(1).filter(line=>line.trim()).map(line=>{
+    const values=[];
+    let current='',inQuotes=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(ch==='"'){
+        // Handle escaped quote ""
+        if(inQuotes&&line[i+1]==='"'){current+='"';i++;}
+        else inQuotes=!inQuotes;
+      }else if(ch===','&&!inQuotes){
+        values.push(current);current='';
+      }else{
+        current+=ch;
+      }
+    }
+    values.push(current);
+    const obj={};
+    headers.forEach((h,i)=>{obj[h]=(values[i]||'').trim();});
+    return obj;
+  });
+}
+
+function exportDB(){
+  const txt=generateExportTXT();
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    document.getElementById('export-text').value=txt;
+    document.getElementById('export-modal').classList.add('show');
+  }else{
+    const blob=new Blob([txt],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=db.filename||'mandarin-database.txt';
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);URL.revokeObjectURL(url);
+  }
+  toggleMenu();
+}
+
+function copyExport(){
+  const text=document.getElementById('export-text');
+  text.select();
+  document.execCommand('copy');
+  alert('✓ Copied! Paste in Notepad & save as .txt');
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+}
+
+function editDatabase(type){
+  const data=type==='characters'?db.characters:db.compounds;
+  const headers=type==='characters'
+    ?'id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed'
+    :'id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed';
+  let csv=headers+'\n';
+  data.forEach(item=>{
+    if(type==='characters'){
+      csv+=`${item.id},${item.hanzi},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+    }else{
+      csv+=`${item.id},${item.word},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.char_id_1||''},${item.char_id_2||''},${item.char_id_3||''},${item.char_id_4||''},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+    }
+  });
+  document.getElementById('edit-db-title').textContent=type==='characters'?'Edit Characters':'Edit Compounds';
+  document.getElementById('edit-db-text').value=csv;
+  document.getElementById('edit-db-text').dataset.type=type;
+  document.getElementById('edit-db-modal').classList.add('show');
+  toggleMenu();
+}
+
+function showSaveModal(title,statsHTML){
+  document.getElementById('save-success-title').textContent=title;
+  document.getElementById('save-success-stats').innerHTML=statsHTML;
+  document.getElementById('save-success-modal').classList.add('show');
+}
+
+function saveDBEdit(){
+  const type=document.getElementById('edit-db-text').dataset.type;
+  const text=document.getElementById('edit-db-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    const parsed=parseCSV(lines);
+    if(type==='characters')db.characters=parsed;
+    else db.compounds=parsed;
+    saveToStorage();render();
+    closeModal('edit-db-modal');
+    const label=type==='characters'?'Characters':'Compounds';
+    showSaveModal(`${label} tersimpan`,`<div style="display:flex;justify-content:space-between"><span>Total ${label}</span><strong>${parsed.length}</strong></div>`);
+  }catch(e){alert('Error parsing CSV.');}
+}
+
+function editSentences(){
+  const headers='sentence_id,sentence_text,translation,hsk_level,category,completed';
+  let csv=headers+'\n';
+  db.sentences.forEach(s=>{
+    csv+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+  });
+  document.getElementById('edit-sentences-text').value=csv;
+  document.getElementById('edit-sentences-modal').classList.add('show');
+  toggleMenu();
+}
+
+function saveSentencesEdit(){
+  const text=document.getElementById('edit-sentences-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.sentences=parseCSV(lines);
+    db.sentences.forEach(s=>{if(!s.completed)s.completed=0});
+    saveToStorage();renderSentences();
+    closeModal('edit-sentences-modal');
+    showSaveModal('Sentences tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total kalimat</span><strong>${db.sentences.length}</strong></div>`);
+  }catch(e){alert('Error parsing CSV.');}
+}
+
+function editNewWords(){
+  const headers='id,word,pinyin,meaning,first_seen_sentence,status,user_notes';
+  let csv=headers+'\n';
+  db.newWords.forEach(w=>{
+    csv+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}"\n`;
+  });
+  document.getElementById('edit-newwords-text').value=csv;
+  document.getElementById('edit-newwords-modal').classList.add('show');
+  toggleMenu();
+}
+
+function saveNewWordsEdit(){
+  const text=document.getElementById('edit-newwords-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.newWords=parseCSV(lines);
+    saveToStorage();render();renderSentences();
+    closeModal('edit-newwords-modal');
+    showSaveModal('New Words tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total kata baru</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
+  }catch(e){alert('Error parsing CSV.');}
+}
+
+function editDictionary(){
+  const headers='hanzi,pinyin,meaning';
+  let csv=headers+'\n';
+  db.dictionary.forEach(d=>{
+    csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
+  });
+  document.getElementById('edit-dictionary-text').value=csv;
+  document.getElementById('edit-dictionary-modal').classList.add('show');
+  toggleMenu();
+}
+
+function saveDictionaryEdit(){
+  const text=document.getElementById('edit-dictionary-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.dictionary=parseCSV(lines);
+    saveToStorage();render();renderSentences();
+    closeModal('edit-dictionary-modal');
+    showSaveModal('Dictionary tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total entri</span><strong>${db.dictionary.length}</strong></div>`);
+  }catch(e){alert('Error parsing CSV.');}
+}
+
+// ========================================
+// GITHUB GIST SYNC
+// ========================================
+function openGithubSync(){
+  // Load saved settings
+  const saved=JSON.parse(localStorage.getItem('gh-settings')||'{}');
+  document.getElementById('gh-token').value=saved.token||'';
+  document.getElementById('gh-gist-id').value=saved.gistId||'';
+  document.getElementById('gh-filename').value=saved.filename||'mandarin-database.txt';
+  document.getElementById('gh-status').textContent='';
+  document.getElementById('github-sync-modal').classList.add('show');
+  toggleMenu();
+
+  document.getElementById('gh-save-settings').onclick=saveGhSettings;
+  document.getElementById('gh-pull').onclick=ghPull;
+  document.getElementById('gh-push').onclick=ghPush;
+}
+
+function getGhSettings(){
+  return JSON.parse(localStorage.getItem('gh-settings')||'{}');
+}
+
+function saveGhSettings(){
+  const settings={
+    token:document.getElementById('gh-token').value.trim(),
+    gistId:document.getElementById('gh-gist-id').value.trim(),
+    filename:document.getElementById('gh-filename').value.trim()||'mandarin-database.txt'
+  };
+  localStorage.setItem('gh-settings',JSON.stringify(settings));
+  document.getElementById('gh-status').textContent='✅ Setting tersimpan';
+  document.getElementById('gh-status').style.color='var(--success)';
+}
+
+function ghSetStatus(msg,color='var(--gray)'){
+  const el=document.getElementById('gh-status');
+  el.textContent=msg;
+  el.style.color=color;
+}
+
+async function ghPull(){
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
+  ghSetStatus('⏳ Mengambil data dari Gist...');
+  try{
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      headers:{'Authorization':`token ${s.token}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    const data=await res.json();
+    const filename=s.filename||'mandarin-database.txt';
+    const file=data.files[filename];
+    if(!file)throw new Error(`File "${filename}" tidak ditemukan di Gist`);
+
+    db.filename=filename;
+    parseTXT(file.content);
+    saveToStorage();
+    updateCardFontSize();
+    render();
+    renderSentences();
+    closeModal('github-sync-modal');
+
+    // Tampilkan modal statistik
+    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+    document.getElementById('import-stats').innerHTML=`
+      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata inti</span><strong>${vocabChars+vocabCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata pendukung</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Kata baru</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0">
+        <span>Kalimat</span><strong>${db.sentences.length}</strong>
+      </div>
+    `;
+    document.getElementById('import-success-modal').classList.add('show');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
+}
+
+async function ghPush(){
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
+  ghSetStatus('⏳ Menyimpan ke Gist...');
+  try{
+    // Generate TXT content sama seperti exportDB
+    const txt=generateExportTXT();
+    const filename=s.filename||'mandarin-database.txt';
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      method:'PATCH',
+      headers:{
+        'Authorization':`token ${s.token}`,
+        'Accept':'application/vnd.github.v3+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({files:{[filename]:{content:txt}}})
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    ghSetStatus('✅ Berhasil disimpan ke Gist','var(--success)');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
+}
+
+function generateExportTXT(){
+  let txt='========================================\n=== CHARACTERS ===\n========================================\n';
+  txt+='id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.characters.forEach(c=>{
+    txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== COMPOUNDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.compounds.forEach(c=>{
+    txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== SENTENCES ===\n========================================\n';
+  txt+='sentence_id,sentence_text,translation,hsk_level,category,completed\n';
+  db.sentences.forEach(s=>{
+    txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+  });
+  txt+='\n========================================\n=== NEW_WORDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n';
+  db.newWords.forEach(w=>{
+    txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
+  });
+  if(db.dictionary&&db.dictionary.length>0){
+    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
+    txt+='hanzi,pinyin,meaning\n';
+    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
+  }
+  if(db.notes&&db.notes.length>0&&db.notes[0].content){
+    txt+='\n========================================\n=== NOTES ===\n========================================\n';
+    txt+=db.notes[0].content+'\n';
+  }
+  return txt;
+}
 </script>
-
-<!-- ZOOM OVERLAY -->
-<div class="zoom-overlay" id="zoom-overlay">
-  <div class="zoom-box">
-    <img id="zoom-img" src="" alt="">
-    <button class="zoom-close" id="zoom-close">✕</button>
-  </div>
-</div>
-
 </body>
 </html>
