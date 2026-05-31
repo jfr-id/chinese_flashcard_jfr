@@ -375,7 +375,7 @@ function buildCarousel(imgs) {
   const container=document.getElementById('modal-carousel');
   if(!imgs.length){container.innerHTML='';return;}
 
-  container.innerHTML=`<div class="carousel" style="position:relative">
+  container.innerHTML=`<div class="carousel">
     <div class="carousel-track" id="c-track" style="display:flex;overflow:hidden;width:100%;"></div>
     <button class="carousel-prev" id="c-prev" style="display:none">‹</button>
     <button class="carousel-next" id="c-next" style="display:none">›</button>
