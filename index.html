@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -31,186 +30,186 @@
 }
 
 /* ========================================
-FUNCTIONAL ZONE - Layout structure, don’t touch
-======================================== */
+   FUNCTIONAL ZONE - Layout structure, don't touch
+   ======================================== */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,“Segoe UI”,sans-serif;color:var(–text);background:var(–paper);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.topbar{position:sticky;top:0;z-index:100;background:var(–bg);display:flex;flex-direction:column;align-items:stretch;border-bottom:2px solid var(–border)}
-.header{background:var(–bg);border-bottom:none;padding:8px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;order:1}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--paper);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.topbar{position:sticky;top:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:stretch;border-bottom:2px solid var(--border)}
+.header{background:var(--bg);border-bottom:none;padding:8px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;order:1}
 .header-left{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between}
 .header-title{font-size:16px;font-weight:700;letter-spacing:.02em}
-.header-author{font-size:9px;color:var(–gray);margin-left:3px}
-.menu-btn{background:none;border:none;font-size:24px;padding:4px 8px;color:var(–primary);line-height:1;transition:opacity .15s,transform .15s}
+.header-author{font-size:9px;color:var(--gray);margin-left:3px}
+.menu-btn{background:none;border:none;font-size:24px;padding:4px 8px;color:var(--primary);line-height:1;transition:opacity .15s,transform .15s}
 .menu-btn:active{opacity:.5;transform:scale(.9)}
-.tabs{display:flex;background:var(–bg);border-bottom:none;overflow-x:auto;gap:2px;padding:0 6px;flex:1;order:2;align-items:flex-end}
-.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;color:var(–gray);font-weight:500;border-radius:9px 9px 0 0;transition:color .2s,background .2s,border-color .2s}
-.tab-btn:active{color:var(–primary)}
-.tab-btn.active{border-bottom-color:var(–primary);color:var(–primary);font-weight:700;background:var(–primary-tint)}
+.tabs{display:flex;background:var(--bg);border-bottom:none;overflow-x:auto;gap:2px;padding:0 6px;flex:1;order:2;align-items:flex-end}
+.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;color:var(--gray);font-weight:500;border-radius:9px 9px 0 0;transition:color .2s,background .2s,border-color .2s}
+.tab-btn:active{color:var(--primary)}
+.tab-btn.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:700;background:var(--primary-tint)}
 .tab-content{display:none;padding:12px;min-height:calc(100vh - 60px);padding-bottom:80px}
 .tab-content.active{display:block}
 
 /* ========================================
-POLISHING ZONE - Component styles
-======================================== */
-.filters{background:var(–surface);padding:12px;border-radius:14px;margin-bottom:12px;box-shadow:var(–shadow)}
+   POLISHING ZONE - Component styles
+   ======================================== */
+.filters{background:var(--surface);padding:12px;border-radius:14px;margin-bottom:12px;box-shadow:var(--shadow)}
 .filter-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
 .filter-row:last-child{margin-bottom:0}
 .filter-row::-webkit-scrollbar{display:none}
-.filter-label{font-size:12px;font-weight:700;color:var(–gray);width:45px;flex-shrink:0;position:sticky;left:0;background:var(–surface);z-index:10}
+.filter-label{font-size:12px;font-weight:700;color:var(--gray);width:45px;flex-shrink:0;position:sticky;left:0;background:var(--surface);z-index:10}
 .filter-buttons-scroll{touch-action:pan-x}
 .filter-buttons-scroll::-webkit-scrollbar{display:none}
 .checkbox-scroll::-webkit-scrollbar{display:none}
-.filter-btn{padding:6px 10px;border:1px solid var(–border);background:var(–bg);border-radius:999px;font-size:11px;min-width:36px;text-align:center;color:var(–text);font-weight:500;transition:background .15s,color .15s,border-color .15s,box-shadow .15s}
-.filter-btn[data-value=“all”]{min-width:60px}
-.filter-btn:active{background:var(–primary-tint)}
-.filter-btn.active{background:var(–primary);color:white;border-color:var(–primary);font-weight:600;box-shadow:0 2px 8px rgba(51,87,110,.28)}
+.filter-btn{padding:6px 10px;border:1px solid var(--border);background:var(--bg);border-radius:999px;font-size:11px;min-width:36px;text-align:center;color:var(--text);font-weight:500;transition:background .15s,color .15s,border-color .15s,box-shadow .15s}
+.filter-btn[data-value="all"]{min-width:60px}
+.filter-btn:active{background:var(--primary-tint)}
+.filter-btn.active{background:var(--primary);color:white;border-color:var(--primary);font-weight:600;box-shadow:0 2px 8px rgba(51,87,110,.28)}
 
 /* Warna chip per level HSK (berlaku untuk tab Flashcard & Database) */
-.filter-btn[data-filter-type$=“hsk”][data-value=“1”]{color:#2f8f5b;border-color:rgba(47,143,91,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“1”].active{background:#2f8f5b;border-color:#2f8f5b;color:#fff;box-shadow:0 2px 8px rgba(47,143,91,.32)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“2”]{color:#2f7d9e;border-color:rgba(47,125,158,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“2”].active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.32)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“3”]{color:#5b6cc0;border-color:rgba(91,108,192,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“3”].active{background:#5b6cc0;border-color:#5b6cc0;color:#fff;box-shadow:0 2px 8px rgba(91,108,192,.32)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“4”]{color:#c98a1e;border-color:rgba(201,138,30,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“4”].active{background:#c98a1e;border-color:#c98a1e;color:#fff;box-shadow:0 2px 8px rgba(201,138,30,.32)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“5”]{color:#c0392b;border-color:rgba(192,57,43,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“5”].active{background:#c0392b;border-color:#c0392b;color:#fff;box-shadow:0 2px 8px rgba(192,57,43,.32)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“6”]{color:#8e44ad;border-color:rgba(142,68,173,.45)}
-.filter-btn[data-filter-type$=“hsk”][data-value=“6”].active{background:#8e44ad;border-color:#8e44ad;color:#fff;box-shadow:0 2px 8px rgba(142,68,173,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="1"]{color:#2f8f5b;border-color:rgba(47,143,91,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="1"].active{background:#2f8f5b;border-color:#2f8f5b;color:#fff;box-shadow:0 2px 8px rgba(47,143,91,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="2"]{color:#2f7d9e;border-color:rgba(47,125,158,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="2"].active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="3"]{color:#5b6cc0;border-color:rgba(91,108,192,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="3"].active{background:#5b6cc0;border-color:#5b6cc0;color:#fff;box-shadow:0 2px 8px rgba(91,108,192,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="4"]{color:#c98a1e;border-color:rgba(201,138,30,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="4"].active{background:#c98a1e;border-color:#c98a1e;color:#fff;box-shadow:0 2px 8px rgba(201,138,30,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="5"]{color:#c0392b;border-color:rgba(192,57,43,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="5"].active{background:#c0392b;border-color:#c0392b;color:#fff;box-shadow:0 2px 8px rgba(192,57,43,.32)}
+.filter-btn[data-filter-type$="hsk"][data-value="6"]{color:#8e44ad;border-color:rgba(142,68,173,.45)}
+.filter-btn[data-filter-type$="hsk"][data-value="6"].active{background:#8e44ad;border-color:#8e44ad;color:#fff;box-shadow:0 2px 8px rgba(142,68,173,.32)}
 
-/* Chip huruf A-Z: warna aktif beda dari tombol “Semua” */
-.filter-btn[data-filter-type$=“letter”]:not([data-value=“all”]).active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.3)}
+/* Chip huruf A-Z: warna aktif beda dari tombol "Semua" */
+.filter-btn[data-filter-type$="letter"]:not([data-value="all"]).active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.3)}
 
 /* Dropdown modern */
-#db-filter-showlist,#db-col-showhide{appearance:none;-webkit-appearance:none;flex-shrink:0;font-size:11px;padding:6px 26px 6px 11px;border:1px solid var(–border);border-radius:999px;background-color:var(–bg);color:var(–text);font-weight:500;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath d=‘M1 1l4 4 4-4’ stroke=’%2333576e’ fill=‘none’ stroke-width=‘1.6’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 10px center;transition:border-color .15s,box-shadow .15s}
-#db-filter-showlist:focus,#db-col-showhide:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
+#db-filter-showlist,#db-col-showhide{appearance:none;-webkit-appearance:none;flex-shrink:0;font-size:11px;padding:6px 26px 6px 11px;border:1px solid var(--border);border-radius:999px;background-color:var(--bg);color:var(--text);font-weight:500;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2333576e' fill='none' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border-color .15s,box-shadow .15s}
+#db-filter-showlist:focus,#db-col-showhide:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
 /* Kartu: bingkai luar jadi panggung 3D, gaya kartu pindah ke kedua sisi */
 .card{position:relative;height:140px;border-radius:14px;background:transparent;perspective:1000px;animation:cardIn .22s ease both}
 .card-flip-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
 .card.expanded .card-flip-inner{transform:rotateY(180deg)}
-.card-front,.card-back{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:14px;border:2px solid var(–border);box-shadow:var(–shadow);padding:12px;overflow:hidden;transition:box-shadow .18s,border-color .18s}
-.card-front{display:flex;align-items:center;justify-content:center;font-size:var(–card-font-size,36px);font-weight:500;font-family:var(–hanzi);color:var(–text);background:var(–surface)}
+.card-front,.card-back{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:14px;border:2px solid var(--border);box-shadow:var(--shadow);padding:12px;overflow:hidden;transition:box-shadow .18s,border-color .18s}
+.card-front{display:flex;align-items:center;justify-content:center;font-size:var(--card-font-size,36px);font-weight:500;font-family:var(--hanzi);color:var(--text);background:var(--surface)}
 .card-front .hanzi-char{display:inline-block;margin:0 2px;cursor:pointer;padding:2px;color:#6b6358}
-.card-back{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow-y:auto;color:var(–text);transform:rotateY(180deg);text-align:center;background:linear-gradient(160deg,#eef3f6,#e4ecf0)}
+.card-back{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow-y:auto;color:var(--text);transform:rotateY(180deg);text-align:center;background:linear-gradient(160deg,#eef3f6,#e4ecf0)}
 .card.forgot .card-front{background:linear-gradient(180deg,#fdf8ec,#fdf3df)}
-.card.forgot .card-front,.card.forgot .card-back{border-color:var(–warning)}
-.card:active .card-front,.card:active .card-back{box-shadow:var(–shadow-lift)}
-.card.expanded .card-front,.card.expanded .card-back{box-shadow:var(–shadow-lift);border-color:var(–primary)}
-.cb-head{font-family:var(–hanzi);font-size:21px;font-weight:500;line-height:1.1;color:var(–text)}
-.cb-pin{font-size:11px;color:var(–gray);letter-spacing:.02em}
-.cb-mean{font-size:12px;line-height:1.35;color:var(–text);margin-bottom:2px}
+.card.forgot .card-front,.card.forgot .card-back{border-color:var(--warning)}
+.card:active .card-front,.card:active .card-back{box-shadow:var(--shadow-lift)}
+.card.expanded .card-front,.card.expanded .card-back{box-shadow:var(--shadow-lift);border-color:var(--primary)}
+.cb-head{font-family:var(--hanzi);font-size:21px;font-weight:500;line-height:1.1;color:var(--text)}
+.cb-pin{font-size:11px;color:var(--gray);letter-spacing:.02em}
+.cb-mean{font-size:12px;line-height:1.35;color:var(--text);margin-bottom:2px}
 .cb-chip{font-size:10px;line-height:1.45;padding:6px 9px;border-radius:9px;width:100%;text-align:left}
 .cb-rel{background:rgba(51,87,110,.12);color:#274a5e}
 .cb-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
 
-.forgot-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(–bg);border:1.5px solid var(–border);font-size:13px;display:flex;align-items:center;justify-content:center;z-index:10;color:var(–gray);box-shadow:0 1px 3px rgba(43,39,34,.12);transition:transform .15s,background .15s,color .15s,border-color .15s,box-shadow .2s}
+.forgot-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(--bg);border:1.5px solid var(--border);font-size:13px;display:flex;align-items:center;justify-content:center;z-index:10;color:var(--gray);box-shadow:0 1px 3px rgba(43,39,34,.12);transition:transform .15s,background .15s,color .15s,border-color .15s,box-shadow .2s}
 .forgot-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(201,138,30,.18)}
 .forgot-btn.marked{background:linear-gradient(135deg,#d79a2a,#b9791a);border-color:#b9791a;color:white;box-shadow:0 2px 7px rgba(185,121,26,.45)}
-.components{margin-top:6px;padding-top:6px;border-top:1px solid var(–border)}
-.component{display:inline-block;padding:4px 8px;margin:2px;background:var(–primary-tint);color:var(–primary);border-radius:8px;font-size:10px;font-weight:500}
+.components{margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+.component{display:inline-block;padding:4px 8px;margin:2px;background:var(--primary-tint);color:var(--primary);border-radius:8px;font-size:10px;font-weight:500}
 
-.balloon{position:fixed;background:var(–surface);border:1px solid rgba(51,87,110,.25);border-radius:10px;padding:7px 10px;box-shadow:var(–shadow-lift);z-index:1000;max-width:260px;display:none;width:max-content;opacity:0;transform:translateY(-4px) scale(.97);transition:opacity .16s ease,transform .16s ease}
+.balloon{position:fixed;background:var(--surface);border:1px solid rgba(51,87,110,.25);border-radius:10px;padding:7px 10px;box-shadow:var(--shadow-lift);z-index:1000;max-width:260px;display:none;width:max-content;opacity:0;transform:translateY(-4px) scale(.97);transition:opacity .16s ease,transform .16s ease}
 .balloon.show{display:block;opacity:1;transform:none}
-.balloon::before{content:””;position:absolute;top:-7px;left:var(–arrow-left,18px);width:12px;height:12px;background:var(–surface);border-left:1px solid rgba(51,87,110,.25);border-top:1px solid rgba(51,87,110,.25);transform:rotate(45deg)}
+.balloon::before{content:"";position:absolute;top:-7px;left:var(--arrow-left,18px);width:12px;height:12px;background:var(--surface);border-left:1px solid rgba(51,87,110,.25);border-top:1px solid rgba(51,87,110,.25);transform:rotate(45deg)}
 .balloon .also-in{font-size:11px;line-height:1.6}
-.balloon h3,.balloon .hanzi-title{font-size:16px;font-weight:600;margin-bottom:4px;font-family:var(–hanzi)}
+.balloon h3,.balloon .hanzi-title{font-size:16px;font-weight:600;margin-bottom:4px;font-family:var(--hanzi)}
 .balloon .hanzi-title{display:none}
 
-.back-to-top{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(–grad);color:white;border:none;border-radius:50%;box-shadow:var(–shadow-lift);font-size:20px;cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility .4s ease}
+.back-to-top{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(--grad);color:white;border:none;border-radius:50%;box-shadow:var(--shadow-lift);font-size:20px;cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility .4s ease}
 .back-to-top.show{opacity:0.4;visibility:visible;pointer-events:auto}
 .back-to-top.show:active{opacity:1;transform:translateX(-50%) scale(0.92)}
 
-.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:var(–grad);color:white;border:none;font-size:21px;line-height:1;box-shadow:0 8px 22px rgba(38,67,82,.4);z-index:200;display:flex;align-items:center;justify-content:center;cursor:move;touch-action:none;opacity:.55;transition:opacity .35s ease,transform .15s ease,box-shadow .35s ease}
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--grad);color:white;border:none;font-size:21px;line-height:1;box-shadow:0 8px 22px rgba(38,67,82,.4);z-index:200;display:flex;align-items:center;justify-content:center;cursor:move;touch-action:none;opacity:.55;transition:opacity .35s ease,transform .15s ease,box-shadow .35s ease}
 .fab:active{opacity:1;transform:scale(.9)}
 @media (hover:hover){.fab:hover{opacity:1}.back-to-top.show:hover{opacity:1}}
 
-.slide-panel{position:fixed;top:0;right:-100%;width:85%;max-width:320px;height:100%;background:var(–bg);box-shadow:-8px 0 30px rgba(43,39,34,.18);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+.slide-panel{position:fixed;top:0;right:-100%;width:85%;max-width:320px;height:100%;background:var(--bg);box-shadow:-8px 0 30px rgba(43,39,34,.18);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .slide-panel.open{right:0}
 .panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.45);z-index:250;display:none}
 .panel-overlay.show{display:block}
-.panel-header{padding:0 18px;min-height:56px;background:var(–grad);color:white;display:flex;justify-content:space-between;align-items:center}
+.panel-header{padding:0 18px;min-height:56px;background:var(--grad);color:white;display:flex;justify-content:space-between;align-items:center}
 .panel-header h3{font-weight:600;letter-spacing:.02em;font-size:16px}
 .panel-close{background:none;border:none;color:white;font-size:24px;line-height:1;opacity:.85;transition:opacity .15s}
 .panel-close:active{opacity:1}
-.panel-tabs{display:flex;gap:6px;padding:8px;background:var(–surface);border-bottom:1px solid var(–border)}
-.panel-tab{flex:1;padding:9px 6px;border:none;background:var(–bg);font-size:12px;border-radius:10px;color:var(–gray);font-weight:600;transition:background .18s,color .18s,box-shadow .18s;display:flex;align-items:center;justify-content:center;gap:6px}
-.panel-tab.active{background:var(–primary);color:#fff;box-shadow:0 3px 10px rgba(51,87,110,.3)}
-.count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;font-size:10px;font-weight:700;background:var(–primary-tint);color:var(–primary)}
+.panel-tabs{display:flex;gap:6px;padding:8px;background:var(--surface);border-bottom:1px solid var(--border)}
+.panel-tab{flex:1;padding:9px 6px;border:none;background:var(--bg);font-size:12px;border-radius:10px;color:var(--gray);font-weight:600;transition:background .18s,color .18s,box-shadow .18s;display:flex;align-items:center;justify-content:center;gap:6px}
+.panel-tab.active{background:var(--primary);color:#fff;box-shadow:0 3px 10px rgba(51,87,110,.3)}
+.count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;font-size:10px;font-weight:700;background:var(--primary-tint);color:var(--primary)}
 .panel-tab.active .count-badge{background:rgba(255,255,255,.28);color:#fff}
 .panel-content{flex:1;overflow-y:auto;padding:14px;scrollbar-gutter:stable}
 .panel-content::-webkit-scrollbar{width:6px}
-.panel-content::-webkit-scrollbar-thumb{background:var(–border);border-radius:3px}
-.list-item{padding:10px;border-bottom:1px solid var(–border);font-size:12px;cursor:pointer}
+.panel-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.list-item{padding:10px;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
 
 .menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.45);z-index:400;display:none}
 .menu-overlay.show{display:block}
-.menu-panel{position:fixed;top:0;left:-280px;width:260px;height:100%;background:var(–bg);box-shadow:8px 0 30px rgba(43,39,34,.16);z-index:401;transition:left .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.menu-panel{position:fixed;top:0;left:-280px;width:260px;height:100%;background:var(--bg);box-shadow:8px 0 30px rgba(43,39,34,.16);z-index:401;transition:left .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
 .menu-panel.open{left:0}
-.menu-header{padding:0 18px;min-height:56px;display:flex;align-items:center;justify-content:space-between;background:var(–grad);color:white;font-weight:600;letter-spacing:.02em;font-size:16px;position:sticky;top:0;z-index:2}
+.menu-header{padding:0 18px;min-height:56px;display:flex;align-items:center;justify-content:space-between;background:var(--grad);color:white;font-weight:600;letter-spacing:.02em;font-size:16px;position:sticky;top:0;z-index:2}
 .menu-close{background:none;border:none;color:#fff;font-size:24px;line-height:1;cursor:pointer;opacity:.85;transition:opacity .15s;width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0}
 .menu-close:active{opacity:1}
-.menu-item{padding:14px 18px;border-bottom:1px solid var(–border);font-size:14px;cursor:pointer;transition:background .12s,padding-left .15s}
-.menu-item:active{background:var(–primary-tint);padding-left:22px}
-.menu-divider{border-top:2px solid var(–border);margin:8px 0}
-.db-info-item{position:static;margin-top:auto;padding:14px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom));font-size:11px;color:var(–gray);background:var(–surface);border-top:1px solid var(–border);line-height:1.5}
+.menu-item{padding:14px 18px;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;transition:background .12s,padding-left .15s}
+.menu-item:active{background:var(--primary-tint);padding-left:22px}
+.menu-divider{border-top:2px solid var(--border);margin:8px 0}
+.db-info-item{position:static;margin-top:auto;padding:14px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom));font-size:11px;color:var(--gray);background:var(--surface);border-top:1px solid var(--border);line-height:1.5}
 
 .modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.55);z-index:500;display:none;padding:20px}
 .modal.show{display:block;animation:overlayIn .2s ease}
-.modal-content{background:var(–bg);border-radius:18px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;padding:50px 20px 20px;box-shadow:var(–shadow-lift)}
+.modal-content{background:var(--bg);border-radius:18px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;padding:50px 20px 20px;box-shadow:var(--shadow-lift)}
 .modal.show .modal-content{animation:modalPop .24s cubic-bezier(.2,.7,.2,1)}
-.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:28px;color:var(–gray);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;line-height:1}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:28px;color:var(--gray);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;line-height:1}
 .modal-header{font-size:16px;font-weight:700;margin-bottom:12px}
-.export-text{width:100%;height:200px;font-family:monospace;font-size:10px;padding:10px;border:1px solid var(–border);border-radius:8px;background:var(–surface)}
+.export-text{width:100%;height:200px;font-family:monospace;font-size:10px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
 
 .btn{border:none;border-radius:10px;font-size:13px;font-weight:600;padding:8px 12px;transition:opacity .15s,transform .12s,box-shadow .15s}
 .btn:active{transform:scale(.97);opacity:.92}
-.btn-primary{background:var(–primary);color:white;box-shadow:0 2px 8px rgba(51,87,110,.25)}
-.btn-secondary{background:var(–gray);color:white}
+.btn-primary{background:var(--primary);color:white;box-shadow:0 2px 8px rgba(51,87,110,.25)}
+.btn-secondary{background:var(--gray);color:white}
 
-.search-bar{width:100%;padding:10px;border:1px solid var(–border);border-radius:10px;margin-bottom:12px;font-size:14px;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
-.search-bar:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
-input[type=“checkbox”]{margin-right:4px;accent-color:var(–primary)}
-label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(–text)}
+.search-bar{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:12px;font-size:14px;background:var(--surface);color:var(--text);transition:border-color .15s,box-shadow .15s}
+.search-bar:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+input[type="checkbox"]{margin-right:4px;accent-color:var(--primary)}
+label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(--text)}
 
-.sentence-list{background:var(–surface);border-radius:14px;padding:12px;box-shadow:var(–shadow)}
-.sentence-item{padding:16px;padding-right:70px;margin-bottom:12px;border:1px solid var(–border);border-radius:12px;position:relative;background:var(–bg);transition:border-color .18s,background .18s,box-shadow .18s}
+.sentence-list{background:var(--surface);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.sentence-item{padding:16px;padding-right:70px;margin-bottom:12px;border:1px solid var(--border);border-radius:12px;position:relative;background:var(--bg);transition:border-color .18s,background .18s,box-shadow .18s}
 .sentence-item.hidden{display:none}
-.sentence-text{font-size:18px;line-height:1.8;margin-bottom:0;font-family:var(–hanzi)}
+.sentence-text{font-size:18px;line-height:1.8;margin-bottom:0;font-family:var(--hanzi)}
 .word{display:inline-block;padding:2px 4px;margin:0 2px;border-radius:5px;cursor:pointer;transition:background .12s}
-.word.known{color:var(–text)}
-.word.known:active{background:var(–primary-tint)}
+.word.known{color:var(--text)}
+.word.known:active{background:var(--primary-tint)}
 .word.forgot{background:#fbeecb}
 /* merah = tidak ada di vocab inti (characters/compounds) */
-.word.new{color:var(–danger);font-weight:600}
+.word.new{color:var(--danger);font-weight:600}
 /* dictionary = juga merah, tapi balloon bisa tampil */
-.word.dict{color:var(–danger);font-weight:600}
-.eye-btn,.done-btn{background:var(–surface);border:1.5px solid var(–border);cursor:pointer;line-height:1;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;transition:transform .15s,background .15s,color .15s,filter .15s,border-color .15s,box-shadow .2s}
+.word.dict{color:var(--danger);font-weight:600}
+.eye-btn,.done-btn{background:var(--surface);border:1.5px solid var(--border);cursor:pointer;line-height:1;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;transition:transform .15s,background .15s,color .15s,filter .15s,border-color .15s,box-shadow .2s}
 .eye-btn{filter:grayscale(1);opacity:.55;font-size:14px}
-.eye-btn.active{filter:none;opacity:1;background:var(–primary-tint);border-color:var(–primary)}
+.eye-btn.active{filter:none;opacity:1;background:var(--primary-tint);border-color:var(--primary)}
 .eye-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(51,87,110,.16)}
-.done-btn{color:var(–gray);font-weight:700;font-size:15px}
-.done-btn.is-done{background:var(–success);color:#fff;border-color:var(–success);box-shadow:0 2px 7px rgba(63,143,91,.4)}
+.done-btn{color:var(--gray);font-weight:700;font-size:15px}
+.done-btn.is-done{background:var(--success);color:#fff;border-color:var(--success);box-shadow:0 2px 7px rgba(63,143,91,.4)}
 .done-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(63,143,91,.18)}
-.sentence-translation{font-size:12px;color:var(–gray);display:block;max-height:0;opacity:0;overflow:hidden;margin-top:0;margin-bottom:0;margin-left:-16px;margin-right:-70px;padding:0 16px 0 26px;border-top:0 solid var(–border);background:var(–surface);border-radius:0 0 12px 12px;transition:max-height .3s ease,opacity .25s ease,padding .3s ease,margin .3s ease}
-.sentence-translation.show{max-height:600px;opacity:1;margin-top:6px;margin-bottom:-16px;padding:14px 16px 14px 26px;border-top:1px solid var(–border)}
-.full-translation{margin-top:8px;font-weight:600;color:var(–text);font-size:13px}
+.sentence-translation{font-size:12px;color:var(--gray);display:block;max-height:0;opacity:0;overflow:hidden;margin-top:0;margin-bottom:0;margin-left:-16px;margin-right:-70px;padding:0 16px 0 26px;border-top:0 solid var(--border);background:var(--surface);border-radius:0 0 12px 12px;transition:max-height .3s ease,opacity .25s ease,padding .3s ease,margin .3s ease}
+.sentence-translation.show{max-height:600px;opacity:1;margin-top:6px;margin-bottom:-16px;padding:14px 16px 14px 26px;border-top:1px solid var(--border)}
+.full-translation{margin-top:8px;font-weight:600;color:var(--text);font-size:13px}
 
 /* Database: tampil sebagai daftar bersih, bukan tabel kaku */
-.db-table{width:100%;border-collapse:collapse;background:var(–surface);font-size:11px;border-radius:14px;overflow:hidden;box-shadow:var(–shadow)}
+.db-table{width:100%;border-collapse:collapse;background:var(--surface);font-size:11px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
 .db-table th,.db-table td{padding:11px 8px;border:none;border-bottom:1px solid rgba(230,222,209,.7);text-align:left;vertical-align:middle}
-.db-table th{background:var(–surface);font-weight:600;text-align:center;color:var(–gray);font-size:9px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1.5px solid var(–border)}
+.db-table th{background:var(--surface);font-weight:600;text-align:center;color:var(--gray);font-size:9px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1.5px solid var(--border)}
 .db-table th:nth-child(1),.db-table td:nth-child(1){width:34px;text-align:center}
 .db-table th:nth-child(2),.db-table td:nth-child(2){width:56px}
 .db-table th:nth-child(3),.db-table td:nth-child(3){width:84px}
 .db-table th:nth-child(4),.db-table td:nth-child(4){min-width:100px}
 .db-table th:nth-child(5),.db-table td:nth-child(5){width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .db-table th:nth-child(6),.db-table td:nth-child(6){width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.db-table td:nth-child(1){color:var(–gray);font-size:10px}
-#database-tab .db-table td:nth-child(2){font-family:var(–hanzi);font-size:16px;font-weight:500;color:var(–text);white-space:nowrap}
-#database-tab .db-table td:nth-child(3){color:var(–gray)}
+.db-table td:nth-child(1){color:var(--gray);font-size:10px}
+#database-tab .db-table td:nth-child(2){font-family:var(--hanzi);font-size:16px;font-weight:500;color:var(--text);white-space:nowrap}
+#database-tab .db-table td:nth-child(3){color:var(--gray)}
 #database-tab .db-table td:nth-child(5),#database-tab .db-table td:nth-child(6){white-space:normal;overflow:visible;text-overflow:clip}
 #database-tab .db-table{table-layout:fixed;min-width:566px}
 #database-tab .db-table th:nth-child(1),#database-tab .db-table td:nth-child(1){width:36px}
@@ -221,16 +220,16 @@ label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(–text)}
 #database-tab .db-table th:nth-child(6),#database-tab .db-table td:nth-child(6){width:90px}
 #database-tab .db-table tbody tr:nth-child(even) td{background:rgba(138,128,114,.05)}
 #database-tab .db-table tbody tr.forgot-row td{background:#f7e3df}
-#database-tab .db-table tbody tr.forgot-row td:first-child{box-shadow:inset 3px 0 0 var(–danger)}
-#database-tab .db-table tbody tr:active td{background:var(–primary-tint)}
-.dbchip{display:inline-block;font-family:var(–hanzi);font-size:12px;line-height:1.2;padding:2px 7px;margin:1px 3px 1px 0;border-radius:7px;background:rgba(51,87,110,.10);color:#274a5e}
+#database-tab .db-table tbody tr.forgot-row td:first-child{box-shadow:inset 3px 0 0 var(--danger)}
+#database-tab .db-table tbody tr:active td{background:var(--primary-tint)}
+.dbchip{display:inline-block;font-family:var(--hanzi);font-size:12px;line-height:1.2;padding:2px 7px;margin:1px 3px 1px 0;border-radius:7px;background:rgba(51,87,110,.10);color:#274a5e}
 .dbchip-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
-.nw-divider td{background:var(–primary-tint);color:var(–primary);font-weight:700;text-align:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:9px}
+.nw-divider td{background:var(--primary-tint);color:var(--primary);font-weight:700;text-align:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:9px}
 #database-tab .db-table tbody tr.nw-row td{background:#fdf6e6}
-@media (hover:hover){#database-tab .db-table tbody tr:hover td{background:var(–primary-tint)}}
+@media (hover:hover){#database-tab .db-table tbody tr:hover td{background:var(--primary-tint)}}
 
 /* Toast */
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(12px);background:rgba(43,39,34,.94);color:#fff;font-size:13px;font-weight:500;padding:10px 16px;border-radius:999px;box-shadow:var(–shadow-lift);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80%;text-align:center}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(12px);background:rgba(43,39,34,.94);color:#fff;font-size:13px;font-weight:500;padding:10px 16px;border-radius:999px;box-shadow:var(--shadow-lift);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80%;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ===== Modernisasi tambahan ===== */
@@ -246,44 +245,44 @@ label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(–text)}
 .toast{bottom:calc(88px + env(safe-area-inset-bottom))}
 .tab-content{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 /* Label filter seragam dengan header lain (tanpa perlakuan khusus) */
-/* Tombol “Semua” memakai gaya default (garis lurus) */
+/* Tombol "Semua" memakai gaya default (garis lurus) */
 /* Item menu rata & sorot */
 .menu-item{display:flex;align-items:center;gap:8px}
 /* Scrollbar tipis senada */
 .modal-content::-webkit-scrollbar,.menu-panel::-webkit-scrollbar,.db-scroll::-webkit-scrollbar{width:7px;height:7px}
-.modal-content::-webkit-scrollbar-thumb,.menu-panel::-webkit-scrollbar-thumb,.db-scroll::-webkit-scrollbar-thumb{background:var(–border);border-radius:4px}
+.modal-content::-webkit-scrollbar-thumb,.menu-panel::-webkit-scrollbar-thumb,.db-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 /* Ruby pinyin di Notes */
 #notes-display ruby{margin:0 2px}
-#notes-display rt{font-size:10px;color:var(–gray);font-family:-apple-system,sans-serif;font-weight:500}
+#notes-display rt{font-size:10px;color:var(--gray);font-family:-apple-system,sans-serif;font-weight:500}
 /* Modal: rapikan × sejajar judul, judul wrap bila panjang */
 .modal-content{padding:18px 20px 20px}
 .modal-close{top:16px;right:14px}
 .modal-close+.modal-header{padding-right:40px}
-.modal-textarea{width:100%;font-family:monospace;font-size:11px;padding:10px;border:1px solid var(–border);border-radius:10px;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
-.modal-textarea:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
-.gh-input{width:100%;padding:9px 11px;border:1px solid var(–border);border-radius:10px;font-size:12px;font-family:monospace;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
-.gh-input:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
-.modal-hint{font-size:11px;color:var(–gray);margin:-2px 0 10px;line-height:1.45;overflow-wrap:anywhere;word-break:break-word}
+.modal-textarea{width:100%;font-family:monospace;font-size:11px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);transition:border-color .15s,box-shadow .15s}
+.modal-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.gh-input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:10px;font-size:12px;font-family:monospace;background:var(--surface);color:var(--text);transition:border-color .15s,box-shadow .15s}
+.gh-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.modal-hint{font-size:11px;color:var(--gray);margin:-2px 0 10px;line-height:1.45;overflow-wrap:anywhere;word-break:break-word}
 .mini-btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:transform .12s,opacity .15s}
 .mini-btn:active{transform:scale(.96);opacity:.9}
-.mini-danger{background:rgba(192,57,43,.12);color:var(–danger)}
-.mini-secondary{background:var(–primary-tint);color:var(–primary)}
+.mini-danger{background:rgba(192,57,43,.12);color:var(--danger)}
+.mini-secondary{background:var(--primary-tint);color:var(--primary)}
 #import-stats,#save-success-stats{border-radius:10px}
 /* Notes: pensil melayang + area bersih */
 .notes-wrap{position:relative}
-.notes-edit-fab{position:absolute;top:10px;right:12px;left:auto;z-index:2;width:30px;height:30px;border-radius:50%;background:var(–primary);color:#fff;border:none;font-size:13px;box-shadow:var(–shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+.notes-edit-fab{position:absolute;top:10px;right:12px;left:auto;z-index:2;width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:13px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
 .notes-edit-fab:active{transform:scale(.9)}
-.notes-area{width:100%;height:calc(100dvh - 150px);min-height:240px;padding:12px;border:1px solid var(–border);border-radius:12px;font-size:14px;font-family:var(–hanzi);line-height:1.8;background:var(–surface);color:var(–text);scrollbar-gutter:stable}
-.notes-area:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
-.notes-display{padding:14px;border-radius:12px;background:var(–surface);min-height:200px;line-height:2;font-size:14px;border:1px solid var(–border)}
+.notes-area{width:100%;height:calc(100dvh - 150px);min-height:240px;padding:12px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:var(--hanzi);line-height:1.8;background:var(--surface);color:var(--text);scrollbar-gutter:stable}
+.notes-area:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-tint)}
+.notes-display{padding:14px;border-radius:12px;background:var(--surface);min-height:200px;line-height:2;font-size:14px;border:1px solid var(--border)}
 /* Modal reset list halus */
 .reset-list{list-style:none;padding:0;margin:0 0 10px}
-.reset-list li{position:relative;padding:5px 0 5px 22px;color:var(–text)}
-.reset-list li::before{content:””;position:absolute;left:5px;top:50%;width:7px;height:7px;border-radius:50%;background:var(–danger);transform:translateY(-50%);opacity:.55}
-.reset-keep{margin:0;padding-left:22px;position:relative;color:var(–success);font-weight:600}
-.reset-keep::before{content:”\2713”;position:absolute;left:4px;color:var(–success)}
+.reset-list li{position:relative;padding:5px 0 5px 22px;color:var(--text)}
+.reset-list li::before{content:"";position:absolute;left:5px;top:50%;width:7px;height:7px;border-radius:50%;background:var(--danger);transform:translateY(-50%);opacity:.55}
+.reset-keep{margin:0;padding-left:22px;position:relative;color:var(--success);font-weight:600}
+.reset-keep::before{content:"\2713";position:absolute;left:4px;color:var(--success)}
 /* Header tabel Database mengalir bersama scroll halaman (tanpa sticky) */
-#panel-forgot .db-table td:nth-child(1),#panel-new .db-table td:nth-child(1){text-align:left;font-family:var(–hanzi);font-size:15px;line-height:1.15;white-space:nowrap}
+#panel-forgot .db-table td:nth-child(1),#panel-new .db-table td:nth-child(1){text-align:left;font-family:var(--hanzi);font-size:15px;line-height:1.15;white-space:nowrap}
 #database-tab .db-table.hide-pinyin td:nth-child(3){color:transparent}
 #database-tab .db-table.hide-meaning td:nth-child(4){color:transparent}
 
@@ -293,21 +292,21 @@ label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(–text)}
 .sentence-item.done{background:#eef6f0;border-color:#bcdcc7}
 
 body.dark{
-–primary:#5b90b3;
-–primary-dark:#2c4a5e;
-–primary-tint:#2a3a46;
-–danger:#e0695b;
-–warning:#e0a93f;
-–success:#5bb37e;
-–bg:#1b2127;
-–paper:#13181c;
-–surface:#232a31;
-–text:#e8e3da;
-–border:#3c4650;
-–gray:#a59c8f;
-–grad:linear-gradient(135deg,#2c4a5e 0%,#1d2f3a 100%);
-–shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.5);
-–shadow-lift:0 6px 14px rgba(0,0,0,.55),0 16px 32px rgba(0,0,0,.6);
+  --primary:#5b90b3;
+  --primary-dark:#2c4a5e;
+  --primary-tint:#2a3a46;
+  --danger:#e0695b;
+  --warning:#e0a93f;
+  --success:#5bb37e;
+  --bg:#1b2127;
+  --paper:#13181c;
+  --surface:#232a31;
+  --text:#e8e3da;
+  --border:#3c4650;
+  --gray:#a59c8f;
+  --grad:linear-gradient(135deg,#2c4a5e 0%,#1d2f3a 100%);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.5);
+  --shadow-lift:0 6px 14px rgba(0,0,0,.55),0 16px 32px rgba(0,0,0,.6);
 }
 body.dark .card-front .hanzi-char{color:#a89f90}
 body.dark .card.forgot .card-front{background:linear-gradient(180deg,#2a2416,#241f10)}
@@ -316,22 +315,22 @@ body.dark .cb-rel{background:rgba(91,144,179,.20);color:#c4dcec}
 body.dark .cb-ant{background:rgba(224,169,63,.20);color:#e8cd95}
 body.dark .dbchip{background:rgba(91,144,179,.20);color:#c4dcec}
 body.dark .dbchip-ant{background:rgba(224,169,63,.20);color:#e8cd95}
-body.dark .word.forgot{background:#4a3e20;color:var(–text)}
+body.dark .word.forgot{background:#4a3e20;color:var(--text)}
 body.dark #database-tab .db-table tbody tr.forgot-row td{background:#3a201d}
 body.dark #database-tab .db-table tbody tr.nw-row td{background:#2c2515}
 body.dark #database-tab .db-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.03)}
 body.dark .sentence-item.done{background:#1c2a22;border-color:#2f4a39}
-body.dark #import-stats,body.dark #save-success-stats{background:var(–surface)}
-body.dark .toast{background:rgba(8,10,12,.96);border:1px solid var(–border)}
-body.dark #db-filter-showlist,body.dark #db-col-showhide{background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath d=‘M1 1l4 4 4-4’ stroke=’%23a8c4d6’ fill=‘none’ stroke-width=‘1.6’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”)}
+body.dark #import-stats,body.dark #save-success-stats{background:var(--surface)}
+body.dark .toast{background:rgba(8,10,12,.96);border:1px solid var(--border)}
+body.dark #db-filter-showlist,body.dark #db-col-showhide{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a8c4d6' fill='none' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 body.dark .eye-btn{filter:none;opacity:.85}
-body.dark .db-table th,body.dark .db-table td{border-bottom-color:var(–border)}
+body.dark .db-table th,body.dark .db-table td{border-bottom-color:var(--border)}
 body.dark #panel-forgot .db-table th,body.dark #panel-forgot .db-table td,body.dark #panel-new .db-table th,body.dark #panel-new .db-table td{border-bottom-color:transparent}
 body.dark #panel-forgot .db-table,body.dark #panel-new .db-table{box-shadow:none;background:transparent}
 body.dark #panel-forgot .db-table th,body.dark #panel-new .db-table th{background:transparent}
-body.dark .balloon{border-color:var(–border)}
-body.dark .balloon::before{border-left-color:var(–border);border-top-color:var(–border)}
-body.dark .forgot-btn{background:var(–surface)}
+body.dark .balloon{border-color:var(--border)}
+body.dark .balloon::before{border-left-color:var(--border);border-top-color:var(--border)}
+body.dark .forgot-btn{background:var(--surface)}
 body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,#356b8e)}
 
 @keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -343,8 +342,8 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
 @keyframes overlayIn{from{opacity:0}to{opacity:1}}
 
 @media (prefers-reduced-motion: reduce){
-*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
-.card-flip-inner{transition:none}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .card-flip-inner{transition:none}
 }
 
 </style>
@@ -500,8 +499,7 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
   </div>
 </div>
 
-<button class="fab" id="fab-btn">📝</button>
-
+<button class="fab" id="fab-btn">&#128221;</button>
 <div id="toast" class="toast"></div>
 
 <div class="panel-overlay" id="panel-overlay"></div>
@@ -1746,146 +1744,115 @@ function renderNotesList(){
       <div class="notes-wrap">
         <button class="notes-edit-fab" id="save-notes-btn" title="Simpan">💾</button>
         <textarea id="notes-textarea" class="notes-area" placeholder="Type hanzi here...">${noteContent}</textarea>
-
-```
-  </div>
-`;
-document.getElementById('save-notes-btn').addEventListener('click',()=>{
-  saveNotes();
-  state.notesEditMode=false;
-  renderNotesList();
-});
-```
-
-}else{
-container.innerHTML=`<div class="notes-wrap"> <button class="notes-edit-fab" id="edit-notes-btn" title="Edit">✏️</button> <div id="notes-display" class="notes-display"></div> </div>`;
-renderNotesWithRuby(noteContent);
-document.getElementById(‘edit-notes-btn’).addEventListener(‘click’,()=>{
-state.notesEditMode=true;
-renderNotesList();
-});
-}
+      </div>
+    `;
+    document.getElementById('save-notes-btn').addEventListener('click',()=>{
+      saveNotes();
+      state.notesEditMode=false;
+      renderNotesList();
+    });
+  }else{
+    container.innerHTML=`
+      <div class="notes-wrap">
+        <button class="notes-edit-fab" id="edit-notes-btn" title="Edit">✏️</button>
+        <div id="notes-display" class="notes-display"></div>
+      </div>
+    `;
+    renderNotesWithRuby(noteContent);
+    document.getElementById('edit-notes-btn').addEventListener('click',()=>{
+      state.notesEditMode=true;
+      renderNotesList();
+    });
+  }
 }
 
 function saveNotes(){
-const content=document.getElementById(‘notes-textarea’).value;
-if(db.notes.length===0) db.notes.push({title:‘My Notes’,content});
-else db.notes[0].content=content;
-saveToStorage();
+  const content=document.getElementById('notes-textarea').value;
+  if(db.notes.length===0) db.notes.push({title:'My Notes',content});
+  else db.notes[0].content=content;
+  saveToStorage();
 }
 
 function renderNotesWithRuby(content){
-const display=document.getElementById(‘notes-display’);
-if(!display)return;
-const lines=content.split(’\n’);
-let html=’’;
-lines.forEach(line=>{
-let lineHTML=’’;
-for(let i=0;i<line.length;i++){
-const char=line[i];
-if(/[\u4e00-\u9fff]/.test(char)){
-const item=db.characters.find(c=>c.hanzi===char)||
-db.compounds.find(c=>c.word===char)||
-db.dictionary.find(d=>d.hanzi===char);
-if(item&&item.pinyin){
-lineHTML+=`<ruby>${char}<rt>${item.pinyin}</rt></ruby>`;
-}else{
-lineHTML+=`<ruby>${char}<rt>-</rt></ruby>`;
-}
-}else{
-lineHTML+=char;
-}
-}
-html+=lineHTML+’<br>’;
-});
-display.innerHTML=html;
-display.style.fontSize=‘20px’;
+  const display=document.getElementById('notes-display');
+  if(!display)return;
+  const lines=content.split('\n');
+  let html='';
+  lines.forEach(line=>{
+    let lineHTML='';
+    for(let i=0;i<line.length;i++){
+      const char=line[i];
+      if(/[\u4e00-\u9fff]/.test(char)){
+        const item=db.characters.find(c=>c.hanzi===char)||
+                   db.compounds.find(c=>c.word===char)||
+                   db.dictionary.find(d=>d.hanzi===char);
+        if(item&&item.pinyin){
+          lineHTML+=`<ruby>${char}<rt>${item.pinyin}</rt></ruby>`;
+        }else{
+          lineHTML+=`<ruby>${char}<rt>-</rt></ruby>`;
+        }
+      }else{
+        lineHTML+=char;
+      }
+    }
+    html+=lineHTML+'<br>';
+  });
+  display.innerHTML=html;
+  display.style.fontSize='20px';
 }
 
 function renderForgotList(){
-const forgot=[…db.characters,…db.compounds,…db.newWords].filter(i=>i.forgot==1);
-if(forgot.length===0){
-document.getElementById(‘panel-forgot’).innerHTML=’<p style="text-align:center;color:var(--gray);padding:20px">No forgot words! 🎉</p>’;
-return;
-}
-// Sort pinyin A→Z
-forgot.sort((a,b)=>removeTones(a.pinyin||’’).localeCompare(removeTones(b.pinyin||’’)));
-let html=’<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>’;
-forgot.forEach(i=>{
-html+=`<tr><td>${i.hanzi||i.word}</td><td>${i.pinyin}</td><td>${i.meaning}</td></tr>`;
-});
-html+=’</tbody></table>’;
-document.getElementById(‘panel-forgot’).innerHTML=html;
+  const forgot=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1);
+  if(forgot.length===0){
+    document.getElementById('panel-forgot').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No forgot words! 🎉</p>';
+    return;
+  }
+  // Sort pinyin A→Z
+  forgot.sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
+  forgot.forEach(i=>{
+    html+=`<tr><td>${i.hanzi||i.word}</td><td>${i.pinyin}</td><td>${i.meaning}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('panel-forgot').innerHTML=html;
 }
 
 function renderNewList(){
-if(db.newWords.length===0){
-document.getElementById(‘panel-new’).innerHTML=’<p style="text-align:center;color:var(--gray);padding:20px">No new words yet.</p>’;
-return;
-}
-const sorted=[…db.newWords].sort((a,b)=>removeTones(a.pinyin||’’).localeCompare(removeTones(b.pinyin||’’)));
-let html=’<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>’;
-sorted.forEach(w=>{
-html+=`<tr><td>${w.word||''}</td><td>${w.pinyin||''}</td><td>${w.meaning||'?'}</td></tr>`;
-});
-html+=’</tbody></table>’;
-document.getElementById(‘panel-new’).innerHTML=html;
+  if(db.newWords.length===0){
+    document.getElementById('panel-new').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No new words yet.</p>';
+    return;
+  }
+  const sorted=[...db.newWords].sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
+  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
+  sorted.forEach(w=>{
+    html+=`<tr><td>${w.word||''}</td><td>${w.pinyin||''}</td><td>${w.meaning||'?'}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('panel-new').innerHTML=html;
 }
 
 function updateCounts(){
-const forgotCount=[…db.characters,…db.compounds,…db.newWords].filter(i=>i.forgot==1).length;
-document.getElementById(‘forgot-count’).textContent=forgotCount;
-document.getElementById(‘new-count’).textContent=db.newWords.length;
+  const forgotCount=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1).length;
+  document.getElementById('forgot-count').textContent=forgotCount;
+  document.getElementById('new-count').textContent=db.newWords.length;
 }
 
 // ========================================
 // IMPORT / EXPORT
 // ========================================
 function importFromPaste(){
-const text=document.getElementById(‘import-paste-text’).value.trim();
-if(!text){toast(‘Textarea is empty.’);return;}
-// Coba ambil nama file dari baris pertama jika ada, atau pakai default
-const firstLine=text.split(’\n’)[0];
-db.filename=firstLine.startsWith(’===’)?‘mandarin-database-paste.txt’:firstLine.trim()||‘mandarin-database-paste.txt’;
-parseTXT(text);
-saveToStorage();
-updateCardFontSize();
-render();
-renderSentences();
-closeModal(‘import-paste-modal’);
+  const text=document.getElementById('import-paste-text').value.trim();
+  if(!text){toast('Textarea is empty.');return;}
+  // Coba ambil nama file dari baris pertama jika ada, atau pakai default
+  const firstLine=text.split('\n')[0];
+  db.filename=firstLine.startsWith('===')?'mandarin-database-paste.txt':firstLine.trim()||'mandarin-database-paste.txt';
+  parseTXT(text);
+  saveToStorage();
+  updateCardFontSize();
+  render();
+  renderSentences();
+  closeModal('import-paste-modal');
 
-const vocabChars=db.characters.filter(c=>c.show_in_list===‘1’).length;
-const vocabCompounds=db.compounds.filter(c=>c.show_in_list===‘1’).length;
-const supportChars=db.characters.filter(c=>c.show_in_list===‘0’).length;
-const supportCompounds=db.compounds.filter(c=>c.show_in_list===‘0’).length;
-const totalInti=vocabChars+vocabCompounds;
-const totalSupport=supportChars+supportCompounds;
-const totalLupa=[…db.characters,…db.compounds].filter(i=>i.forgot==1).length;
-const totalBaru=db.newWords.length;
-
-document.getElementById(‘import-stats’).innerHTML=`<div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Core words</span><strong>${totalInti}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0"> <span>Sentences</span><strong>${db.sentences.length}</strong> </div>`;
-document.getElementById(‘import-success-modal’).classList.add(‘show’);
-}
-
-function importDB(){
-const input=document.createElement(‘input’);
-input.type=‘file’;
-input.accept=’.txt’;
-input.onchange=e=>{
-const file=e.target.files[0];
-if(!file)return;
-db.filename=file.name;
-const reader=new FileReader();
-reader.onload=event=>{
-parseTXT(event.target.result);
-saveToStorage();
-updateCardFontSize();
-render();
-renderSentences();
-toggleMenu();
-
-```
-  // Hitung statistik
   const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
   const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
   const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
@@ -1914,408 +1881,447 @@ toggleMenu();
     </div>
   `;
   document.getElementById('import-success-modal').classList.add('show');
-};
-reader.readAsText(file);
-```
+}
 
-};
-input.click();
+function importDB(){
+  const input=document.createElement('input');
+  input.type='file';
+  input.accept='.txt';
+  input.onchange=e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    db.filename=file.name;
+    const reader=new FileReader();
+    reader.onload=event=>{
+      parseTXT(event.target.result);
+      saveToStorage();
+      updateCardFontSize();
+      render();
+      renderSentences();
+      toggleMenu();
+
+      // Hitung statistik
+      const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+      const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+      const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+      const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+      const totalInti=vocabChars+vocabCompounds;
+      const totalSupport=supportChars+supportCompounds;
+      const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+      const totalBaru=db.newWords.length;
+
+      document.getElementById('import-stats').innerHTML=`
+        <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Core words</span><strong>${totalInti}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+          <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0">
+          <span>Sentences</span><strong>${db.sentences.length}</strong>
+        </div>
+      `;
+      document.getElementById('import-success-modal').classList.add('show');
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 
 function parseTXT(content){
-const sections=content.split(/={40,}/);
-let currentType=null;
+  const sections=content.split(/={40,}/);
+  let currentType=null;
 
-sections.forEach(section=>{
-const raw=section.trim();
-if(!raw)return;
+  sections.forEach(section=>{
+    const raw=section.trim();
+    if(!raw)return;
 
-```
-if(raw.includes('=== CHARACTERS ===')){currentType='characters';return}
-else if(raw.includes('=== COMPOUNDS ===')){currentType='compounds';return}
-else if(raw.includes('=== SENTENCES ===')){currentType='sentences';return}
-else if(raw.includes('=== NEW_WORDS ===')){currentType='newwords';return}
-else if(raw.includes('=== DICTIONARY ===')){currentType='dictionary';return}
-else if(raw.includes('=== NOTES ===')){currentType='notes';return}
+    if(raw.includes('=== CHARACTERS ===')){currentType='characters';return}
+    else if(raw.includes('=== COMPOUNDS ===')){currentType='compounds';return}
+    else if(raw.includes('=== SENTENCES ===')){currentType='sentences';return}
+    else if(raw.includes('=== NEW_WORDS ===')){currentType='newwords';return}
+    else if(raw.includes('=== DICTIONARY ===')){currentType='dictionary';return}
+    else if(raw.includes('=== NOTES ===')){currentType='notes';return}
 
-if(!currentType)return;
+    if(!currentType)return;
 
-if(currentType==='notes'){
-  const lines=raw.split('\n').filter(l=>l.trim()&&!l.includes('=== NOTES ==='));
-  if(lines.length>0) db.notes=[{title:'My Notes',content:lines.join('\n')}];
-  currentType=null;return;
-}
+    if(currentType==='notes'){
+      const lines=raw.split('\n').filter(l=>l.trim()&&!l.includes('=== NOTES ==='));
+      if(lines.length>0) db.notes=[{title:'My Notes',content:lines.join('\n')}];
+      currentType=null;return;
+    }
 
-const lines=raw.split('\n').filter(l=>l.trim());
-if(lines.length<2){currentType=null;return}
+    const lines=raw.split('\n').filter(l=>l.trim());
+    if(lines.length<2){currentType=null;return}
 
-if(currentType==='characters'){
-  db.characters=parseCSV(lines);
-  db.characters.forEach(c=>{
-    c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+    if(currentType==='characters'){
+      db.characters=parseCSV(lines);
+      db.characters.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+    }
+    else if(currentType==='compounds'){
+      db.compounds=parseCSV(lines);
+      db.compounds.forEach(c=>{
+        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+      });
+    }
+    else if(currentType==='sentences'){
+      db.sentences=parseCSV(lines);
+      db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
+    }
+    else if(currentType==='newwords') db.newWords=parseCSV(lines);
+    else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
+
+    currentType=null;
   });
-}
-else if(currentType==='compounds'){
-  db.compounds=parseCSV(lines);
-  db.compounds.forEach(c=>{
-    c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
-  });
-}
-else if(currentType==='sentences'){
-  db.sentences=parseCSV(lines);
-  db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
-}
-else if(currentType==='newwords') db.newWords=parseCSV(lines);
-else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
-
-currentType=null;
-```
-
-});
 }
 
 function parseCSV(lines){
-if(lines.length===0)return[];
-const headers=lines[0].split(’,’).map(h=>h.trim());
-return lines.slice(1).filter(line=>line.trim()).map(line=>{
-const values=[];
-let current=’’,inQuotes=false;
-for(let i=0;i<line.length;i++){
-const ch=line[i];
-if(ch===’”’){
-// Handle escaped quote “”
-if(inQuotes&&line[i+1]===’”’){current+=’”’;i++;}
-else inQuotes=!inQuotes;
-}else if(ch===’,’&&!inQuotes){
-values.push(current);current=’’;
-}else{
-current+=ch;
-}
-}
-values.push(current);
-const obj={};
-headers.forEach((h,i)=>{obj[h]=(values[i]||’’).trim();});
-return obj;
-});
+  if(lines.length===0)return[];
+  const headers=lines[0].split(',').map(h=>h.trim());
+  return lines.slice(1).filter(line=>line.trim()).map(line=>{
+    const values=[];
+    let current='',inQuotes=false;
+    for(let i=0;i<line.length;i++){
+      const ch=line[i];
+      if(ch==='"'){
+        // Handle escaped quote ""
+        if(inQuotes&&line[i+1]==='"'){current+='"';i++;}
+        else inQuotes=!inQuotes;
+      }else if(ch===','&&!inQuotes){
+        values.push(current);current='';
+      }else{
+        current+=ch;
+      }
+    }
+    values.push(current);
+    const obj={};
+    headers.forEach((h,i)=>{obj[h]=(values[i]||'').trim();});
+    return obj;
+  });
 }
 
 function exportDB(){
-const txt=generateExportTXT();
-const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-if(isIOS){
-document.getElementById(‘export-text’).value=txt;
-document.getElementById(‘export-modal’).classList.add(‘show’);
-}else{
-const blob=new Blob([txt],{type:‘text/plain’});
-const url=URL.createObjectURL(blob);
-const a=document.createElement(‘a’);
-a.href=url;a.download=db.filename||‘mandarin-database.txt’;
-document.body.appendChild(a);a.click();
-document.body.removeChild(a);URL.revokeObjectURL(url);
-}
-toggleMenu();
+  const txt=generateExportTXT();
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    document.getElementById('export-text').value=txt;
+    document.getElementById('export-modal').classList.add('show');
+  }else{
+    const blob=new Blob([txt],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=db.filename||'mandarin-database.txt';
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);URL.revokeObjectURL(url);
+  }
+  toggleMenu();
 }
 
 function copyExport(){
-const text=document.getElementById(‘export-text’);
-text.select();
-document.execCommand(‘copy’);
-toast(‘Copied. Paste into Notepad and save as .txt’);
+  const text=document.getElementById('export-text');
+  text.select();
+  document.execCommand('copy');
+  toast('Copied. Paste into Notepad and save as .txt');
 }
 
 function closeModal(id){
-document.getElementById(id).classList.remove(‘show’);
+  document.getElementById(id).classList.remove('show');
 }
 
 function editDatabase(type){
-const data=type===‘characters’?db.characters:db.compounds;
-const headers=type===‘characters’
-?‘id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed’
-:‘id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed’;
-let csv=headers+’\n’;
-data.forEach(item=>{
-if(type===‘characters’){
-csv+=`${item.id},${item.hanzi},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
-}else{
-csv+=`${item.id},${item.word},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.char_id_1||''},${item.char_id_2||''},${item.char_id_3||''},${item.char_id_4||''},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
-}
-});
-document.getElementById(‘edit-db-title’).textContent=type===‘characters’?‘Edit characters’:‘Edit compounds’;
-document.getElementById(‘edit-db-hint’).textContent=’Format: ’+headers;
-document.getElementById(‘edit-db-text’).value=csv;
-document.getElementById(‘edit-db-text’).dataset.type=type;
-document.getElementById(‘edit-db-modal’).classList.add(‘show’);
-toggleMenu();
+  const data=type==='characters'?db.characters:db.compounds;
+  const headers=type==='characters'
+    ?'id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed'
+    :'id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed';
+  let csv=headers+'\n';
+  data.forEach(item=>{
+    if(type==='characters'){
+      csv+=`${item.id},${item.hanzi},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+    }else{
+      csv+=`${item.id},${item.word},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.char_id_1||''},${item.char_id_2||''},${item.char_id_3||''},${item.char_id_4||''},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+    }
+  });
+  document.getElementById('edit-db-title').textContent=type==='characters'?'Edit characters':'Edit compounds';
+  document.getElementById('edit-db-hint').textContent='Format: '+headers;
+  document.getElementById('edit-db-text').value=csv;
+  document.getElementById('edit-db-text').dataset.type=type;
+  document.getElementById('edit-db-modal').classList.add('show');
+  toggleMenu();
 }
 
 function showSaveModal(title,statsHTML){
-document.getElementById(‘save-success-title’).textContent=title;
-document.getElementById(‘save-success-stats’).innerHTML=statsHTML;
-document.getElementById(‘save-success-modal’).classList.add(‘show’);
+  document.getElementById('save-success-title').textContent=title;
+  document.getElementById('save-success-stats').innerHTML=statsHTML;
+  document.getElementById('save-success-modal').classList.add('show');
 }
 
 function saveDBEdit(){
-const type=document.getElementById(‘edit-db-text’).dataset.type;
-const text=document.getElementById(‘edit-db-text’).value;
-const lines=text.trim().split(’\n’);
-try{
-const parsed=parseCSV(lines);
-if(type===‘characters’)db.characters=parsed;
-else db.compounds=parsed;
-saveToStorage();render();
-closeModal(‘edit-db-modal’);
-const label=type===‘characters’?‘Characters’:‘Compounds’;
-showSaveModal(`${label} saved`,`<div style="display:flex;justify-content:space-between"><span>Total ${label}</span><strong>${parsed.length}</strong></div>`);
-}catch(e){toast(‘Failed to parse CSV.’);}
+  const type=document.getElementById('edit-db-text').dataset.type;
+  const text=document.getElementById('edit-db-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    const parsed=parseCSV(lines);
+    if(type==='characters')db.characters=parsed;
+    else db.compounds=parsed;
+    saveToStorage();render();
+    closeModal('edit-db-modal');
+    const label=type==='characters'?'Characters':'Compounds';
+    showSaveModal(`${label} saved`,`<div style="display:flex;justify-content:space-between"><span>Total ${label}</span><strong>${parsed.length}</strong></div>`);
+  }catch(e){toast('Failed to parse CSV.');}
 }
 
 function editSentences(){
-const headers=‘sentence_id,sentence_text,translation,hsk_level,category,completed’;
-let csv=headers+’\n’;
-db.sentences.forEach(s=>{
-csv+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
-});
-document.getElementById(‘edit-sentences-text’).value=csv;
-document.getElementById(‘edit-sentences-modal’).classList.add(‘show’);
-toggleMenu();
+  const headers='sentence_id,sentence_text,translation,hsk_level,category,completed';
+  let csv=headers+'\n';
+  db.sentences.forEach(s=>{
+    csv+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+  });
+  document.getElementById('edit-sentences-text').value=csv;
+  document.getElementById('edit-sentences-modal').classList.add('show');
+  toggleMenu();
 }
 
 function saveSentencesEdit(){
-const text=document.getElementById(‘edit-sentences-text’).value;
-const lines=text.trim().split(’\n’);
-try{
-db.sentences=parseCSV(lines);
-db.sentences.forEach(s=>{if(!s.completed)s.completed=0});
-saveToStorage();renderSentences();
-closeModal(‘edit-sentences-modal’);
-showSaveModal(‘Sentences saved’,`<div style="display:flex;justify-content:space-between"><span>Total sentences</span><strong>${db.sentences.length}</strong></div>`);
-}catch(e){toast(‘Failed to parse CSV.’);}
+  const text=document.getElementById('edit-sentences-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.sentences=parseCSV(lines);
+    db.sentences.forEach(s=>{if(!s.completed)s.completed=0});
+    saveToStorage();renderSentences();
+    closeModal('edit-sentences-modal');
+    showSaveModal('Sentences saved',`<div style="display:flex;justify-content:space-between"><span>Total sentences</span><strong>${db.sentences.length}</strong></div>`);
+  }catch(e){toast('Failed to parse CSV.');}
 }
 
 function editNewWords(){
-const headers=‘id,word,pinyin,meaning,first_seen_sentence,status,user_notes’;
-let csv=headers+’\n’;
-db.newWords.forEach(w=>{
-csv+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}"\n`;
-});
-document.getElementById(‘edit-newwords-text’).value=csv;
-document.getElementById(‘edit-newwords-modal’).classList.add(‘show’);
-toggleMenu();
+  const headers='id,word,pinyin,meaning,first_seen_sentence,status,user_notes';
+  let csv=headers+'\n';
+  db.newWords.forEach(w=>{
+    csv+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}"\n`;
+  });
+  document.getElementById('edit-newwords-text').value=csv;
+  document.getElementById('edit-newwords-modal').classList.add('show');
+  toggleMenu();
 }
 
 function saveNewWordsEdit(){
-const text=document.getElementById(‘edit-newwords-text’).value;
-const lines=text.trim().split(’\n’);
-try{
-db.newWords=parseCSV(lines);
-saveToStorage();render();renderSentences();
-closeModal(‘edit-newwords-modal’);
-showSaveModal(‘New Words saved’,`<div style="display:flex;justify-content:space-between"><span>Total new words</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
-}catch(e){toast(‘Failed to parse CSV.’);}
+  const text=document.getElementById('edit-newwords-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.newWords=parseCSV(lines);
+    saveToStorage();render();renderSentences();
+    closeModal('edit-newwords-modal');
+    showSaveModal('New Words saved',`<div style="display:flex;justify-content:space-between"><span>Total new words</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
+  }catch(e){toast('Failed to parse CSV.');}
 }
 
 function editDictionary(){
-const headers=‘hanzi,pinyin,meaning’;
-let csv=headers+’\n’;
-db.dictionary.forEach(d=>{
-csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
-});
-document.getElementById(‘edit-dictionary-text’).value=csv;
-document.getElementById(‘edit-dictionary-modal’).classList.add(‘show’);
-toggleMenu();
+  const headers='hanzi,pinyin,meaning';
+  let csv=headers+'\n';
+  db.dictionary.forEach(d=>{
+    csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
+  });
+  document.getElementById('edit-dictionary-text').value=csv;
+  document.getElementById('edit-dictionary-modal').classList.add('show');
+  toggleMenu();
 }
 
 function saveDictionaryEdit(){
-const text=document.getElementById(‘edit-dictionary-text’).value;
-const lines=text.trim().split(’\n’);
-try{
-db.dictionary=parseCSV(lines);
-saveToStorage();render();renderSentences();
-closeModal(‘edit-dictionary-modal’);
-showSaveModal(‘Dictionary saved’,`<div style="display:flex;justify-content:space-between"><span>Total entries</span><strong>${db.dictionary.length}</strong></div>`);
-}catch(e){toast(‘Failed to parse CSV.’);}
+  const text=document.getElementById('edit-dictionary-text').value;
+  const lines=text.trim().split('\n');
+  try{
+    db.dictionary=parseCSV(lines);
+    saveToStorage();render();renderSentences();
+    closeModal('edit-dictionary-modal');
+    showSaveModal('Dictionary saved',`<div style="display:flex;justify-content:space-between"><span>Total entries</span><strong>${db.dictionary.length}</strong></div>`);
+  }catch(e){toast('Failed to parse CSV.');}
 }
 
 // ========================================
 // AUTO-PUSH (forgot/done only)
 // ========================================
 async function autoPush(){
-const s=getGhSettings();
-if(!s.token||!s.gistId)return;
-try{
-const txt=generateExportTXT();
-const filename=s.filename||‘mandarin-database.txt’;
-const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
-method:‘PATCH’,
-headers:{
-‘Authorization’:`token ${s.token}`,
-‘Accept’:‘application/vnd.github.v3+json’,
-‘Content-Type’:‘application/json’
-},
-body:JSON.stringify({files:{[filename]:{content:txt}}})
-});
-if(res.ok){
-const now=new Date().toLocaleString(‘id-ID’,{dateStyle:‘short’,timeStyle:‘short’});
-localStorage.setItem(‘gh-last-sync’,now);
-updateDBInfo();
-}
-}catch(e){}
+  const s=getGhSettings();
+  if(!s.token||!s.gistId)return;
+  try{
+    const txt=generateExportTXT();
+    const filename=s.filename||'mandarin-database.txt';
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      method:'PATCH',
+      headers:{
+        'Authorization':`token ${s.token}`,
+        'Accept':'application/vnd.github.v3+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({files:{[filename]:{content:txt}}})
+    });
+    if(res.ok){
+      const now=new Date().toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'});
+      localStorage.setItem('gh-last-sync',now);
+      updateDBInfo();
+    }
+  }catch(e){}
 }
 
 // ========================================
 // GITHUB GIST SYNC
 // ========================================
 function openGithubSync(){
-// Load saved settings
-const saved=JSON.parse(localStorage.getItem(‘gh-settings’)||’{}’);
-document.getElementById(‘gh-token’).value=saved.token||’’;
-document.getElementById(‘gh-gist-id’).value=saved.gistId||’’;
-document.getElementById(‘gh-filename’).value=saved.filename||‘mandarin-database.txt’;
-document.getElementById(‘gh-status’).textContent=’’;
-document.getElementById(‘github-sync-modal’).classList.add(‘show’);
-toggleMenu();
+  // Load saved settings
+  const saved=JSON.parse(localStorage.getItem('gh-settings')||'{}');
+  document.getElementById('gh-token').value=saved.token||'';
+  document.getElementById('gh-gist-id').value=saved.gistId||'';
+  document.getElementById('gh-filename').value=saved.filename||'mandarin-database.txt';
+  document.getElementById('gh-status').textContent='';
+  document.getElementById('github-sync-modal').classList.add('show');
+  toggleMenu();
 
-document.getElementById(‘gh-save-settings’).onclick=saveGhSettings;
-document.getElementById(‘gh-pull’).onclick=ghPull;
-document.getElementById(‘gh-push’).onclick=ghPush;
+  document.getElementById('gh-save-settings').onclick=saveGhSettings;
+  document.getElementById('gh-pull').onclick=ghPull;
+  document.getElementById('gh-push').onclick=ghPush;
 }
 
 function getGhSettings(){
-return JSON.parse(localStorage.getItem(‘gh-settings’)||’{}’);
+  return JSON.parse(localStorage.getItem('gh-settings')||'{}');
 }
 
 function saveGhSettings(){
-const settings={
-token:document.getElementById(‘gh-token’).value.trim(),
-gistId:document.getElementById(‘gh-gist-id’).value.trim(),
-filename:document.getElementById(‘gh-filename’).value.trim()||‘mandarin-database.txt’
-};
-localStorage.setItem(‘gh-settings’,JSON.stringify(settings));
-document.getElementById(‘gh-status’).textContent=‘✅ Settings saved’;
-document.getElementById(‘gh-status’).style.color=‘var(–success)’;
+  const settings={
+    token:document.getElementById('gh-token').value.trim(),
+    gistId:document.getElementById('gh-gist-id').value.trim(),
+    filename:document.getElementById('gh-filename').value.trim()||'mandarin-database.txt'
+  };
+  localStorage.setItem('gh-settings',JSON.stringify(settings));
+  document.getElementById('gh-status').textContent='✅ Settings saved';
+  document.getElementById('gh-status').style.color='var(--success)';
 }
 
-function ghSetStatus(msg,color=‘var(–gray)’){
-const el=document.getElementById(‘gh-status’);
-el.textContent=msg;
-el.style.color=color;
+function ghSetStatus(msg,color='var(--gray)'){
+  const el=document.getElementById('gh-status');
+  el.textContent=msg;
+  el.style.color=color;
 }
 
 async function ghPull(){
-const s=getGhSettings();
-if(!s.token||!s.gistId){ghSetStatus(‘⚠️ Enter token and Gist ID first’,‘var(–warning)’);return;}
-ghSetStatus(‘⏳ Fetching data from Gist…’);
-try{
-const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
-headers:{‘Authorization’:`token ${s.token}`,‘Accept’:‘application/vnd.github.v3+json’}
-});
-if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
-const data=await res.json();
-const filename=s.filename||‘mandarin-database.txt’;
-const file=data.files[filename];
-if(!file)throw new Error(`File "${filename}" not found in Gist`);
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Enter token and Gist ID first','var(--warning)');return;}
+  ghSetStatus('⏳ Fetching data from Gist...');
+  try{
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      headers:{'Authorization':`token ${s.token}`,'Accept':'application/vnd.github.v3+json'}
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    const data=await res.json();
+    const filename=s.filename||'mandarin-database.txt';
+    const file=data.files[filename];
+    if(!file)throw new Error(`File "${filename}" not found in Gist`);
 
-```
-db.filename=filename;
-parseTXT(file.content);
-saveToStorage();
-updateCardFontSize();
-render();
-renderSentences();
-closeModal('github-sync-modal');
+    db.filename=filename;
+    parseTXT(file.content);
+    saveToStorage();
+    updateCardFontSize();
+    render();
+    renderSentences();
+    closeModal('github-sync-modal');
 
-// Tampilkan modal statistik
-const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-document.getElementById('import-stats').innerHTML=`
-  <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
-  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-    <span>Core words</span><strong>${vocabChars+vocabCompounds}</strong>
-  </div>
-  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-    <span>Supporting words</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
-  </div>
-  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-    <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-  </div>
-  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-    <span>New words</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
-  </div>
-  <div style="display:flex;justify-content:space-between;padding:4px 0">
-    <span>Sentences</span><strong>${db.sentences.length}</strong>
-  </div>
-`;
-document.getElementById('import-success-modal').classList.add('show');
-```
-
-}catch(e){
-ghSetStatus(`❌ ${e.message}`,‘var(–danger)’);
-}
+    // Tampilkan modal statistik
+    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+    document.getElementById('import-stats').innerHTML=`
+      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Core words</span><strong>${vocabChars+vocabCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Supporting words</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+        <span>New words</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0">
+        <span>Sentences</span><strong>${db.sentences.length}</strong>
+      </div>
+    `;
+    document.getElementById('import-success-modal').classList.add('show');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
 }
 
 async function ghPush(){
-const s=getGhSettings();
-if(!s.token||!s.gistId){ghSetStatus(‘⚠️ Enter token and Gist ID first’,‘var(–warning)’);return;}
-ghSetStatus(‘⏳ Saving to Gist…’);
-try{
-// Generate TXT content sama seperti exportDB
-const txt=generateExportTXT();
-const filename=s.filename||‘mandarin-database.txt’;
-const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
-method:‘PATCH’,
-headers:{
-‘Authorization’:`token ${s.token}`,
-‘Accept’:‘application/vnd.github.v3+json’,
-‘Content-Type’:‘application/json’
-},
-body:JSON.stringify({files:{[filename]:{content:txt}}})
-});
-if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
-const now=new Date().toLocaleString(‘id-ID’,{dateStyle:‘short’,timeStyle:‘short’});
-localStorage.setItem(‘gh-last-sync’,now);
-updateDBInfo();
-ghSetStatus(‘Saved to Gist’,‘var(–success)’);
-}catch(e){
-ghSetStatus(`❌ ${e.message}`,‘var(–danger)’);
-}
+  const s=getGhSettings();
+  if(!s.token||!s.gistId){ghSetStatus('⚠️ Enter token and Gist ID first','var(--warning)');return;}
+  ghSetStatus('⏳ Saving to Gist...');
+  try{
+    // Generate TXT content sama seperti exportDB
+    const txt=generateExportTXT();
+    const filename=s.filename||'mandarin-database.txt';
+    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+      method:'PATCH',
+      headers:{
+        'Authorization':`token ${s.token}`,
+        'Accept':'application/vnd.github.v3+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({files:{[filename]:{content:txt}}})
+    });
+    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+    const now=new Date().toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'});
+    localStorage.setItem('gh-last-sync',now);
+    updateDBInfo();
+    ghSetStatus('Saved to Gist','var(--success)');
+  }catch(e){
+    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
+  }
 }
 
 function generateExportTXT(){
-let txt=’========================================\n=== CHARACTERS ===\n========================================\n’;
-txt+=‘id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n’;
-db.characters.forEach(c=>{
-txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-});
-txt+=’\n========================================\n=== COMPOUNDS ===\n========================================\n’;
-txt+=‘id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n’;
-db.compounds.forEach(c=>{
-txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-});
-txt+=’\n========================================\n=== SENTENCES ===\n========================================\n’;
-txt+=‘sentence_id,sentence_text,translation,hsk_level,category,completed\n’;
-db.sentences.forEach(s=>{
-txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
-});
-txt+=’\n========================================\n=== NEW_WORDS ===\n========================================\n’;
-txt+=‘id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n’;
-db.newWords.forEach(w=>{
-txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
-});
-if(db.dictionary&&db.dictionary.length>0){
-txt+=’\n========================================\n=== DICTIONARY ===\n========================================\n’;
-txt+=‘hanzi,pinyin,meaning\n’;
-db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
-}
-if(db.notes&&db.notes.length>0&&db.notes[0].content){
-txt+=’\n========================================\n=== NOTES ===\n========================================\n’;
-txt+=db.notes[0].content+’\n’;
-}
-return txt;
+  let txt='========================================\n=== CHARACTERS ===\n========================================\n';
+  txt+='id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.characters.forEach(c=>{
+    txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== COMPOUNDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
+  db.compounds.forEach(c=>{
+    txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+  });
+  txt+='\n========================================\n=== SENTENCES ===\n========================================\n';
+  txt+='sentence_id,sentence_text,translation,hsk_level,category,completed\n';
+  db.sentences.forEach(s=>{
+    txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+  });
+  txt+='\n========================================\n=== NEW_WORDS ===\n========================================\n';
+  txt+='id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n';
+  db.newWords.forEach(w=>{
+    txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
+  });
+  if(db.dictionary&&db.dictionary.length>0){
+    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
+    txt+='hanzi,pinyin,meaning\n';
+    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
+  }
+  if(db.notes&&db.notes.length>0&&db.notes[0].content){
+    txt+='\n========================================\n=== NOTES ===\n========================================\n';
+    txt+=db.notes[0].content+'\n';
+  }
+  return txt;
 }
 </script>
-
 </body>
 </html>
