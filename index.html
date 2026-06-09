@@ -1,154 +1,360 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mandarin Flashcard - by jfr v6</title>
+<title>Mandarin Flashcard - by jfr v6.1</title>
+<link rel="icon" type="image/png" href="https://jfr-id.github.io/chinese_flashcard_jfr/favicon.png">
+<link rel="apple-touch-icon" href="https://jfr-id.github.io/chinese_flashcard_jfr/favicon.png">
 <style>
 /* ========================================
    POLISHING ZONE - Safe to edit colors, fonts, spacing
    ======================================== */
 :root{
-  --primary:#3b82f6;
-  --danger:#ef4444;
-  --warning:#f59e0b;
-  --success:#10b981;
-  --bg:#fff;
-  --text:#1f2937;
-  --border:#e5e7eb;
-  --gray:#6b7280;
+  --primary:#33576e;
+  --primary-dark:#264352;
+  --primary-tint:#eaf0f4;
+  --danger:#c0392b;
+  --warning:#c98a1e;
+  --success:#3f8f5b;
+  --bg:#ffffff;
+  --paper:#f4f0e8;
+  --surface:#fffdf8;
+  --text:#2b2722;
+  --border:#e6ded1;
+  --gray:#8a8072;
+  --shadow:0 1px 2px rgba(43,39,34,.04),0 4px 14px rgba(43,39,34,.05);
+  --shadow-lift:0 4px 10px rgba(43,39,34,.08),0 12px 28px rgba(43,39,34,.10);
+  --hanzi:"Songti SC","STSong","Source Han Serif SC",SimSun,serif;
+  --grad:linear-gradient(135deg,#3a607a 0%,#264352 100%);
 }
 
 /* ========================================
-   FUNCTIONAL ZONE - Layout structure, don't touch
-   ======================================== */
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,sans-serif;color:var(--text);background:#f9fafb;overflow-x:hidden}
-.header{background:var(--bg);border-bottom:2px solid var(--border);padding:6px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
-.header-left{display:flex;align-items:center;gap:8px}
-.header-title{font-size:16px;font-weight:700}
-.header-author{font-size:9px;color:var(--gray)}
-.menu-btn{background:none;border:none;font-size:24px;padding:4px 8px}
-.tabs{display:flex;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:36px;z-index:101;overflow-x:auto}
-.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent}
-.tab-btn.active{border-bottom-color:var(--primary);color:var(--primary);font-weight:600}
-.tab-content{display:none;padding:12px;min-height:calc(100vh - 112px);padding-bottom:80px}
+FUNCTIONAL ZONE - Layout structure, don’t touch
+======================================== */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,“Segoe UI”,sans-serif;color:var(–text);background:var(–paper);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.topbar{position:sticky;top:0;z-index:100;background:var(–bg);display:flex;flex-direction:column;align-items:stretch;border-bottom:2px solid var(–border)}
+.header{background:var(–bg);border-bottom:none;padding:8px 14px;display:flex;align-items:center;gap:8px;flex-shrink:0;order:1}
+.header-left{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between}
+.header-title{font-size:16px;font-weight:700;letter-spacing:.02em}
+.header-author{font-size:9px;color:var(–gray);margin-left:3px}
+.menu-btn{background:none;border:none;font-size:24px;padding:4px 8px;color:var(–primary);line-height:1;transition:opacity .15s,transform .15s}
+.menu-btn:active{opacity:.5;transform:scale(.9)}
+.tabs{display:flex;background:var(–bg);border-bottom:none;overflow-x:auto;gap:2px;padding:0 6px;flex:1;order:2;align-items:flex-end}
+.tab-btn{padding:10px 16px;border:none;background:none;font-size:13px;white-space:nowrap;border-bottom:3px solid transparent;color:var(–gray);font-weight:500;border-radius:9px 9px 0 0;transition:color .2s,background .2s,border-color .2s}
+.tab-btn:active{color:var(–primary)}
+.tab-btn.active{border-bottom-color:var(–primary);color:var(–primary);font-weight:700;background:var(–primary-tint)}
+.tab-content{display:none;padding:12px;min-height:calc(100vh - 60px);padding-bottom:80px}
 .tab-content.active{display:block}
 
 /* ========================================
-   POLISHING ZONE - Component styles
-   ======================================== */
-.filters{background:white;padding:12px;border-radius:8px;margin-bottom:12px}
-.filter-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;white-space:nowrap}
-.filter-row::-webkit-scrollbar{height:4px}
-.filter-row::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.filter-label{font-size:12px;font-weight:600;color:var(--gray);width:45px;flex-shrink:0;position:sticky;left:0;background:white;z-index:10}
+POLISHING ZONE - Component styles
+======================================== */
+.filters{background:var(–surface);padding:12px;border-radius:14px;margin-bottom:12px;box-shadow:var(–shadow)}
+.filter-row{display:flex;gap:6px;margin-bottom:8px;align-items:center;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.filter-row:last-child{margin-bottom:0}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-label{font-size:12px;font-weight:700;color:var(–gray);width:45px;flex-shrink:0;position:sticky;left:0;background:var(–surface);z-index:10}
+.filter-buttons-scroll{touch-action:pan-x}
 .filter-buttons-scroll::-webkit-scrollbar{display:none}
 .checkbox-scroll::-webkit-scrollbar{display:none}
-.filter-btn{padding:6px 10px;border:1px solid var(--border);background:white;border-radius:4px;font-size:11px;min-width:36px;text-align:center}
-.filter-btn[data-value="all"]{min-width:60px}
-.filter-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+.filter-btn{padding:6px 10px;border:1px solid var(–border);background:var(–bg);border-radius:999px;font-size:11px;min-width:36px;text-align:center;color:var(–text);font-weight:500;transition:background .15s,color .15s,border-color .15s,box-shadow .15s}
+.filter-btn[data-value=“all”]{min-width:60px}
+.filter-btn:active{background:var(–primary-tint)}
+.filter-btn.active{background:var(–primary);color:white;border-color:var(–primary);font-weight:600;box-shadow:0 2px 8px rgba(51,87,110,.28)}
+
+/* Warna chip per level HSK (berlaku untuk tab Flashcard & Database) */
+.filter-btn[data-filter-type$=“hsk”][data-value=“1”]{color:#2f8f5b;border-color:rgba(47,143,91,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“1”].active{background:#2f8f5b;border-color:#2f8f5b;color:#fff;box-shadow:0 2px 8px rgba(47,143,91,.32)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“2”]{color:#2f7d9e;border-color:rgba(47,125,158,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“2”].active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.32)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“3”]{color:#5b6cc0;border-color:rgba(91,108,192,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“3”].active{background:#5b6cc0;border-color:#5b6cc0;color:#fff;box-shadow:0 2px 8px rgba(91,108,192,.32)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“4”]{color:#c98a1e;border-color:rgba(201,138,30,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“4”].active{background:#c98a1e;border-color:#c98a1e;color:#fff;box-shadow:0 2px 8px rgba(201,138,30,.32)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“5”]{color:#c0392b;border-color:rgba(192,57,43,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“5”].active{background:#c0392b;border-color:#c0392b;color:#fff;box-shadow:0 2px 8px rgba(192,57,43,.32)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“6”]{color:#8e44ad;border-color:rgba(142,68,173,.45)}
+.filter-btn[data-filter-type$=“hsk”][data-value=“6”].active{background:#8e44ad;border-color:#8e44ad;color:#fff;box-shadow:0 2px 8px rgba(142,68,173,.32)}
+
+/* Chip huruf A-Z: warna aktif beda dari tombol “Semua” */
+.filter-btn[data-filter-type$=“letter”]:not([data-value=“all”]).active{background:#2f7d9e;border-color:#2f7d9e;color:#fff;box-shadow:0 2px 8px rgba(47,125,158,.3)}
+
+/* Dropdown modern */
+#db-filter-showlist,#db-col-showhide{appearance:none;-webkit-appearance:none;flex-shrink:0;font-size:11px;padding:6px 26px 6px 11px;border:1px solid var(–border);border-radius:999px;background-color:var(–bg);color:var(–text);font-weight:500;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath d=‘M1 1l4 4 4-4’ stroke=’%2333576e’ fill=‘none’ stroke-width=‘1.6’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 10px center;transition:border-color .15s,box-shadow .15s}
+#db-filter-showlist:focus,#db-col-showhide:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-.card{
-  background:white;
-  border:2px solid var(--border);
-  border-radius:8px;
-  padding:12px;
-  height:140px;
-  position:relative;
-  transition:all .2s;
-  overflow:hidden;
-}
-.card.forgot{border-color:var(--warning);background:#fffbeb}
-.card-front{display:flex;align-items:center;justify-content:center;font-size:var(--card-font-size,36px);font-weight:700;height:100%}
-.card-front .hanzi-char{display:inline-block;margin:0 2px;cursor:pointer;padding:2px;color:#4b5563;text-decoration:underline dotted #9ca3af}
-.card-back{display:none;font-size:11px;line-height:1.4;height:100%;overflow-y:auto}
-.card.expanded .card-front{display:none}
-.card.expanded .card-back{display:block}
-.forgot-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid var(--danger);font-size:12px;display:flex;align-items:center;justify-content:center;z-index:10}
-.forgot-btn.marked{background:var(--warning);border-color:var(--warning);color:white}
-.components{margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
-.component{display:inline-block;padding:3px 6px;margin:2px;background:#f3f4f6;border-radius:3px;font-size:10px}
+/* Kartu: bingkai luar jadi panggung 3D, gaya kartu pindah ke kedua sisi */
+.card{position:relative;height:140px;border-radius:14px;background:transparent;perspective:1000px;animation:cardIn .22s ease both}
+.card-flip-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card.expanded .card-flip-inner{transform:rotateY(180deg)}
+.card-front,.card-back{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:14px;border:2px solid var(–border);box-shadow:var(–shadow);padding:12px;overflow:hidden;transition:box-shadow .18s,border-color .18s}
+.card-front{display:flex;align-items:center;justify-content:center;font-size:var(–card-font-size,36px);font-weight:500;font-family:var(–hanzi);color:var(–text);background:var(–surface)}
+.card-front .hanzi-char{display:inline-block;margin:0 2px;cursor:pointer;padding:2px;color:#6b6358}
+.card-back{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;overflow-y:auto;color:var(–text);transform:rotateY(180deg);text-align:center;background:linear-gradient(160deg,#eef3f6,#e4ecf0)}
+.card.forgot .card-front{background:linear-gradient(180deg,#fdf8ec,#fdf3df)}
+.card.forgot .card-front,.card.forgot .card-back{border-color:var(–warning)}
+.card:active .card-front,.card:active .card-back{box-shadow:var(–shadow-lift)}
+.card.expanded .card-front,.card.expanded .card-back{box-shadow:var(–shadow-lift);border-color:var(–primary)}
+.cb-head{font-family:var(–hanzi);font-size:21px;font-weight:500;line-height:1.1;color:var(–text)}
+.cb-pin{font-size:11px;color:var(–gray);letter-spacing:.02em}
+.cb-mean{font-size:12px;line-height:1.35;color:var(–text);margin-bottom:2px}
+.cb-chip{font-size:10px;line-height:1.45;padding:6px 9px;border-radius:9px;width:100%;text-align:left}
+.cb-rel{background:rgba(51,87,110,.12);color:#274a5e}
+.cb-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
 
-.balloon{position:fixed;background:white;border:2px solid var(--primary);border-radius:8px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:1000;max-width:320px;display:none;width:max-content}
-.balloon.show{display:block}
+.forgot-btn{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(–bg);border:1.5px solid var(–border);font-size:13px;display:flex;align-items:center;justify-content:center;z-index:10;color:var(–gray);box-shadow:0 1px 3px rgba(43,39,34,.12);transition:transform .15s,background .15s,color .15s,border-color .15s,box-shadow .2s}
+.forgot-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(201,138,30,.18)}
+.forgot-btn.marked{background:linear-gradient(135deg,#d79a2a,#b9791a);border-color:#b9791a;color:white;box-shadow:0 2px 7px rgba(185,121,26,.45)}
+.components{margin-top:6px;padding-top:6px;border-top:1px solid var(–border)}
+.component{display:inline-block;padding:4px 8px;margin:2px;background:var(–primary-tint);color:var(–primary);border-radius:8px;font-size:10px;font-weight:500}
+
+.balloon{position:fixed;background:var(–surface);border:1px solid rgba(51,87,110,.25);border-radius:10px;padding:7px 10px;box-shadow:var(–shadow-lift);z-index:1000;max-width:260px;display:none;width:max-content;opacity:0;transform:translateY(-4px) scale(.97);transition:opacity .16s ease,transform .16s ease}
+.balloon.show{display:block;opacity:1;transform:none}
+.balloon::before{content:””;position:absolute;top:-7px;left:var(–arrow-left,18px);width:12px;height:12px;background:var(–surface);border-left:1px solid rgba(51,87,110,.25);border-top:1px solid rgba(51,87,110,.25);transform:rotate(45deg)}
 .balloon .also-in{font-size:11px;line-height:1.6}
-.balloon h3,.balloon .hanzi-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.balloon h3,.balloon .hanzi-title{font-size:16px;font-weight:600;margin-bottom:4px;font-family:var(–hanzi)}
+.balloon .hanzi-title{display:none}
 
-.back-to-top{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(--primary);color:white;border:none;border-radius:50%;box-shadow:0 4px 12px rgba(0,0,0,0.2);font-size:20px;cursor:pointer;z-index:999;display:none;opacity:0;transition:opacity 0.3s}
-.back-to-top.show{display:flex;align-items:center;justify-content:center;opacity:0.8}
-.back-to-top:active{opacity:1;transform:translateX(-50%) scale(0.95)}
+.back-to-top{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:44px;height:44px;background:var(–grad);color:white;border:none;border-radius:50%;box-shadow:var(–shadow-lift);font-size:20px;cursor:pointer;z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility .4s ease}
+.back-to-top.show{opacity:0.4;visibility:visible;pointer-events:auto}
+.back-to-top.show:active{opacity:1;transform:translateX(-50%) scale(0.92)}
 
-.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--primary);color:white;border:none;font-size:24px;box-shadow:0 4px 12px rgba(59,130,246,0.4);z-index:200;display:flex;align-items:center;justify-content:center;cursor:move;touch-action:none}
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:var(–grad);color:white;border:none;font-size:21px;line-height:1;box-shadow:0 8px 22px rgba(38,67,82,.4);z-index:200;display:flex;align-items:center;justify-content:center;cursor:move;touch-action:none;opacity:.55;transition:opacity .35s ease,transform .15s ease,box-shadow .35s ease}
+.fab:active{opacity:1;transform:scale(.9)}
+@media (hover:hover){.fab:hover{opacity:1}.back-to-top.show:hover{opacity:1}}
 
-.slide-panel{position:fixed;top:0;right:-100%;width:85%;max-width:320px;height:100%;background:white;box-shadow:-4px 0 12px rgba(0,0,0,0.2);z-index:300;transition:right .3s;display:flex;flex-direction:column}
+.slide-panel{position:fixed;top:0;right:-100%;width:85%;max-width:320px;height:100%;background:var(–bg);box-shadow:-8px 0 30px rgba(43,39,34,.18);z-index:300;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .slide-panel.open{right:0}
-.panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:250;display:none}
+.panel-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.45);z-index:250;display:none}
 .panel-overlay.show{display:block}
-.panel-header{padding:16px;background:var(--primary);color:white;display:flex;justify-content:space-between;align-items:center}
-.panel-close{background:none;border:none;color:white;font-size:24px}
-.panel-tabs{display:flex;border-bottom:1px solid var(--border);background:#f9fafb}
-.panel-tab{flex:1;padding:12px 8px;border:none;background:none;font-size:12px;border-bottom:3px solid transparent}
-.panel-tab.active{background:white;border-bottom-color:var(--primary);color:var(--primary);font-weight:600}
-.panel-content{flex:1;overflow-y:auto;padding:12px}
-.list-item{padding:10px;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+.panel-header{padding:0 18px;min-height:56px;background:var(–grad);color:white;display:flex;justify-content:space-between;align-items:center}
+.panel-header h3{font-weight:600;letter-spacing:.02em;font-size:16px}
+.panel-close{background:none;border:none;color:white;font-size:24px;line-height:1;opacity:.85;transition:opacity .15s}
+.panel-close:active{opacity:1}
+.panel-tabs{display:flex;gap:6px;padding:8px;background:var(–surface);border-bottom:1px solid var(–border)}
+.panel-tab{flex:1;padding:9px 6px;border:none;background:var(–bg);font-size:12px;border-radius:10px;color:var(–gray);font-weight:600;transition:background .18s,color .18s,box-shadow .18s;display:flex;align-items:center;justify-content:center;gap:6px}
+.panel-tab.active{background:var(–primary);color:#fff;box-shadow:0 3px 10px rgba(51,87,110,.3)}
+.count-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;font-size:10px;font-weight:700;background:var(–primary-tint);color:var(–primary)}
+.panel-tab.active .count-badge{background:rgba(255,255,255,.28);color:#fff}
+.panel-content{flex:1;overflow-y:auto;padding:14px;scrollbar-gutter:stable}
+.panel-content::-webkit-scrollbar{width:6px}
+.panel-content::-webkit-scrollbar-thumb{background:var(–border);border-radius:3px}
+.list-item{padding:10px;border-bottom:1px solid var(–border);font-size:12px;cursor:pointer}
 
-.menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:400;display:none}
+.menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.45);z-index:400;display:none}
 .menu-overlay.show{display:block}
-.menu-panel{position:fixed;top:0;left:-280px;width:260px;height:100%;background:white;box-shadow:4px 0 12px rgba(0,0,0,0.1);z-index:401;transition:left .3s;overflow-y:auto;padding-bottom:50px;display:flex;flex-direction:column}
+.menu-panel{position:fixed;top:0;left:-280px;width:260px;height:100%;background:var(–bg);box-shadow:8px 0 30px rgba(43,39,34,.16);z-index:401;transition:left .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
 .menu-panel.open{left:0}
-.menu-header{padding:16px;background:var(--primary);color:white;font-weight:700}
-.menu-item{padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer}
-.menu-divider{border-top:2px solid var(--border);margin:8px 0}
-.db-info-item{position:absolute;bottom:0;left:0;right:0;padding:10px 16px;font-size:11px;color:var(--gray);background:#f9fafb;border-top:2px solid var(--border)}
+.menu-header{padding:0 18px;min-height:56px;display:flex;align-items:center;justify-content:space-between;background:var(–grad);color:white;font-weight:600;letter-spacing:.02em;font-size:16px;position:sticky;top:0;z-index:2}
+.menu-close{background:none;border:none;color:#fff;font-size:24px;line-height:1;cursor:pointer;opacity:.85;transition:opacity .15s;width:32px;height:32px;display:flex;align-items:center;justify-content:center;padding:0}
+.menu-close:active{opacity:1}
+.menu-item{padding:14px 18px;border-bottom:1px solid var(–border);font-size:14px;cursor:pointer;transition:background .12s,padding-left .15s}
+.menu-item:active{background:var(–primary-tint);padding-left:22px}
+.menu-divider{border-top:2px solid var(–border);margin:8px 0}
+.db-info-item{position:static;margin-top:auto;padding:14px 18px;padding-bottom:calc(16px + env(safe-area-inset-bottom));font-size:11px;color:var(–gray);background:var(–surface);border-top:1px solid var(–border);line-height:1.5}
 
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:500;display:none;padding:20px}
-.modal.show{display:block}
-.modal-content{background:white;border-radius:8px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;padding:50px 20px 20px}
-.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:28px;color:var(--gray);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(43,39,34,0.55);z-index:500;display:none;padding:20px}
+.modal.show{display:block;animation:overlayIn .2s ease}
+.modal-content{background:var(–bg);border-radius:18px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;padding:50px 20px 20px;box-shadow:var(–shadow-lift)}
+.modal.show .modal-content{animation:modalPop .24s cubic-bezier(.2,.7,.2,1)}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:28px;color:var(–gray);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;line-height:1}
 .modal-header{font-size:16px;font-weight:700;margin-bottom:12px}
-.export-text{width:100%;height:200px;font-family:monospace;font-size:10px;padding:10px;border:1px solid var(--border);border-radius:4px}
+.export-text{width:100%;height:200px;font-family:monospace;font-size:10px;padding:10px;border:1px solid var(–border);border-radius:8px;background:var(–surface)}
 
-.btn{border:none;border-radius:6px;font-size:13px;font-weight:600;padding:8px 12px}
-.btn-primary{background:var(--primary);color:white}
-.btn-secondary{background:var(--gray);color:white}
+.btn{border:none;border-radius:10px;font-size:13px;font-weight:600;padding:8px 12px;transition:opacity .15s,transform .12s,box-shadow .15s}
+.btn:active{transform:scale(.97);opacity:.92}
+.btn-primary{background:var(–primary);color:white;box-shadow:0 2px 8px rgba(51,87,110,.25)}
+.btn-secondary{background:var(–gray);color:white}
 
-.search-bar{width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;margin-bottom:12px;font-size:14px}
-input[type="checkbox"]{margin-right:4px}
-label{font-size:12px;display:flex;align-items:center;gap:4px}
+.search-bar{width:100%;padding:10px;border:1px solid var(–border);border-radius:10px;margin-bottom:12px;font-size:14px;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
+.search-bar:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
+input[type=“checkbox”]{margin-right:4px;accent-color:var(–primary)}
+label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(–text)}
 
-.sentence-list{background:white;border-radius:8px;padding:12px}
-.sentence-item{padding:16px;padding-right:70px;margin-bottom:12px;border:1px solid var(--border);border-radius:8px;position:relative}
+.sentence-list{background:var(–surface);border-radius:14px;padding:12px;box-shadow:var(–shadow)}
+.sentence-item{padding:16px;padding-right:70px;margin-bottom:12px;border:1px solid var(–border);border-radius:12px;position:relative;background:var(–bg);transition:border-color .18s,background .18s,box-shadow .18s}
 .sentence-item.hidden{display:none}
-.sentence-text{font-size:18px;line-height:1.8;margin-bottom:8px;font-family:'SimSun',serif}
-.word{display:inline-block;padding:2px 4px;margin:0 2px;border-radius:2px;cursor:pointer}
-.word.known{color:var(--text)}
-.word.forgot{background:#fef3c7}
+.sentence-text{font-size:18px;line-height:1.8;margin-bottom:0;font-family:var(–hanzi)}
+.word{display:inline-block;padding:2px 4px;margin:0 2px;border-radius:5px;cursor:pointer;transition:background .12s}
+.word.known{color:var(–text)}
+.word.known:active{background:var(–primary-tint)}
+.word.forgot{background:#fbeecb}
 /* merah = tidak ada di vocab inti (characters/compounds) */
-.word.new{color:var(--danger);font-weight:600}
+.word.new{color:var(–danger);font-weight:600}
 /* dictionary = juga merah, tapi balloon bisa tampil */
-.word.dict{color:var(--danger);font-weight:600}
-.sentence-translation{font-size:12px;color:var(--gray);display:none;margin-top:4px;margin-left:-16px;margin-right:-70px;padding:10px 16px 10px 26px;border-top:1px solid var(--border);background:#f9fafb;border-radius:4px}
-.sentence-translation.show{display:block}
-.full-translation{margin-top:8px;font-weight:600;color:var(--text);font-size:13px}
+.word.dict{color:var(–danger);font-weight:600}
+.eye-btn,.done-btn{background:var(–surface);border:1.5px solid var(–border);cursor:pointer;line-height:1;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;transition:transform .15s,background .15s,color .15s,filter .15s,border-color .15s,box-shadow .2s}
+.eye-btn{filter:grayscale(1);opacity:.55;font-size:14px}
+.eye-btn.active{filter:none;opacity:1;background:var(–primary-tint);border-color:var(–primary)}
+.eye-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(51,87,110,.16)}
+.done-btn{color:var(–gray);font-weight:700;font-size:15px}
+.done-btn.is-done{background:var(–success);color:#fff;border-color:var(–success);box-shadow:0 2px 7px rgba(63,143,91,.4)}
+.done-btn:active{transform:scale(.82);box-shadow:0 0 0 6px rgba(63,143,91,.18)}
+.sentence-translation{font-size:12px;color:var(–gray);display:block;max-height:0;opacity:0;overflow:hidden;margin-top:0;margin-bottom:0;margin-left:-16px;margin-right:-70px;padding:0 16px 0 26px;border-top:0 solid var(–border);background:var(–surface);border-radius:0 0 12px 12px;transition:max-height .3s ease,opacity .25s ease,padding .3s ease,margin .3s ease}
+.sentence-translation.show{max-height:600px;opacity:1;margin-top:6px;margin-bottom:-16px;padding:14px 16px 14px 26px;border-top:1px solid var(–border)}
+.full-translation{margin-top:8px;font-weight:600;color:var(–text);font-size:13px}
 
-.db-table{width:100%;border-collapse:collapse;background:white;font-size:11px}
-.db-table th,.db-table td{padding:8px 4px;border:1px solid var(--border);text-align:left}
-.db-table th{background:#f3f4f6;font-weight:600;text-align:center}
-.db-table th:nth-child(1),.db-table td:nth-child(1){width:40px;text-align:center}
-.db-table th:nth-child(2),.db-table td:nth-child(2){width:60px}
-.db-table th:nth-child(3),.db-table td:nth-child(3){width:80px}
+/* Database: tampil sebagai daftar bersih, bukan tabel kaku */
+.db-table{width:100%;border-collapse:collapse;background:var(–surface);font-size:11px;border-radius:14px;overflow:hidden;box-shadow:var(–shadow)}
+.db-table th,.db-table td{padding:11px 8px;border:none;border-bottom:1px solid rgba(230,222,209,.7);text-align:left;vertical-align:middle}
+.db-table th{background:var(–surface);font-weight:600;text-align:center;color:var(–gray);font-size:9px;letter-spacing:.12em;text-transform:uppercase;border-bottom:1.5px solid var(–border)}
+.db-table th:nth-child(1),.db-table td:nth-child(1){width:34px;text-align:center}
+.db-table th:nth-child(2),.db-table td:nth-child(2){width:56px}
+.db-table th:nth-child(3),.db-table td:nth-child(3){width:84px}
 .db-table th:nth-child(4),.db-table td:nth-child(4){min-width:100px}
-.db-table th:nth-child(5),.db-table td:nth-child(5){width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.db-table th:nth-child(6),.db-table td:nth-child(6){width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-table th:nth-child(5),.db-table td:nth-child(5){width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-table th:nth-child(6),.db-table td:nth-child(6){width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.db-table td:nth-child(1){color:var(–gray);font-size:10px}
+#database-tab .db-table td:nth-child(2){font-family:var(–hanzi);font-size:16px;font-weight:500;color:var(–text);white-space:nowrap}
+#database-tab .db-table td:nth-child(3){color:var(–gray)}
+#database-tab .db-table td:nth-child(5),#database-tab .db-table td:nth-child(6){white-space:normal;overflow:visible;text-overflow:clip}
+#database-tab .db-table{table-layout:fixed;min-width:566px}
+#database-tab .db-table th:nth-child(1),#database-tab .db-table td:nth-child(1){width:36px}
+#database-tab .db-table th:nth-child(2),#database-tab .db-table td:nth-child(2){width:90px;white-space:nowrap}
+#database-tab .db-table th:nth-child(3),#database-tab .db-table td:nth-child(3){width:110px;overflow-wrap:anywhere}
+#database-tab .db-table th:nth-child(4),#database-tab .db-table td:nth-child(4){width:150px;min-width:0;overflow-wrap:anywhere}
+#database-tab .db-table th:nth-child(5),#database-tab .db-table td:nth-child(5){width:90px}
+#database-tab .db-table th:nth-child(6),#database-tab .db-table td:nth-child(6){width:90px}
+#database-tab .db-table tbody tr:nth-child(even) td{background:rgba(138,128,114,.05)}
+#database-tab .db-table tbody tr.forgot-row td{background:#f7e3df}
+#database-tab .db-table tbody tr.forgot-row td:first-child{box-shadow:inset 3px 0 0 var(–danger)}
+#database-tab .db-table tbody tr:active td{background:var(–primary-tint)}
+.dbchip{display:inline-block;font-family:var(–hanzi);font-size:12px;line-height:1.2;padding:2px 7px;margin:1px 3px 1px 0;border-radius:7px;background:rgba(51,87,110,.10);color:#274a5e}
+.dbchip-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
+.nw-divider td{background:var(–primary-tint);color:var(–primary);font-weight:700;text-align:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:9px}
+#database-tab .db-table tbody tr.nw-row td{background:#fdf6e6}
+@media (hover:hover){#database-tab .db-table tbody tr:hover td{background:var(–primary-tint)}}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(12px);background:rgba(43,39,34,.94);color:#fff;font-size:13px;font-weight:500;padding:10px 16px;border-radius:999px;box-shadow:var(–shadow-lift);z-index:1200;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== Modernisasi tambahan ===== */
+/* Burger paling kanan, judul di kirinya */
+.header-left>div{order:1}
+.header-left>.menu-btn{order:2}
+/* Menu meluncur dari kanan */
+.menu-panel{left:auto;right:-300px;box-shadow:-8px 0 30px rgba(43,39,34,.16);transition:right .3s cubic-bezier(.4,0,.2,1)}
+.menu-panel.open{left:auto;right:0}
+/* Safe-area iPhone */
+.fab{bottom:calc(20px + env(safe-area-inset-bottom))}
+.back-to-top{bottom:calc(16px + env(safe-area-inset-bottom))}
+.toast{bottom:calc(88px + env(safe-area-inset-bottom))}
+.tab-content{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+/* Label filter seragam dengan header lain (tanpa perlakuan khusus) */
+/* Tombol “Semua” memakai gaya default (garis lurus) */
+/* Item menu rata & sorot */
+.menu-item{display:flex;align-items:center;gap:8px}
+/* Scrollbar tipis senada */
+.modal-content::-webkit-scrollbar,.menu-panel::-webkit-scrollbar,.db-scroll::-webkit-scrollbar{width:7px;height:7px}
+.modal-content::-webkit-scrollbar-thumb,.menu-panel::-webkit-scrollbar-thumb,.db-scroll::-webkit-scrollbar-thumb{background:var(–border);border-radius:4px}
+/* Ruby pinyin di Notes */
+#notes-display ruby{margin:0 2px}
+#notes-display rt{font-size:10px;color:var(–gray);font-family:-apple-system,sans-serif;font-weight:500}
+/* Modal: rapikan × sejajar judul, judul wrap bila panjang */
+.modal-content{padding:18px 20px 20px}
+.modal-close{top:16px;right:14px}
+.modal-close+.modal-header{padding-right:40px}
+.modal-textarea{width:100%;font-family:monospace;font-size:11px;padding:10px;border:1px solid var(–border);border-radius:10px;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
+.modal-textarea:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
+.gh-input{width:100%;padding:9px 11px;border:1px solid var(–border);border-radius:10px;font-size:12px;font-family:monospace;background:var(–surface);color:var(–text);transition:border-color .15s,box-shadow .15s}
+.gh-input:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
+.modal-hint{font-size:11px;color:var(–gray);margin:-2px 0 10px;line-height:1.45;overflow-wrap:anywhere;word-break:break-word}
+.mini-btn{padding:8px 14px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:transform .12s,opacity .15s}
+.mini-btn:active{transform:scale(.96);opacity:.9}
+.mini-danger{background:rgba(192,57,43,.12);color:var(–danger)}
+.mini-secondary{background:var(–primary-tint);color:var(–primary)}
+#import-stats,#save-success-stats{border-radius:10px}
+/* Notes: pensil melayang + area bersih */
+.notes-wrap{position:relative}
+.notes-edit-fab{position:absolute;top:10px;right:12px;left:auto;z-index:2;width:30px;height:30px;border-radius:50%;background:var(–primary);color:#fff;border:none;font-size:13px;box-shadow:var(–shadow);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+.notes-edit-fab:active{transform:scale(.9)}
+.notes-area{width:100%;height:calc(100dvh - 150px);min-height:240px;padding:12px;border:1px solid var(–border);border-radius:12px;font-size:14px;font-family:var(–hanzi);line-height:1.8;background:var(–surface);color:var(–text);scrollbar-gutter:stable}
+.notes-area:focus{outline:none;border-color:var(–primary);box-shadow:0 0 0 3px var(–primary-tint)}
+.notes-display{padding:14px;border-radius:12px;background:var(–surface);min-height:200px;line-height:2;font-size:14px;border:1px solid var(–border)}
+/* Modal reset list halus */
+.reset-list{list-style:none;padding:0;margin:0 0 10px}
+.reset-list li{position:relative;padding:5px 0 5px 22px;color:var(–text)}
+.reset-list li::before{content:””;position:absolute;left:5px;top:50%;width:7px;height:7px;border-radius:50%;background:var(–danger);transform:translateY(-50%);opacity:.55}
+.reset-keep{margin:0;padding-left:22px;position:relative;color:var(–success);font-weight:600}
+.reset-keep::before{content:”\2713”;position:absolute;left:4px;color:var(–success)}
+/* Header tabel Database mengalir bersama scroll halaman (tanpa sticky) */
+#panel-forgot .db-table td:nth-child(1),#panel-new .db-table td:nth-child(1){text-align:left;font-family:var(–hanzi);font-size:15px;line-height:1.15;white-space:nowrap}
+#database-tab .db-table.hide-pinyin td:nth-child(3){color:transparent}
+#database-tab .db-table.hide-meaning td:nth-child(4){color:transparent}
+
+/* ===== Dark mode ===== */
+.menu-header-actions{display:flex;align-items:center;gap:16px}
+#theme-toggle{font-size:18px}
+.sentence-item.done{background:#eef6f0;border-color:#bcdcc7}
+
+body.dark{
+–primary:#5b90b3;
+–primary-dark:#2c4a5e;
+–primary-tint:#2a3a46;
+–danger:#e0695b;
+–warning:#e0a93f;
+–success:#5bb37e;
+–bg:#1b2127;
+–paper:#13181c;
+–surface:#232a31;
+–text:#e8e3da;
+–border:#3c4650;
+–gray:#a59c8f;
+–grad:linear-gradient(135deg,#2c4a5e 0%,#1d2f3a 100%);
+–shadow:0 1px 2px rgba(0,0,0,.4),0 4px 14px rgba(0,0,0,.5);
+–shadow-lift:0 6px 14px rgba(0,0,0,.55),0 16px 32px rgba(0,0,0,.6);
+}
+body.dark .card-front .hanzi-char{color:#a89f90}
+body.dark .card.forgot .card-front{background:linear-gradient(180deg,#2a2416,#241f10)}
+body.dark .card-back{background:linear-gradient(160deg,#202b32,#1a242b)}
+body.dark .cb-rel{background:rgba(91,144,179,.20);color:#c4dcec}
+body.dark .cb-ant{background:rgba(224,169,63,.20);color:#e8cd95}
+body.dark .dbchip{background:rgba(91,144,179,.20);color:#c4dcec}
+body.dark .dbchip-ant{background:rgba(224,169,63,.20);color:#e8cd95}
+body.dark .word.forgot{background:#4a3e20;color:var(–text)}
+body.dark #database-tab .db-table tbody tr.forgot-row td{background:#3a201d}
+body.dark #database-tab .db-table tbody tr.nw-row td{background:#2c2515}
+body.dark #database-tab .db-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+body.dark .sentence-item.done{background:#1c2a22;border-color:#2f4a39}
+body.dark #import-stats,body.dark #save-success-stats{background:var(–surface)}
+body.dark .toast{background:rgba(8,10,12,.96);border:1px solid var(–border)}
+body.dark #db-filter-showlist,body.dark #db-col-showhide{background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’ viewBox=‘0 0 10 6’%3E%3Cpath d=‘M1 1l4 4 4-4’ stroke=’%23a8c4d6’ fill=‘none’ stroke-width=‘1.6’ stroke-linecap=‘round’ stroke-linejoin=‘round’/%3E%3C/svg%3E”)}
+body.dark .eye-btn{filter:none;opacity:.85}
+body.dark .db-table th,body.dark .db-table td{border-bottom-color:var(–border)}
+body.dark #panel-forgot .db-table th,body.dark #panel-forgot .db-table td,body.dark #panel-new .db-table th,body.dark #panel-new .db-table td{border-bottom-color:transparent}
+body.dark #panel-forgot .db-table,body.dark #panel-new .db-table{box-shadow:none;background:transparent}
+body.dark #panel-forgot .db-table th,body.dark #panel-new .db-table th{background:transparent}
+body.dark .balloon{border-color:var(–border)}
+body.dark .balloon::before{border-left-color:var(–border);border-top-color:var(–border)}
+body.dark .forgot-btn{background:var(–surface)}
+body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,#356b8e)}
+
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.edge-fade{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
+.edge-fade.at-start{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 24px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 24px),transparent 100%)}
+.edge-fade.at-end{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 100%);mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 100%)}
+.edge-fade.at-start.at-end{-webkit-mask-image:none;mask-image:none}
+@keyframes modalPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+
+@media (prefers-reduced-motion: reduce){
+*,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+.card-flip-inner{transition:none}
+}
+
 </style>
 </head>
 <body>
 
+<div class="topbar">
 <div class="header">
   <div class="header-left">
-    <button class="menu-btn" id="menu-toggle">☰</button>
+    <button class="menu-btn" id="menu-toggle">&#9776;</button>
     <div>
       <span class="header-title">FLASHCARD</span>
       <span class="header-author">by jfr</span>
@@ -161,25 +367,20 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
   <button class="tab-btn" data-tab="sentence">Sentence</button>
   <button class="tab-btn" data-tab="database">Database</button>
 </div>
+</div>
 
 <div id="flashcard-tab" class="tab-content active">
   <div class="filters">
     <div class="filter-row">
       <span class="filter-label">HSK:</span>
-      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
-        <button class="filter-btn active" data-filter-type="hsk" data-value="all">Semua</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="1">1</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="2">2</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="3">3</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="4">4</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="5">5</button>
-        <button class="filter-btn" data-filter-type="hsk" data-value="6">6</button>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll" id="hsk-filter-btns">
+        <button class="filter-btn active" data-filter-type="hsk" data-value="all">All</button>
       </div>
     </div>
     <div class="filter-row">
       <span class="filter-label">A-Z:</span>
       <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
-        <button class="filter-btn active" data-filter-type="letter" data-value="all">Semua</button>
+        <button class="filter-btn active" data-filter-type="letter" data-value="all">All</button>
         <button class="filter-btn" data-filter-type="letter" data-value="a">A</button>
         <button class="filter-btn" data-filter-type="letter" data-value="b">B</button>
         <button class="filter-btn" data-filter-type="letter" data-value="c">C</button>
@@ -210,9 +411,9 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
     </div>
     <div class="filter-row">
       <div style="display:flex;gap:12px;overflow-x:auto;flex:1;scrollbar-width:none;-webkit-overflow-scrolling:touch" class="checkbox-scroll">
-        <label style="white-space:nowrap"><input type="checkbox" id="filter-forgot"> Forgot Only</label>
-        <label style="white-space:nowrap"><input type="checkbox" id="filter-new"> New Only</label>
-        <label style="white-space:nowrap"><input type="checkbox" id="filter-isolated"> Isolated Only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-forgot"> Forgot only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-new"> New only</label>
+        <label style="white-space:nowrap"><input type="checkbox" id="filter-isolated"> Isolated only</label>
         <label style="white-space:nowrap"><input type="checkbox" id="show-pinyin" checked> Pinyin</label>
         <label style="white-space:nowrap"><input type="checkbox" id="show-meaning" checked> Meaning</label>
       </div>
@@ -223,10 +424,11 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <div id="sentence-tab" class="tab-content">
   <div class="filters">
-    <div class="filter-row">
-      <label><input type="checkbox" id="sentence-hide-done" checked> Hide Done</label>
-      <label><input type="checkbox" id="sentence-known-only"> Tanpa kata baru</label>
-      <button class="btn btn-secondary" id="reset-sentences" style="width:auto;padding:8px 16px;margin:0;margin-left:auto">Reset All</button>
+    <div class="filter-row" style="overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      <label style="white-space:nowrap"><input type="checkbox" id="sentence-hide-done" checked> Hide done</label>
+      <label style="white-space:nowrap"><input type="checkbox" id="sentence-known-only"> No new words</label>
+      <label style="white-space:nowrap"><input type="checkbox" id="sentence-forgot-only"> Has forgot</label>
+      <button class="btn btn-secondary" id="reset-sentences" style="width:auto;padding:8px 16px;margin:0;margin-left:auto;white-space:nowrap">Reset all</button>
     </div>
   </div>
   <div class="sentence-list" id="sentence-list"></div>
@@ -237,20 +439,14 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
   <div class="filters">
     <div class="filter-row">
       <span class="filter-label">HSK:</span>
-      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
-        <button class="filter-btn active" data-filter-type="db-hsk" data-value="all">Semua</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="1">1</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="2">2</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="3">3</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="4">4</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="5">5</button>
-        <button class="filter-btn" data-filter-type="db-hsk" data-value="6">6</button>
+      <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll" id="db-hsk-filter-btns">
+        <button class="filter-btn active" data-filter-type="db-hsk" data-value="all">All</button>
       </div>
     </div>
     <div class="filter-row">
       <span class="filter-label">A-Z:</span>
       <div style="display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none" class="filter-buttons-scroll">
-        <button class="filter-btn active" data-filter-type="db-letter" data-value="all">Semua</button>
+        <button class="filter-btn active" data-filter-type="db-letter" data-value="all">All</button>
         <button class="filter-btn" data-filter-type="db-letter" data-value="a">A</button>
         <button class="filter-btn" data-filter-type="db-letter" data-value="b">B</button>
         <button class="filter-btn" data-filter-type="db-letter" data-value="c">C</button>
@@ -280,17 +476,23 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
       </div>
     </div>
     <div class="filter-row">
-      <label><input type="checkbox" id="db-filter-forgot"> Forgot Only</label>
-      <label><input type="checkbox" id="db-filter-new"> New Only</label>
-      <label><input type="checkbox" id="db-filter-isolated"> Isolated Only</label>
-      <select id="db-filter-showlist" style="margin-left:auto;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;background:white">
-        <option value="all">Semua</option>
-        <option value="1">Vocab inti</option>
-        <option value="0">Pendukung</option>
+      <label><input type="checkbox" id="db-filter-forgot"> Forgot only</label>
+      <label><input type="checkbox" id="db-filter-new"> New only</label>
+      <label><input type="checkbox" id="db-filter-isolated"> Isolated only</label>
+      <select id="db-filter-showlist" style="margin-left:auto">
+        <option value="all">All</option>
+        <option value="1">Core vocab</option>
+        <option value="0">Supporting</option>
+      </select>
+      <select id="db-col-showhide">
+        <option value="all">All columns</option>
+        <option value="no-pinyin">Hide pinyin</option>
+        <option value="no-meaning">Hide meaning</option>
+        <option value="no-both">Hide both</option>
       </select>
     </div>
   </div>
-  <div style="overflow-x:auto;-webkit-transform:translateZ(0);transform:translateZ(0)">
+  <div style="overflow-x:auto">
     <table class="db-table">
       <thead><tr><th>#</th><th>Hanzi</th><th>Pinyin</th><th>Meaning</th><th>Related</th><th>Antonym</th></tr></thead>
       <tbody id="db-tbody"></tbody>
@@ -300,16 +502,18 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <button class="fab" id="fab-btn">📝</button>
 
+<div id="toast" class="toast"></div>
+
 <div class="panel-overlay" id="panel-overlay"></div>
 <div class="slide-panel" id="slide-panel">
   <div class="panel-header">
     <h3>Quick Access</h3>
-    <button class="panel-close" id="panel-close">×</button>
+    <button class="panel-close" id="panel-close">&times;</button>
   </div>
   <div class="panel-tabs">
     <button class="panel-tab active" data-panel="notes">Notes</button>
-    <button class="panel-tab" data-panel="forgot">Forgot (<span id="forgot-count">0</span>)</button>
-    <button class="panel-tab" data-panel="new">New (<span id="new-count">0</span>)</button>
+    <button class="panel-tab" data-panel="forgot">Forgot <span class="count-badge" id="forgot-count">0</span></button>
+    <button class="panel-tab" data-panel="new">New <span class="count-badge" id="new-count">0</span></button>
   </div>
   <div class="panel-content">
     <div id="panel-notes" class="panel-section"></div>
@@ -319,76 +523,77 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 </div>
 
 <div class="balloon" id="balloon"></div>
-<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+<button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#11014;</button>
 
 <div class="menu-overlay" id="menu-overlay"></div>
 <div class="menu-panel" id="menu-panel">
-  <div class="menu-header">Menu</div>
-  <div class="menu-item" id="import-db">📥 Import Database (File)</div>
-  <div class="menu-item" id="import-paste">📥 Import Database (Text)</div>
-  <div class="menu-item" id="export-db">📤 Export Database</div>
-  <div class="menu-item" id="github-sync">☁️ GitHub Sync</div>
-  <div class="menu-item" id="edit-chars">✏️ Edit Characters</div>
-  <div class="menu-item" id="edit-compounds">✏️ Edit Compounds</div>
-  <div class="menu-item" id="edit-sentences">✏️ Edit Sentences</div>
-  <div class="menu-item" id="edit-newwords">✏️ Edit New Words</div>
-  <div class="menu-item" id="edit-dictionary">✏️ Edit Dictionary</div>
+  <div class="menu-header"><span>Menu</span><div class="menu-header-actions"><button class="menu-close" id="theme-toggle" title="Toggle theme">&#127769;</button><button class="menu-close" id="menu-close">&times;</button></div></div>
+  <div class="menu-item" id="import-db">&#128229; Import database (file)</div>
+  <div class="menu-item" id="import-paste">&#128229; Import database (text)</div>
+  <div class="menu-item" id="export-db">&#128228; Export database</div>
+  <div class="menu-item" id="github-sync">&#9729;&#65039; GitHub sync</div>
+  <div class="menu-item" id="edit-chars">&#9999;&#65039; Edit characters</div>
+  <div class="menu-item" id="edit-compounds">&#9999;&#65039; Edit compounds</div>
+  <div class="menu-item" id="edit-sentences">&#9999;&#65039; Edit sentences</div>
+  <div class="menu-item" id="edit-newwords">&#9999;&#65039; Edit new words</div>
+  <div class="menu-item" id="edit-dictionary">&#9999;&#65039; Edit dictionary</div>
   <div style="flex:1"></div>
-  <div class="menu-item" id="reset-db" style="color:var(--danger);border-top:1px solid var(--border);padding-top:12px">🗑️ Reset Data</div>
+  <div class="menu-item" id="reset-db" style="color:var(--danger);border-top:1px solid var(--border);padding-top:12px">&#128465;&#65039; Reset data</div>
   <div class="db-info-item" id="db-info">No database loaded</div>
 </div>
 
 <div class="modal" id="export-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('export-modal')">×</button>
-    <div class="modal-header">Export (iOS: Copy & Paste)</div>
+    <button class="modal-close" onclick="closeModal('export-modal')">&times;</button>
+    <div class="modal-header">Export (iOS: Copy &amp; Paste)</div>
     <textarea class="export-text" id="export-text" readonly></textarea>
-    <button class="btn btn-primary" id="copy-export">📋 Copy</button>
+    <button class="btn btn-primary" id="copy-export">&#128203; Copy</button>
   </div>
 </div>
 
 <div class="modal" id="edit-db-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-db-modal')">×</button>
+    <button class="modal-close" onclick="closeModal('edit-db-modal')">&times;</button>
     <div class="modal-header" id="edit-db-title">Edit Database</div>
-    <textarea id="edit-db-text" style="width:100%;height:300px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <div class="modal-hint" id="edit-db-hint"></div>
+    <textarea id="edit-db-text" class="modal-textarea" style="height:300px"></textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-db-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-db-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button onclick="document.getElementById('edit-db-text').value=''" class="mini-btn mini-danger">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-db-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
       <button class="btn btn-primary" id="save-db-edit" style="margin-left:auto;padding:8px 12px">Save</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="reset-modal">
-  <div class="modal-content" style="max-width:400px">
-    <div style="text-align:center;font-size:48px;margin-bottom:16px">⚠️</div>
-    <div class="modal-header" style="text-align:center">Reset All Progress?</div>
-    <div style="font-size:13px;color:var(--text);margin:20px 0;line-height:1.6">
-      <p style="margin-bottom:12px">This will permanently clear:</p>
-      <ul style="list-style:none;padding:0;margin:0 0 12px 0">
-        <li style="padding:4px 0">❌ Forgot marks</li>
-        <li style="padding:4px 0">❌ Completed sentences</li>
-        <li style="padding:4px 0">❌ New words list</li>
+  <div class="modal-content" style="max-width:360px">
+    <div style="text-align:center;font-size:40px;margin-bottom:10px">&#9888;&#65039;</div>
+    <div class="modal-header" style="text-align:center;padding-right:0">Reset all progress?</div>
+    <div style="font-size:13px;color:var(--text);margin:16px 0;line-height:1.6">
+      <p style="margin-bottom:10px;color:var(--gray)">This will permanently clear:</p>
+      <ul class="reset-list">
+        <li>Forgot marks</li>
+        <li>Completed sentences</li>
+        <li>New words list</li>
       </ul>
-      <p style="margin-bottom:0">✅ Vocabulary data will remain</p>
+      <p class="reset-keep">Vocabulary data will remain</p>
     </div>
     <div style="display:flex;gap:8px">
-      <button onclick="closeModal('reset-modal')" style="flex:1;padding:10px;background:var(--gray);color:white;border:none;border-radius:6px;font-size:14px;font-weight:600">Cancel</button>
-      <button onclick="confirmReset()" style="flex:1;padding:10px;background:var(--danger);color:white;border:none;border-radius:6px;font-size:14px;font-weight:600">Reset</button>
+      <button onclick="closeModal('reset-modal')" class="btn btn-secondary" style="flex:1;padding:11px">Cancel</button>
+      <button onclick="confirmReset()" class="btn" style="flex:1;padding:11px;background:var(--danger);color:#fff">Reset</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="edit-sentences-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-sentences-modal')">×</button>
-    <div class="modal-header">Edit Sentences</div>
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: sentence_id,sentence_text,translation,hsk_level,category,completed</div>
-    <textarea id="edit-sentences-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <button class="modal-close" onclick="closeModal('edit-sentences-modal')">&times;</button>
+    <div class="modal-header">Edit sentences</div>
+    <div class="modal-hint">Format: sentence_id,sentence_text,translation,hsk_level,category,completed</div>
+    <textarea id="edit-sentences-text" style="width:100%;height:250px" class="modal-textarea"></textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-sentences-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-sentences-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button onclick="document.getElementById('edit-sentences-text').value=''" class="mini-btn mini-danger">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-sentences-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
       <button class="btn btn-primary" id="save-sentences-edit" style="margin-left:auto;padding:8px 12px">Save</button>
     </div>
   </div>
@@ -396,13 +601,13 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <div class="modal" id="edit-newwords-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-newwords-modal')">×</button>
-    <div class="modal-header">Edit New Words</div>
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: id,word,pinyin,meaning,first_seen_sentence,status,user_notes</div>
-    <textarea id="edit-newwords-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <button class="modal-close" onclick="closeModal('edit-newwords-modal')">&times;</button>
+    <div class="modal-header">Edit new words</div>
+    <div class="modal-hint">Format: id,word,pinyin,meaning,first_seen_sentence,status,user_notes</div>
+    <textarea id="edit-newwords-text" style="width:100%;height:250px" class="modal-textarea"></textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-newwords-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-newwords-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button onclick="document.getElementById('edit-newwords-text').value=''" class="mini-btn mini-danger">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-newwords-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
       <button class="btn btn-primary" id="save-newwords-edit" style="margin-left:auto;padding:8px 12px">Save</button>
     </div>
   </div>
@@ -410,13 +615,13 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <div class="modal" id="edit-dictionary-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-dictionary-modal')">×</button>
-    <div class="modal-header">Edit Dictionary</div>
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Format: hanzi,pinyin,meaning &nbsp;|&nbsp; Kata di sini tetap <span style="color:var(--danger);font-weight:600">merah</span> di Sentences</div>
-    <textarea id="edit-dictionary-text" style="width:100%;height:250px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px"></textarea>
+    <button class="modal-close" onclick="closeModal('edit-dictionary-modal')">&times;</button>
+    <div class="modal-header">Edit dictionary</div>
+    <div class="modal-hint">Format: hanzi,pinyin,meaning &nbsp;|&nbsp; Words here stay <span style="color:var(--danger);font-weight:600">red</span> in Sentences</div>
+    <textarea id="edit-dictionary-text" style="width:100%;height:250px" class="modal-textarea"></textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-dictionary-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button onclick="document.getElementById('edit-dictionary-text').value=''" class="mini-btn mini-danger">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
       <button class="btn btn-primary" id="save-dictionary-edit" style="margin-left:auto;padding:8px 12px">Save</button>
     </div>
   </div>
@@ -424,39 +629,39 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <div class="modal" id="github-sync-modal">
   <div class="modal-content" style="max-width:400px">
-    <button class="modal-close" onclick="closeModal('github-sync-modal')">×</button>
-    <div class="modal-header">☁️ GitHub Gist Sync</div>
-    <div style="font-size:11px;color:var(--gray);margin-bottom:12px">Token dan Gist ID disimpan di browser (localStorage) dan tidak dikirim ke mana pun selain GitHub.</div>
+    <button class="modal-close" onclick="closeModal('github-sync-modal')">&times;</button>
+    <div class="modal-header">GitHub Gist Sync</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:12px">Token and Gist ID are stored in your browser (localStorage) and are only sent to GitHub.</div>
     <div style="margin-bottom:8px">
       <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Personal Access Token</label>
-      <input type="password" id="gh-token" placeholder="ghp_..." style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+      <input type="password" id="gh-token" placeholder="ghp_..." class="gh-input">
     </div>
     <div style="margin-bottom:8px">
       <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Gist ID</label>
-      <input type="text" id="gh-gist-id" placeholder="bd8f01caecb1c151f6b625d924fd939c" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+      <input type="text" id="gh-gist-id" placeholder="bd8f01caecb1c151f6b625d924fd939c" class="gh-input">
     </div>
-    <div style="margin-bottom:16px">
-      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Nama File di Gist</label>
-      <input type="text" id="gh-filename" placeholder="mandarin-database.txt" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:monospace">
+    <div style="margin-bottom:8px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Gist file name</label>
+      <input type="text" id="gh-filename" placeholder="mandarin-database.txt" class="gh-input">
     </div>
-    <div id="gh-status" style="font-size:11px;color:var(--gray);margin-bottom:12px;min-height:16px"></div>
+    <div id="gh-status" style="font-size:11px;color:var(--gray);margin-bottom:8px;min-height:14px"></div>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-secondary" id="gh-save-settings" style="flex:1">💾 Simpan Setting</button>
-      <button class="btn btn-primary" id="gh-pull" style="flex:1">⬇️ Pull</button>
-      <button class="btn btn-primary" id="gh-push" style="flex:1;background:var(--success)">⬆️ Push</button>
+      <button class="btn btn-secondary" id="gh-save-settings" style="flex:1;padding:10px">Save settings</button>
+      <button class="btn btn-primary" id="gh-pull" style="flex:1;padding:10px">Pull</button>
+      <button class="btn btn-primary" id="gh-push" style="flex:1;padding:10px;background:var(--success)">Push</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="import-paste-modal">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('import-paste-modal')">×</button>
+    <button class="modal-close" onclick="closeModal('import-paste-modal')">&times;</button>
     <div class="modal-header">Import Database (Paste)</div>
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px">Paste isi file TXT database di bawah, lalu tekan Import.</div>
-    <textarea id="import-paste-text" style="width:100%;height:300px;font-family:monospace;font-size:11px;padding:8px;border:1px solid var(--border);border-radius:4px" placeholder="Paste database TXT di sini..."></textarea>
+    <div class="modal-hint">Paste the database TXT content below, then press Import.</div>
+    <textarea id="import-paste-text" class="modal-textarea" style="height:300px" placeholder="Paste database TXT here..."></textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('import-paste-text').value=''" style="padding:8px 12px;background:var(--danger);color:white;border:none;border-radius:4px;font-size:12px">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('import-paste-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" style="padding:8px 12px;background:var(--gray);color:white;border:none;border-radius:4px;font-size:12px">Paste</button>
+      <button onclick="document.getElementById('import-paste-text').value=''" class="mini-btn mini-danger">Delete</button>
+      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('import-paste-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
       <button class="btn btn-primary" id="save-import-paste" style="margin-left:auto;padding:8px 12px">Import</button>
     </div>
   </div>
@@ -464,18 +669,18 @@ label{font-size:12px;display:flex;align-items:center;gap:4px}
 
 <div class="modal" id="import-success-modal">
   <div class="modal-content" style="max-width:320px;text-align:center">
-    <div style="font-size:36px;margin-bottom:8px">✅</div>
-    <div class="modal-header" style="text-align:center;margin-bottom:16px">Import Berhasil</div>
-    <div id="import-stats" style="font-size:13px;line-height:2;text-align:left;background:#f9fafb;border-radius:6px;padding:12px;margin-bottom:16px"></div>
+    <div style="font-size:36px;margin-bottom:8px">&#9989;</div>
+    <div class="modal-header" style="text-align:center;margin-bottom:16px">Import successful</div>
+    <div id="import-stats" style="font-size:13px;line-height:2;text-align:left;border-radius:6px;padding:12px;margin-bottom:16px"></div>
     <button onclick="closeModal('import-success-modal')" class="btn btn-primary" style="width:100%">OK</button>
   </div>
 </div>
 
 <div class="modal" id="save-success-modal">
   <div class="modal-content" style="max-width:280px;text-align:center">
-    <div style="font-size:32px;margin-bottom:8px">✅</div>
-    <div class="modal-header" style="text-align:center;margin-bottom:12px" id="save-success-title">Tersimpan</div>
-    <div id="save-success-stats" style="font-size:13px;background:#f9fafb;border-radius:6px;padding:10px;margin-bottom:16px;text-align:left"></div>
+    <div style="font-size:32px;margin-bottom:8px">&#9989;</div>
+    <div class="modal-header" style="text-align:center;margin-bottom:12px" id="save-success-title">Saved</div>
+    <div id="save-success-stats" style="font-size:13px;border-radius:6px;padding:10px;margin-bottom:16px;text-align:left"></div>
     <button onclick="closeModal('save-success-modal')" class="btn btn-primary" style="width:100%">OK</button>
   </div>
 </div>
@@ -491,9 +696,85 @@ document.addEventListener('DOMContentLoaded',init);
 
 function init(){
   loadFromStorage();
+  loadPrefs();
+  loadTheme();
   setupEvents();
   setupFABDrag();
+  setupDragScroll();
   render();
+  setupEdgeFades();
+}
+
+// ====== Preferensi tampilan (per perangkat, localStorage) ======
+function loadPrefs(){
+  try{
+    const p=JSON.parse(localStorage.getItem('mandarin-prefs')||'{}');
+    if('pinyin' in p) document.getElementById('show-pinyin').checked=p.pinyin;
+    if('meaning' in p) document.getElementById('show-meaning').checked=p.meaning;
+    if('hideDone' in p) document.getElementById('sentence-hide-done').checked=p.hideDone;
+  }catch(e){}
+}
+function savePrefs(){
+  const p={
+    pinyin:document.getElementById('show-pinyin').checked,
+    meaning:document.getElementById('show-meaning').checked,
+    hideDone:document.getElementById('sentence-hide-done').checked
+  };
+  localStorage.setItem('mandarin-prefs',JSON.stringify(p));
+}
+
+// ====== Dark mode (per perangkat) ======
+function applyThemeIcon(dark){
+  const t=document.getElementById('theme-toggle');
+  if(t)t.innerHTML=dark?'&#9728;&#65039;':'&#127769;';
+}
+function loadTheme(){
+  const dark=localStorage.getItem('mandarin-theme')==='dark';
+  document.body.classList.toggle('dark',dark);
+  applyThemeIcon(dark);
+}
+function toggleTheme(){
+  const dark=!document.body.classList.contains('dark');
+  document.body.classList.toggle('dark',dark);
+  localStorage.setItem('mandarin-theme',dark?'dark':'light');
+  applyThemeIcon(dark);
+}
+
+// ====== Toast kecil ======
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ====== Getar halus (HP) ======
+function buzz(ms){ if(navigator.vibrate){ try{navigator.vibrate(ms||12);}catch(e){} } }
+
+// ====== Drag-to-scroll untuk baris filter A-Z/HSK ======
+function setupDragScroll(){
+  document.querySelectorAll('.filter-buttons-scroll').forEach(el=>{
+    if(el.dataset.dragBound==='1')return;
+    el.dataset.dragBound='1';
+    let down=false,moved=false,startX=0,startLeft=0;
+    const start=x=>{down=true;moved=false;startX=x;startLeft=el.scrollLeft;};
+    const move=x=>{
+      if(!down)return;
+      const dx=x-startX;
+      if(Math.abs(dx)>5)moved=true;
+      if(moved)el.scrollLeft=startLeft-dx;
+    };
+    const end=()=>{down=false;setTimeout(()=>{moved=false;},0);};
+    el.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')return;start(e.clientX);});
+    el.addEventListener('pointermove',e=>{if(down){e.preventDefault();move(e.clientX);}});
+    el.addEventListener('pointerup',end);
+    el.addEventListener('pointerleave',end);
+    el.addEventListener('pointercancel',end);
+    // Cegah klik tombol huruf saat sedang men-drag
+    el.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();}},true);
+  });
 }
 
 function loadFromStorage(){
@@ -525,14 +806,14 @@ function updateDBInfo(){
     document.getElementById('db-info').innerHTML='No database loaded';
     return;
   }
-  const vocabChars=db.characters.filter(c=>c.show_in_list==1||c.show_in_list=='1'||!('show_in_list' in c)).length;
-  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==1||c.show_in_list=='1'||!('show_in_list' in c)).length;
+  const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
   const totalVocab=vocabChars+vocabCompounds;
+  const lastSync=localStorage.getItem('gh-last-sync')||'Never';
   document.getElementById('db-info').innerHTML=`
-    <div style="font-weight:600;margin-bottom:4px">${db.filename}</div>
-    <div style="font-size:10px;color:var(--gray)">
-      Vocabulary: ${totalVocab} (${vocabChars} chars + ${vocabCompounds} words)
-    </div>
+    <div style="font-weight:600;margin-bottom:2px">${db.filename}</div>
+    <div style="font-size:10px;color:var(--gray)">Vocabulary: ${totalVocab} (${vocabChars} chars + ${vocabCompounds} words)</div>
+    <div style="font-size:10px;color:var(--gray);margin-top:2px">Last sync: ${lastSync}</div>
   `;
 }
 
@@ -541,6 +822,8 @@ function updateDBInfo(){
 // ========================================
 function setupEvents(){
   document.getElementById('menu-toggle').addEventListener('click',toggleMenu);
+  document.getElementById('menu-close').addEventListener('click',toggleMenu);
+  document.getElementById('theme-toggle').addEventListener('click',toggleTheme);
   document.getElementById('menu-overlay').addEventListener('click',toggleMenu);
   document.getElementById('import-db').addEventListener('click',importDB);
   document.getElementById('import-paste').addEventListener('click',()=>{
@@ -585,8 +868,8 @@ function setupEvents(){
   document.getElementById('filter-forgot').addEventListener('change',renderFlashcards);
   document.getElementById('filter-new').addEventListener('change',renderFlashcards);
   document.getElementById('filter-isolated').addEventListener('change',renderFlashcards);
-  document.getElementById('show-pinyin').addEventListener('change',render);
-  document.getElementById('show-meaning').addEventListener('change',render);
+  document.getElementById('show-pinyin').addEventListener('change',()=>{savePrefs();render();});
+  document.getElementById('show-meaning').addEventListener('change',()=>{savePrefs();render();});
 
   document.getElementById('panel-close').addEventListener('click',togglePanel);
   document.getElementById('panel-overlay').addEventListener('click',togglePanel);
@@ -603,8 +886,9 @@ function setupEvents(){
   document.getElementById('save-dictionary-edit').addEventListener('click',saveDictionaryEdit);
 
   document.getElementById('reset-sentences').addEventListener('click',resetSentences);
-  document.getElementById('sentence-hide-done').addEventListener('change',renderSentences);
+  document.getElementById('sentence-hide-done').addEventListener('change',()=>{savePrefs();renderSentences();});
   document.getElementById('sentence-known-only').addEventListener('change',renderSentences);
+  document.getElementById('sentence-forgot-only').addEventListener('change',renderSentences);
 
   // Listener sentences — dipasang sekali di sini, tidak di renderSentences
   document.getElementById('sentence-list').addEventListener('click',handleSentenceClick);
@@ -614,6 +898,7 @@ function setupEvents(){
   document.getElementById('db-filter-new').addEventListener('change',renderDatabase);
   document.getElementById('db-filter-isolated').addEventListener('change',renderDatabase);
   document.getElementById('db-filter-showlist').addEventListener('change',renderDatabase);
+  document.getElementById('db-col-showhide').addEventListener('change',renderDatabase);
 
   window.addEventListener('scroll',closeBalloon);
   // Tidak tutup balloon saat scroll sentences — supaya translation tetap terbuka
@@ -652,7 +937,7 @@ function setupFABDrag(){
     const onUp=()=>{
       document.removeEventListener('mousemove',onMove);
       document.removeEventListener('mouseup',onUp);
-      if(!isDragging)togglePanel();
+      if(!isDragging)togglePanel(); else clampFab();
     };
     document.addEventListener('mousemove',onMove);
     document.addEventListener('mouseup',onUp);
@@ -680,7 +965,22 @@ function setupFABDrag(){
     }
   });
 
-  fab.addEventListener('touchend',()=>{if(!isDragging)togglePanel()});
+  fab.addEventListener('touchend',()=>{if(!isDragging)togglePanel(); else clampFab();});
+  window.addEventListener('resize',clampFab);
+}
+
+// Jaga FAB tetap di dalam layar (mis. setelah resize/rotasi)
+function clampFab(){
+  const fab=document.getElementById('fab-btn');
+  if(!fab.style.left&&!fab.style.top)return; // belum pernah dipindah, posisi default aman
+  const r=fab.getBoundingClientRect();
+  const m=8;
+  const left=Math.min(Math.max(m,r.left),window.innerWidth-r.width-m);
+  const top=Math.min(Math.max(m,r.top),window.innerHeight-r.height-m);
+  fab.style.left=left+'px';
+  fab.style.top=top+'px';
+  fab.style.right='auto';
+  fab.style.bottom='auto';
 }
 
 // ========================================
@@ -710,6 +1010,7 @@ function switchTab(tab){
   // Restore scroll position
   requestAnimationFrame(()=>{
     window.scrollTo(0,state.scrollPos[tab]||0);
+    updateEdgeFades();
   });
 }
 
@@ -770,10 +1071,35 @@ function switchPanelTab(tab){
 }
 
 function render(){
+  renderHSKButtons();
   updateCardFontSize();
   renderFlashcards();
   renderDatabase();
   updateCounts();
+}
+
+function renderHSKButtons(){
+  const allItems=[...db.characters,...db.compounds];
+  const levels=[...new Set(allItems.map(i=>parseInt(i.hsk_level)).filter(n=>!isNaN(n)))].sort((a,b)=>a-b);
+
+  ['hsk-filter-btns','db-hsk-filter-btns'].forEach((containerId,idx)=>{
+    const type=idx===0?'hsk':'db-hsk';
+    const container=document.getElementById(containerId);
+    if(!container)return;
+    // Reset state filters
+    if(type==='hsk')state.hskFilters=[];
+    else state.dbHskFilters=[];
+    // Rebuild buttons
+    container.innerHTML=`<button class="filter-btn active" data-filter-type="${type}" data-value="all">All</button>`
+      +levels.map(l=>`<button class="filter-btn" data-filter-type="${type}" data-value="${l}">${l}</button>`).join('');
+    // Re-bind click events
+    container.querySelectorAll('.filter-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>toggleFilter(btn));
+    });
+    // Re-bind wheel scroll
+    container.addEventListener('wheel',e=>{e.preventDefault();container.scrollLeft+=e.deltaY;},{passive:false});
+  });
+  setupDragScroll();
 }
 
 function updateCardFontSize(){
@@ -827,21 +1153,21 @@ function renderCardHTML(item,isNewWord,showPinyin,showMeaning){
   }
 
   let backHTML=`
-    <div style="font-weight:600;margin-bottom:4px">${display} ${showPinyin?`(${item.pinyin})`:''}</div>
-    ${showMeaning?`<div style="margin-bottom:6px">${item.meaning}</div>`:''}
+    <div class="cb-head">${display}</div>
+    ${showPinyin&&item.pinyin?`<div class="cb-pin">${item.pinyin}</div>`:''}
+    ${showMeaning&&item.meaning?`<div class="cb-mean">${item.meaning}</div>`:''}
   `;
 
   const relatedIds=(item.related_ids||'').split(',').filter(id=>id.trim());
   const antonymIds=(item.antonym_ids||'').split(',').filter(id=>id.trim());
   if(relatedIds.length>0||antonymIds.length>0){
-    backHTML+='<div style="font-size:10px;line-height:1.6">';
     if(relatedIds.length>0){
       const relatedItems=relatedIds.map(id=>{
         const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
         return rel?`${rel.hanzi||rel.word} (${rel.pinyin} | ${rel.meaning})`:'';
       }).filter(Boolean);
       if(relatedItems.length>0){
-        backHTML+=`<div style="background:#dbeafe;padding:6px 8px;border-radius:4px;margin-bottom:4px;line-height:1.5">${relatedItems.join(', ')}</div>`;
+        backHTML+=`<div class="cb-chip cb-rel">${relatedItems.join(', ')}</div>`;
       }
     }
     if(antonymIds.length>0){
@@ -850,17 +1176,18 @@ function renderCardHTML(item,isNewWord,showPinyin,showMeaning){
         return ant?`${ant.hanzi||ant.word} (${ant.pinyin} | ${ant.meaning})`:'';
       }).filter(Boolean);
       if(antonymItems.length>0){
-        backHTML+=`<div style="background:#fed7aa;padding:6px 8px;border-radius:4px;line-height:1.5">${antonymItems.join(', ')}</div>`;
+        backHTML+=`<div class="cb-chip cb-ant">${antonymItems.join(', ')}</div>`;
       }
     }
-    backHTML+='</div>';
   }
 
   return `
     <div class="card ${isForgot?'forgot':''} ${state.expandedCard==cardId?'expanded':''}" data-card-id="${cardId}">
-      <div class="forgot-btn ${isForgot?'marked':''}" data-item-id="${cardId}">${isForgot?'✓':'❌'}</div>
-      <div class="card-front">${frontHTML}</div>
-      <div class="card-back">${backHTML}</div>
+      <div class="forgot-btn ${isForgot?'marked':''}" data-item-id="${cardId}">${isForgot?'✓':'✕'}</div>
+      <div class="card-flip-inner">
+        <div class="card-front">${frontHTML}</div>
+        <div class="card-back">${backHTML}</div>
+      </div>
     </div>
   `;
 }
@@ -939,7 +1266,9 @@ function renderFlashcards(){
 
 function toggleCard(id){
   state.expandedCard=state.expandedCard==id?null:id;
-  renderFlashcards();
+  document.querySelectorAll('#flashcard-grid .card').forEach(c=>{
+    c.classList.toggle('expanded', state.expandedCard!=null && c.dataset.cardId===String(state.expandedCard));
+  });
 }
 
 function markForgot(id){
@@ -953,9 +1282,11 @@ function markForgot(id){
   if(!item)return;
   item.forgot=item.forgot==1?0:1;
   item.forgot_count=parseInt(item.forgot_count||0)+(item.forgot==1?1:-1);
+  buzz(item.forgot==1?16:10);
   saveToStorage();
   renderFlashcards();
   updateCounts();
+  autoPush();
 }
 
 function showBalloon(charId,compoundId,element){
@@ -1003,13 +1334,10 @@ function showBalloon(charId,compoundId,element){
 
   balloon.innerHTML=html;
   const rect=element.getBoundingClientRect();
-  let left=rect.left;
-  const balloonWidth=300;
-  if(left+balloonWidth>window.innerWidth)left=window.innerWidth-balloonWidth-10;
-  if(left<10)left=10;
-  balloon.style.left=left+'px';
+  balloon.style.left='0px';
   balloon.style.top=rect.bottom+'px';
   balloon.classList.add('show');
+  pointBalloonArrow(balloon,rect);
   state.activeBalloonEl=element;
   requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
 }
@@ -1072,6 +1400,7 @@ function renderSentences(){
   const container=document.getElementById('sentence-list');
   const hideDone=document.getElementById('sentence-hide-done').checked;
   const knownOnly=document.getElementById('sentence-known-only').checked;
+  const forgotOnly=document.getElementById('sentence-forgot-only').checked;
 
   if(db.sentences.length===0){
     container.innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No sentences. Import database.</p>';
@@ -1085,6 +1414,10 @@ function renderSentences(){
     // Filter known-only: sembunyikan kalimat yang ada token merah (bukan punct)
     const hasNew=tokens.some(t=>t.source!=='core'&&t.source!=='punct');
     if(knownOnly&&hasNew)return '';
+
+    // Filter forgot-only: hanya tampilkan kalimat yang ada token forgot
+    const hasForgot=tokens.some(t=>t.source==='core'&&t.item&&t.item.forgot==1);
+    if(forgotOnly&&!hasForgot)return '';
 
     const hideClass=hideDone&&isCompleted?'hidden':'';
 
@@ -1104,12 +1437,12 @@ function renderSentences(){
     const translation=s.translation||'';
 
     return `
-      <div class="sentence-item ${hideClass}" data-idx="${idx}" style="position:relative${isCompleted?';background:#f0fdf4;border-color:#86efac':''}">
-        <div style="position:absolute;top:8px;right:12px;text-align:right">
-          <div style="font-size:10px;color:var(--gray);margin-bottom:2px">#${s.sentence_id||idx+1}</div>
+      <div class="sentence-item ${hideClass}${isCompleted?' done':''}" data-idx="${idx}" style="position:relative">
+        <div style="position:absolute;top:8px;right:12px">
+          <div style="font-size:10px;color:var(--gray);margin-bottom:2px;width:28px;text-align:center;margin-left:auto">#${s.sentence_id||idx+1}</div>
           <div style="display:flex;gap:8px">
-            <button data-action="toggle-trans" data-idx="${idx}" style="background:none;border:none;font-size:20px;padding:4px;cursor:pointer;line-height:1" title="Lihat Arti">👁</button>
-            <button data-action="mark-done" data-idx="${idx}" style="background:none;border:none;font-size:20px;padding:4px;cursor:pointer;line-height:1" title="Sudah">${isCompleted?'✅':'✓'}</button>
+            <button class="eye-btn${isCompleted?'':''}" data-action="toggle-trans" data-idx="${idx}" title="View meaning">👁</button>
+            <button class="done-btn${isCompleted?' is-done':''}" data-action="mark-done" data-idx="${idx}" title="Done">✓</button>
           </div>
         </div>
         <div class="sentence-text">${tokenHTML}</div>
@@ -1176,26 +1509,49 @@ function showBalloonSentence(charId,element,source){
 
   const balloon=document.getElementById('balloon');
   balloon.innerHTML=`
-    <div style="font-size:13px;line-height:1.6">
+    <div style="font-size:12px;line-height:1.5">
       <div class="hanzi-title">${hanzi}</div>
       ${showPinyin&&char.pinyin&&char.pinyin!=='-'?`<div style="font-size:11px;color:var(--gray)">${char.pinyin}</div>`:''}
       ${showMeaning&&char.meaning?`<div style="font-size:11px">${char.meaning}</div>`:''}
-      ${itemId?`<div onclick="markForgotFromBalloon('${itemId}')" style="text-align:center;margin-top:4px;cursor:pointer;user-select:none">${isForgot?'✓':'❌'}</div>`:''}
+      ${(itemId&&source==='core')?`<div onclick="markForgotFromBalloon('${itemId}')" style="text-align:center;margin-top:4px;cursor:pointer;user-select:none">${isForgot?'✓':'❌'}</div>`:''}
     </div>
   `;
 
   // Balloon pakai position:fixed — koordinat viewport murni, tanpa scrollY
   const rect=element.getBoundingClientRect();
-  const balloonMaxWidth=200;
-  let left=rect.left;
-  let top=rect.bottom+4;
-  if(left+balloonMaxWidth>window.innerWidth) left=window.innerWidth-balloonMaxWidth-10;
-  if(left<10)left=10;
-  balloon.style.left=left+'px';
-  balloon.style.top=top+'px';
+  balloon.style.left='0px';
+  balloon.style.top=(rect.bottom+4)+'px';
   balloon.classList.add('show');
+  pointBalloonArrow(balloon,rect);
   state.activeBalloonEl=element;
   requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
+}
+
+function pointBalloonArrow(balloon,rect){
+  const bw=balloon.offsetWidth||200;
+  const center=rect.left+rect.width/2;
+  let left=center-bw/2;
+  left=Math.max(8,Math.min(window.innerWidth-bw-8,left));
+  balloon.style.left=left+'px';
+  let a=center-left;
+  a=Math.max(14,Math.min(bw-24,a));
+  balloon.style.setProperty('--arrow-left',a+'px');
+}
+
+function setupEdgeFades(){
+  const sels=['#flashcard-tab .filter-buttons-scroll','#flashcard-tab .checkbox-scroll','#sentence-tab .filter-row','#database-tab .filter-buttons-scroll','#database-tab .filter-row'];
+  sels.forEach(s=>document.querySelectorAll(s).forEach(el=>{
+    el.classList.add('edge-fade');
+    el.addEventListener('scroll',()=>requestAnimationFrame(updateEdgeFades),{passive:true});
+  }));
+  window.addEventListener('resize',()=>requestAnimationFrame(updateEdgeFades));
+  updateEdgeFades();
+}
+function updateEdgeFades(){
+  document.querySelectorAll('.edge-fade').forEach(el=>{
+    el.classList.toggle('at-start',el.scrollLeft<=1);
+    el.classList.toggle('at-end',el.scrollLeft+el.clientWidth>=el.scrollWidth-1);
+  });
 }
 
 function markForgotFromBalloon(itemId){
@@ -1203,6 +1559,7 @@ function markForgotFromBalloon(itemId){
   if(!item)return;
   item.forgot=item.forgot==1?0:1;
   item.forgot_count=parseInt(item.forgot_count||0)+(item.forgot==1?1:-1);
+  buzz(item.forgot==1?16:10);
   saveToStorage();
   updateCounts();
   // Update warna kata di sentences secara targeted tanpa re-render
@@ -1213,6 +1570,7 @@ function markForgotFromBalloon(itemId){
     }
   });
   closeBalloon();
+  autoPush();
 }
 
 function closeBalloon(){
@@ -1230,13 +1588,17 @@ function closeBalloonOutside(e){
 }
 
 function toggleTranslation(idx){
-  document.getElementById(`trans-${idx}`).classList.toggle('show');
+  const open=document.getElementById(`trans-${idx}`).classList.toggle('show');
+  const eye=document.querySelector(`.eye-btn[data-idx="${idx}"]`);
+  if(eye)eye.classList.toggle('active',open);
 }
 
 function markSentenceDone(idx){
   db.sentences[idx].completed=db.sentences[idx].completed==1?0:1;
+  buzz(db.sentences[idx].completed==1?16:10);
   saveToStorage();
   renderSentences();
+  autoPush();
 }
 
 function resetSentences(){
@@ -1252,6 +1614,12 @@ function renderDatabase(){
   const newOnly=document.getElementById('db-filter-new').checked;
   const isolatedOnly=document.getElementById('db-filter-isolated').checked;
   const showListFilter=document.getElementById('db-filter-showlist').value;
+  const colMode=(document.getElementById('db-col-showhide')||{}).value||'all';
+  const dbTable=document.querySelector('#database-tab .db-table');
+  if(dbTable){
+    dbTable.classList.toggle('hide-pinyin',colMode==='no-pinyin'||colMode==='no-both');
+    dbTable.classList.toggle('hide-meaning',colMode==='no-meaning'||colMode==='no-both');
+  }
 
   let items;
   if(showListFilter==='1'){
@@ -1321,18 +1689,19 @@ function renderDatabase(){
     if(state.dbHskFilters.length>0) nwItems=[];
     if(nwItems.length>0){
       const offset=items.length;
-      nwRows=`<tr><td colspan="6" style="background:#f9fafb;font-size:10px;color:var(--gray);text-align:center;padding:6px;border-top:2px dashed var(--border)">New Words</td></tr>`
+      nwRows=`<tr class="nw-divider"><td colspan="6">New Words</td></tr>`
         +nwItems.map((w,i)=>{
-          const related=[w.char_id_1,w.char_id_2,w.char_id_3,w.char_id_4].filter(Boolean).map(id=>{
+          const relArr=[w.char_id_1,w.char_id_2,w.char_id_3,w.char_id_4].filter(Boolean).map(id=>{
             const c=db.characters.find(c=>c.id==id);
             return c?c.hanzi:'';
-          }).filter(Boolean).join(', ');
-          return `<tr style="background:#fffbeb">
+          }).filter(Boolean);
+          const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
+          return `<tr class="nw-row">
             <td>${offset+i+1}</td>
             <td>${w.word||''}</td>
             <td>${w.pinyin||''}</td>
             <td>${w.meaning||''}</td>
-            <td title="${related}">${related}</td>
+            <td title="${relArr.join(', ')}">${related}</td>
             <td></td>
           </tr>`;
         }).join('');
@@ -1340,22 +1709,24 @@ function renderDatabase(){
   }
 
   tbody.innerHTML=items.map((i,idx)=>{
-    const related=(i.related_ids||'').split(',').filter(id=>id.trim()).map(id=>{
+    const relArr=(i.related_ids||'').split(',').filter(id=>id.trim()).map(id=>{
       const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
       return rel?(rel.hanzi||rel.word):'';
-    }).filter(Boolean).join(', ');
-    const antonym=(i.antonym_ids||'').split(',').filter(id=>id.trim()).map(id=>{
+    }).filter(Boolean);
+    const antArr=(i.antonym_ids||'').split(',').filter(id=>id.trim()).map(id=>{
       const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
       return ant?(ant.hanzi||ant.word):'';
-    }).filter(Boolean).join(', ');
+    }).filter(Boolean);
+    const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
+    const antonym=antArr.map(x=>`<span class="dbchip dbchip-ant">${x}</span>`).join('');
     return `
-      <tr${i.forgot==1?' style="background:#fef2f2"':''}>
+      <tr${i.forgot==1?' class="forgot-row"':''}>
         <td>${idx+1}</td>
         <td>${i.hanzi||i.word}</td>
         <td>${i.pinyin}</td>
         <td>${i.meaning}</td>
-        <td title="${related}">${related}</td>
-        <td title="${antonym}">${antonym}</td>
+        <td title="${relArr.join(', ')}">${related}</td>
+        <td title="${antArr.join(', ')}">${antonym}</td>
       </tr>
     `;
   }).join('')+nwRows;
@@ -1372,114 +1743,149 @@ function renderNotesList(){
 
   if(isEditMode){
     container.innerHTML=`
-      <textarea id="notes-textarea" style="width:100%;height:300px;padding:8px;border:1px solid var(--border);border-radius:4px;font-size:13px;font-family:monospace;margin-bottom:8px" placeholder="Type hanzi here...">${noteContent}</textarea>
-      <button class="btn btn-primary" id="save-notes-btn">💾 Save & Preview</button>
-    `;
-    document.getElementById('save-notes-btn').addEventListener('click',()=>{
-      saveNotes();
-      state.notesEditMode=false;
-      renderNotesList();
-    });
-  }else{
-    container.innerHTML=`
-      <div id="notes-display" style="border:1px solid var(--border);padding:12px;border-radius:4px;background:#f9fafb;min-height:200px;line-height:2;font-size:14px;margin-bottom:8px"></div>
-      <button class="btn btn-secondary" id="edit-notes-btn">✏️ Edit</button>
-    `;
-    renderNotesWithRuby(noteContent);
-    document.getElementById('edit-notes-btn').addEventListener('click',()=>{
-      state.notesEditMode=true;
-      renderNotesList();
-    });
-  }
+      <div class="notes-wrap">
+        <button class="notes-edit-fab" id="save-notes-btn" title="Simpan">💾</button>
+        <textarea id="notes-textarea" class="notes-area" placeholder="Type hanzi here...">${noteContent}</textarea>
+
+```
+  </div>
+`;
+document.getElementById('save-notes-btn').addEventListener('click',()=>{
+  saveNotes();
+  state.notesEditMode=false;
+  renderNotesList();
+});
+```
+
+}else{
+container.innerHTML=`<div class="notes-wrap"> <button class="notes-edit-fab" id="edit-notes-btn" title="Edit">✏️</button> <div id="notes-display" class="notes-display"></div> </div>`;
+renderNotesWithRuby(noteContent);
+document.getElementById(‘edit-notes-btn’).addEventListener(‘click’,()=>{
+state.notesEditMode=true;
+renderNotesList();
+});
+}
 }
 
 function saveNotes(){
-  const content=document.getElementById('notes-textarea').value;
-  if(db.notes.length===0) db.notes.push({title:'My Notes',content});
-  else db.notes[0].content=content;
-  saveToStorage();
+const content=document.getElementById(‘notes-textarea’).value;
+if(db.notes.length===0) db.notes.push({title:‘My Notes’,content});
+else db.notes[0].content=content;
+saveToStorage();
 }
 
 function renderNotesWithRuby(content){
-  const display=document.getElementById('notes-display');
-  if(!display)return;
-  const lines=content.split('\n');
-  let html='';
-  lines.forEach(line=>{
-    let lineHTML='';
-    for(let i=0;i<line.length;i++){
-      const char=line[i];
-      if(/[\u4e00-\u9fff]/.test(char)){
-        const item=db.characters.find(c=>c.hanzi===char)||
-                   db.compounds.find(c=>c.word===char)||
-                   db.dictionary.find(d=>d.hanzi===char);
-        if(item&&item.pinyin){
-          lineHTML+=`<ruby>${char}<rt style="font-size:7px">${item.pinyin}</rt></ruby>`;
-        }else{
-          lineHTML+=`<ruby>${char}<rt style="font-size:7px">-</rt></ruby>`;
-        }
-      }else{
-        lineHTML+=char;
-      }
-    }
-    html+=lineHTML+'<br>';
-  });
-  display.innerHTML=html;
-  display.style.fontSize='20px';
+const display=document.getElementById(‘notes-display’);
+if(!display)return;
+const lines=content.split(’\n’);
+let html=’’;
+lines.forEach(line=>{
+let lineHTML=’’;
+for(let i=0;i<line.length;i++){
+const char=line[i];
+if(/[\u4e00-\u9fff]/.test(char)){
+const item=db.characters.find(c=>c.hanzi===char)||
+db.compounds.find(c=>c.word===char)||
+db.dictionary.find(d=>d.hanzi===char);
+if(item&&item.pinyin){
+lineHTML+=`<ruby>${char}<rt>${item.pinyin}</rt></ruby>`;
+}else{
+lineHTML+=`<ruby>${char}<rt>-</rt></ruby>`;
+}
+}else{
+lineHTML+=char;
+}
+}
+html+=lineHTML+’<br>’;
+});
+display.innerHTML=html;
+display.style.fontSize=‘20px’;
 }
 
 function renderForgotList(){
-  const forgot=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1);
-  if(forgot.length===0){
-    document.getElementById('panel-forgot').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No forgot words! 🎉</p>';
-    return;
-  }
-  // Sort pinyin A→Z
-  forgot.sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
-  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
-  forgot.forEach(i=>{
-    html+=`<tr><td>${i.hanzi||i.word}</td><td>${i.pinyin}</td><td>${i.meaning}</td></tr>`;
-  });
-  html+='</tbody></table>';
-  document.getElementById('panel-forgot').innerHTML=html;
+const forgot=[…db.characters,…db.compounds,…db.newWords].filter(i=>i.forgot==1);
+if(forgot.length===0){
+document.getElementById(‘panel-forgot’).innerHTML=’<p style="text-align:center;color:var(--gray);padding:20px">No forgot words! 🎉</p>’;
+return;
+}
+// Sort pinyin A→Z
+forgot.sort((a,b)=>removeTones(a.pinyin||’’).localeCompare(removeTones(b.pinyin||’’)));
+let html=’<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>’;
+forgot.forEach(i=>{
+html+=`<tr><td>${i.hanzi||i.word}</td><td>${i.pinyin}</td><td>${i.meaning}</td></tr>`;
+});
+html+=’</tbody></table>’;
+document.getElementById(‘panel-forgot’).innerHTML=html;
 }
 
 function renderNewList(){
-  if(db.newWords.length===0){
-    document.getElementById('panel-new').innerHTML='<p style="text-align:center;color:var(--gray);padding:20px">No new words yet.</p>';
-    return;
-  }
-  const sorted=[...db.newWords].sort((a,b)=>removeTones(a.pinyin||'').localeCompare(removeTones(b.pinyin||'')));
-  let html='<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>';
-  sorted.forEach(w=>{
-    html+=`<tr><td>${w.word||''}</td><td>${w.pinyin||''}</td><td>${w.meaning||'?'}</td></tr>`;
-  });
-  html+='</tbody></table>';
-  document.getElementById('panel-new').innerHTML=html;
+if(db.newWords.length===0){
+document.getElementById(‘panel-new’).innerHTML=’<p style="text-align:center;color:var(--gray);padding:20px">No new words yet.</p>’;
+return;
+}
+const sorted=[…db.newWords].sort((a,b)=>removeTones(a.pinyin||’’).localeCompare(removeTones(b.pinyin||’’)));
+let html=’<table class="db-table" style="font-size:10px"><thead><tr><th>Hanzi</th><th>Pinyin</th><th>Arti</th></tr></thead><tbody>’;
+sorted.forEach(w=>{
+html+=`<tr><td>${w.word||''}</td><td>${w.pinyin||''}</td><td>${w.meaning||'?'}</td></tr>`;
+});
+html+=’</tbody></table>’;
+document.getElementById(‘panel-new’).innerHTML=html;
 }
 
 function updateCounts(){
-  const forgotCount=[...db.characters,...db.compounds,...db.newWords].filter(i=>i.forgot==1).length;
-  document.getElementById('forgot-count').textContent=forgotCount;
-  document.getElementById('new-count').textContent=db.newWords.length;
+const forgotCount=[…db.characters,…db.compounds,…db.newWords].filter(i=>i.forgot==1).length;
+document.getElementById(‘forgot-count’).textContent=forgotCount;
+document.getElementById(‘new-count’).textContent=db.newWords.length;
 }
 
 // ========================================
 // IMPORT / EXPORT
 // ========================================
 function importFromPaste(){
-  const text=document.getElementById('import-paste-text').value.trim();
-  if(!text){alert('Textarea kosong.');return;}
-  // Coba ambil nama file dari baris pertama jika ada, atau pakai default
-  const firstLine=text.split('\n')[0];
-  db.filename=firstLine.startsWith('===')?'mandarin-database-paste.txt':firstLine.trim()||'mandarin-database-paste.txt';
-  parseTXT(text);
-  saveToStorage();
-  updateCardFontSize();
-  render();
-  renderSentences();
-  closeModal('import-paste-modal');
+const text=document.getElementById(‘import-paste-text’).value.trim();
+if(!text){toast(‘Textarea is empty.’);return;}
+// Coba ambil nama file dari baris pertama jika ada, atau pakai default
+const firstLine=text.split(’\n’)[0];
+db.filename=firstLine.startsWith(’===’)?‘mandarin-database-paste.txt’:firstLine.trim()||‘mandarin-database-paste.txt’;
+parseTXT(text);
+saveToStorage();
+updateCardFontSize();
+render();
+renderSentences();
+closeModal(‘import-paste-modal’);
 
+const vocabChars=db.characters.filter(c=>c.show_in_list===‘1’).length;
+const vocabCompounds=db.compounds.filter(c=>c.show_in_list===‘1’).length;
+const supportChars=db.characters.filter(c=>c.show_in_list===‘0’).length;
+const supportCompounds=db.compounds.filter(c=>c.show_in_list===‘0’).length;
+const totalInti=vocabChars+vocabCompounds;
+const totalSupport=supportChars+supportCompounds;
+const totalLupa=[…db.characters,…db.compounds].filter(i=>i.forgot==1).length;
+const totalBaru=db.newWords.length;
+
+document.getElementById(‘import-stats’).innerHTML=`<div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Core words</span><strong>${totalInti}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"> <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong> </div> <div style="display:flex;justify-content:space-between;padding:4px 0"> <span>Sentences</span><strong>${db.sentences.length}</strong> </div>`;
+document.getElementById(‘import-success-modal’).classList.add(‘show’);
+}
+
+function importDB(){
+const input=document.createElement(‘input’);
+input.type=‘file’;
+input.accept=’.txt’;
+input.onchange=e=>{
+const file=e.target.files[0];
+if(!file)return;
+db.filename=file.name;
+const reader=new FileReader();
+reader.onload=event=>{
+parseTXT(event.target.result);
+saveToStorage();
+updateCardFontSize();
+render();
+renderSentences();
+toggleMenu();
+
+```
+  // Hitung statistik
   const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
   const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
   const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
@@ -1492,433 +1898,424 @@ function importFromPaste(){
   document.getElementById('import-stats').innerHTML=`
     <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
     <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Kata inti</span><strong>${totalInti}</strong>
+      <span>Core words</span><strong>${totalInti}</strong>
     </div>
     <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Kata pendukung</span><strong style="color:var(--gray)">${totalSupport}</strong>
+      <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
     </div>
     <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
+      <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
     </div>
     <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Kata baru</span><strong style="color:var(--danger)">${totalBaru}</strong>
+      <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
     </div>
     <div style="display:flex;justify-content:space-between;padding:4px 0">
-      <span>Kalimat</span><strong>${db.sentences.length}</strong>
+      <span>Sentences</span><strong>${db.sentences.length}</strong>
     </div>
   `;
   document.getElementById('import-success-modal').classList.add('show');
-}
+};
+reader.readAsText(file);
+```
 
-function importDB(){
-  const input=document.createElement('input');
-  input.type='file';
-  input.accept='.txt';
-  input.onchange=e=>{
-    const file=e.target.files[0];
-    if(!file)return;
-    db.filename=file.name;
-    const reader=new FileReader();
-    reader.onload=event=>{
-      parseTXT(event.target.result);
-      saveToStorage();
-      updateCardFontSize();
-      render();
-      renderSentences();
-      toggleMenu();
-
-      // Hitung statistik
-      const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-      const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-      const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-      const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-      const totalInti=vocabChars+vocabCompounds;
-      const totalSupport=supportChars+supportCompounds;
-      const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-      const totalBaru=db.newWords.length;
-
-      document.getElementById('import-stats').innerHTML=`
-        <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Kata inti</span><strong>${totalInti}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Kata pendukung</span><strong style="color:var(--gray)">${totalSupport}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Kata baru</span><strong style="color:var(--danger)">${totalBaru}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0">
-          <span>Kalimat</span><strong>${db.sentences.length}</strong>
-        </div>
-      `;
-      document.getElementById('import-success-modal').classList.add('show');
-    };
-    reader.readAsText(file);
-  };
-  input.click();
+};
+input.click();
 }
 
 function parseTXT(content){
-  const sections=content.split(/={40,}/);
-  let currentType=null;
+const sections=content.split(/={40,}/);
+let currentType=null;
 
-  sections.forEach(section=>{
-    const raw=section.trim();
-    if(!raw)return;
+sections.forEach(section=>{
+const raw=section.trim();
+if(!raw)return;
 
-    if(raw.includes('=== CHARACTERS ===')){currentType='characters';return}
-    else if(raw.includes('=== COMPOUNDS ===')){currentType='compounds';return}
-    else if(raw.includes('=== SENTENCES ===')){currentType='sentences';return}
-    else if(raw.includes('=== NEW_WORDS ===')){currentType='newwords';return}
-    else if(raw.includes('=== DICTIONARY ===')){currentType='dictionary';return}
-    else if(raw.includes('=== NOTES ===')){currentType='notes';return}
+```
+if(raw.includes('=== CHARACTERS ===')){currentType='characters';return}
+else if(raw.includes('=== COMPOUNDS ===')){currentType='compounds';return}
+else if(raw.includes('=== SENTENCES ===')){currentType='sentences';return}
+else if(raw.includes('=== NEW_WORDS ===')){currentType='newwords';return}
+else if(raw.includes('=== DICTIONARY ===')){currentType='dictionary';return}
+else if(raw.includes('=== NOTES ===')){currentType='notes';return}
 
-    if(!currentType)return;
+if(!currentType)return;
 
-    if(currentType==='notes'){
-      const lines=raw.split('\n').filter(l=>l.trim()&&!l.includes('=== NOTES ==='));
-      if(lines.length>0) db.notes=[{title:'My Notes',content:lines.join('\n')}];
-      currentType=null;return;
-    }
+if(currentType==='notes'){
+  const lines=raw.split('\n').filter(l=>l.trim()&&!l.includes('=== NOTES ==='));
+  if(lines.length>0) db.notes=[{title:'My Notes',content:lines.join('\n')}];
+  currentType=null;return;
+}
 
-    const lines=raw.split('\n').filter(l=>l.trim());
-    if(lines.length<2){currentType=null;return}
+const lines=raw.split('\n').filter(l=>l.trim());
+if(lines.length<2){currentType=null;return}
 
-    if(currentType==='characters'){
-      db.characters=parseCSV(lines);
-      db.characters.forEach(c=>{
-        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
-      });
-    }
-    else if(currentType==='compounds'){
-      db.compounds=parseCSV(lines);
-      db.compounds.forEach(c=>{
-        c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
-      });
-    }
-    else if(currentType==='sentences'){
-      db.sentences=parseCSV(lines);
-      db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
-    }
-    else if(currentType==='newwords') db.newWords=parseCSV(lines);
-    else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
-
-    currentType=null;
+if(currentType==='characters'){
+  db.characters=parseCSV(lines);
+  db.characters.forEach(c=>{
+    c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
   });
+}
+else if(currentType==='compounds'){
+  db.compounds=parseCSV(lines);
+  db.compounds.forEach(c=>{
+    c.show_in_list=(c.show_in_list===undefined||c.show_in_list===''||c.show_in_list===null)?'1':String(c.show_in_list);
+  });
+}
+else if(currentType==='sentences'){
+  db.sentences=parseCSV(lines);
+  db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
+}
+else if(currentType==='newwords') db.newWords=parseCSV(lines);
+else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
+
+currentType=null;
+```
+
+});
 }
 
 function parseCSV(lines){
-  if(lines.length===0)return[];
-  const headers=lines[0].split(',').map(h=>h.trim());
-  return lines.slice(1).filter(line=>line.trim()).map(line=>{
-    const values=[];
-    let current='',inQuotes=false;
-    for(let i=0;i<line.length;i++){
-      const ch=line[i];
-      if(ch==='"'){
-        // Handle escaped quote ""
-        if(inQuotes&&line[i+1]==='"'){current+='"';i++;}
-        else inQuotes=!inQuotes;
-      }else if(ch===','&&!inQuotes){
-        values.push(current);current='';
-      }else{
-        current+=ch;
-      }
-    }
-    values.push(current);
-    const obj={};
-    headers.forEach((h,i)=>{obj[h]=(values[i]||'').trim();});
-    return obj;
-  });
+if(lines.length===0)return[];
+const headers=lines[0].split(’,’).map(h=>h.trim());
+return lines.slice(1).filter(line=>line.trim()).map(line=>{
+const values=[];
+let current=’’,inQuotes=false;
+for(let i=0;i<line.length;i++){
+const ch=line[i];
+if(ch===’”’){
+// Handle escaped quote “”
+if(inQuotes&&line[i+1]===’”’){current+=’”’;i++;}
+else inQuotes=!inQuotes;
+}else if(ch===’,’&&!inQuotes){
+values.push(current);current=’’;
+}else{
+current+=ch;
+}
+}
+values.push(current);
+const obj={};
+headers.forEach((h,i)=>{obj[h]=(values[i]||’’).trim();});
+return obj;
+});
 }
 
 function exportDB(){
-  const txt=generateExportTXT();
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-  if(isIOS){
-    document.getElementById('export-text').value=txt;
-    document.getElementById('export-modal').classList.add('show');
-  }else{
-    const blob=new Blob([txt],{type:'text/plain'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=db.filename||'mandarin-database.txt';
-    document.body.appendChild(a);a.click();
-    document.body.removeChild(a);URL.revokeObjectURL(url);
-  }
-  toggleMenu();
+const txt=generateExportTXT();
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+if(isIOS){
+document.getElementById(‘export-text’).value=txt;
+document.getElementById(‘export-modal’).classList.add(‘show’);
+}else{
+const blob=new Blob([txt],{type:‘text/plain’});
+const url=URL.createObjectURL(blob);
+const a=document.createElement(‘a’);
+a.href=url;a.download=db.filename||‘mandarin-database.txt’;
+document.body.appendChild(a);a.click();
+document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+toggleMenu();
 }
 
 function copyExport(){
-  const text=document.getElementById('export-text');
-  text.select();
-  document.execCommand('copy');
-  alert('✓ Copied! Paste in Notepad & save as .txt');
+const text=document.getElementById(‘export-text’);
+text.select();
+document.execCommand(‘copy’);
+toast(‘Copied. Paste into Notepad and save as .txt’);
 }
 
 function closeModal(id){
-  document.getElementById(id).classList.remove('show');
+document.getElementById(id).classList.remove(‘show’);
 }
 
 function editDatabase(type){
-  const data=type==='characters'?db.characters:db.compounds;
-  const headers=type==='characters'
-    ?'id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed'
-    :'id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed';
-  let csv=headers+'\n';
-  data.forEach(item=>{
-    if(type==='characters'){
-      csv+=`${item.id},${item.hanzi},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
-    }else{
-      csv+=`${item.id},${item.word},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.char_id_1||''},${item.char_id_2||''},${item.char_id_3||''},${item.char_id_4||''},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
-    }
-  });
-  document.getElementById('edit-db-title').textContent=type==='characters'?'Edit Characters':'Edit Compounds';
-  document.getElementById('edit-db-text').value=csv;
-  document.getElementById('edit-db-text').dataset.type=type;
-  document.getElementById('edit-db-modal').classList.add('show');
-  toggleMenu();
+const data=type===‘characters’?db.characters:db.compounds;
+const headers=type===‘characters’
+?‘id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed’
+:‘id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed’;
+let csv=headers+’\n’;
+data.forEach(item=>{
+if(type===‘characters’){
+csv+=`${item.id},${item.hanzi},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+}else{
+csv+=`${item.id},${item.word},${item.pinyin},${item.meaning},${item.category},${item.hsk_level},${item.char_id_1||''},${item.char_id_2||''},${item.char_id_3||''},${item.char_id_4||''},${item.show_in_list||1},"${item.related_ids||''}","${item.antonym_ids||''}","${item.user_notes||''}",${item.forgot||0},${item.forgot_count||0},${item.last_reviewed||''}\n`;
+}
+});
+document.getElementById(‘edit-db-title’).textContent=type===‘characters’?‘Edit characters’:‘Edit compounds’;
+document.getElementById(‘edit-db-hint’).textContent=’Format: ’+headers;
+document.getElementById(‘edit-db-text’).value=csv;
+document.getElementById(‘edit-db-text’).dataset.type=type;
+document.getElementById(‘edit-db-modal’).classList.add(‘show’);
+toggleMenu();
 }
 
 function showSaveModal(title,statsHTML){
-  document.getElementById('save-success-title').textContent=title;
-  document.getElementById('save-success-stats').innerHTML=statsHTML;
-  document.getElementById('save-success-modal').classList.add('show');
+document.getElementById(‘save-success-title’).textContent=title;
+document.getElementById(‘save-success-stats’).innerHTML=statsHTML;
+document.getElementById(‘save-success-modal’).classList.add(‘show’);
 }
 
 function saveDBEdit(){
-  const type=document.getElementById('edit-db-text').dataset.type;
-  const text=document.getElementById('edit-db-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    const parsed=parseCSV(lines);
-    if(type==='characters')db.characters=parsed;
-    else db.compounds=parsed;
-    saveToStorage();render();
-    closeModal('edit-db-modal');
-    const label=type==='characters'?'Characters':'Compounds';
-    showSaveModal(`${label} tersimpan`,`<div style="display:flex;justify-content:space-between"><span>Total ${label}</span><strong>${parsed.length}</strong></div>`);
-  }catch(e){alert('Error parsing CSV.');}
+const type=document.getElementById(‘edit-db-text’).dataset.type;
+const text=document.getElementById(‘edit-db-text’).value;
+const lines=text.trim().split(’\n’);
+try{
+const parsed=parseCSV(lines);
+if(type===‘characters’)db.characters=parsed;
+else db.compounds=parsed;
+saveToStorage();render();
+closeModal(‘edit-db-modal’);
+const label=type===‘characters’?‘Characters’:‘Compounds’;
+showSaveModal(`${label} saved`,`<div style="display:flex;justify-content:space-between"><span>Total ${label}</span><strong>${parsed.length}</strong></div>`);
+}catch(e){toast(‘Failed to parse CSV.’);}
 }
 
 function editSentences(){
-  const headers='sentence_id,sentence_text,translation,hsk_level,category,completed';
-  let csv=headers+'\n';
-  db.sentences.forEach(s=>{
-    csv+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
-  });
-  document.getElementById('edit-sentences-text').value=csv;
-  document.getElementById('edit-sentences-modal').classList.add('show');
-  toggleMenu();
+const headers=‘sentence_id,sentence_text,translation,hsk_level,category,completed’;
+let csv=headers+’\n’;
+db.sentences.forEach(s=>{
+csv+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+});
+document.getElementById(‘edit-sentences-text’).value=csv;
+document.getElementById(‘edit-sentences-modal’).classList.add(‘show’);
+toggleMenu();
 }
 
 function saveSentencesEdit(){
-  const text=document.getElementById('edit-sentences-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    db.sentences=parseCSV(lines);
-    db.sentences.forEach(s=>{if(!s.completed)s.completed=0});
-    saveToStorage();renderSentences();
-    closeModal('edit-sentences-modal');
-    showSaveModal('Sentences tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total kalimat</span><strong>${db.sentences.length}</strong></div>`);
-  }catch(e){alert('Error parsing CSV.');}
+const text=document.getElementById(‘edit-sentences-text’).value;
+const lines=text.trim().split(’\n’);
+try{
+db.sentences=parseCSV(lines);
+db.sentences.forEach(s=>{if(!s.completed)s.completed=0});
+saveToStorage();renderSentences();
+closeModal(‘edit-sentences-modal’);
+showSaveModal(‘Sentences saved’,`<div style="display:flex;justify-content:space-between"><span>Total sentences</span><strong>${db.sentences.length}</strong></div>`);
+}catch(e){toast(‘Failed to parse CSV.’);}
 }
 
 function editNewWords(){
-  const headers='id,word,pinyin,meaning,first_seen_sentence,status,user_notes';
-  let csv=headers+'\n';
-  db.newWords.forEach(w=>{
-    csv+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}"\n`;
-  });
-  document.getElementById('edit-newwords-text').value=csv;
-  document.getElementById('edit-newwords-modal').classList.add('show');
-  toggleMenu();
+const headers=‘id,word,pinyin,meaning,first_seen_sentence,status,user_notes’;
+let csv=headers+’\n’;
+db.newWords.forEach(w=>{
+csv+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}"\n`;
+});
+document.getElementById(‘edit-newwords-text’).value=csv;
+document.getElementById(‘edit-newwords-modal’).classList.add(‘show’);
+toggleMenu();
 }
 
 function saveNewWordsEdit(){
-  const text=document.getElementById('edit-newwords-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    db.newWords=parseCSV(lines);
-    saveToStorage();render();renderSentences();
-    closeModal('edit-newwords-modal');
-    showSaveModal('New Words tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total kata baru</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
-  }catch(e){alert('Error parsing CSV.');}
+const text=document.getElementById(‘edit-newwords-text’).value;
+const lines=text.trim().split(’\n’);
+try{
+db.newWords=parseCSV(lines);
+saveToStorage();render();renderSentences();
+closeModal(‘edit-newwords-modal’);
+showSaveModal(‘New Words saved’,`<div style="display:flex;justify-content:space-between"><span>Total new words</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
+}catch(e){toast(‘Failed to parse CSV.’);}
 }
 
 function editDictionary(){
-  const headers='hanzi,pinyin,meaning';
-  let csv=headers+'\n';
-  db.dictionary.forEach(d=>{
-    csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
-  });
-  document.getElementById('edit-dictionary-text').value=csv;
-  document.getElementById('edit-dictionary-modal').classList.add('show');
-  toggleMenu();
+const headers=‘hanzi,pinyin,meaning’;
+let csv=headers+’\n’;
+db.dictionary.forEach(d=>{
+csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
+});
+document.getElementById(‘edit-dictionary-text’).value=csv;
+document.getElementById(‘edit-dictionary-modal’).classList.add(‘show’);
+toggleMenu();
 }
 
 function saveDictionaryEdit(){
-  const text=document.getElementById('edit-dictionary-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    db.dictionary=parseCSV(lines);
-    saveToStorage();render();renderSentences();
-    closeModal('edit-dictionary-modal');
-    showSaveModal('Dictionary tersimpan',`<div style="display:flex;justify-content:space-between"><span>Total entri</span><strong>${db.dictionary.length}</strong></div>`);
-  }catch(e){alert('Error parsing CSV.');}
+const text=document.getElementById(‘edit-dictionary-text’).value;
+const lines=text.trim().split(’\n’);
+try{
+db.dictionary=parseCSV(lines);
+saveToStorage();render();renderSentences();
+closeModal(‘edit-dictionary-modal’);
+showSaveModal(‘Dictionary saved’,`<div style="display:flex;justify-content:space-between"><span>Total entries</span><strong>${db.dictionary.length}</strong></div>`);
+}catch(e){toast(‘Failed to parse CSV.’);}
+}
+
+// ========================================
+// AUTO-PUSH (forgot/done only)
+// ========================================
+async function autoPush(){
+const s=getGhSettings();
+if(!s.token||!s.gistId)return;
+try{
+const txt=generateExportTXT();
+const filename=s.filename||‘mandarin-database.txt’;
+const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+method:‘PATCH’,
+headers:{
+‘Authorization’:`token ${s.token}`,
+‘Accept’:‘application/vnd.github.v3+json’,
+‘Content-Type’:‘application/json’
+},
+body:JSON.stringify({files:{[filename]:{content:txt}}})
+});
+if(res.ok){
+const now=new Date().toLocaleString(‘id-ID’,{dateStyle:‘short’,timeStyle:‘short’});
+localStorage.setItem(‘gh-last-sync’,now);
+updateDBInfo();
+}
+}catch(e){}
 }
 
 // ========================================
 // GITHUB GIST SYNC
 // ========================================
 function openGithubSync(){
-  // Load saved settings
-  const saved=JSON.parse(localStorage.getItem('gh-settings')||'{}');
-  document.getElementById('gh-token').value=saved.token||'';
-  document.getElementById('gh-gist-id').value=saved.gistId||'';
-  document.getElementById('gh-filename').value=saved.filename||'mandarin-database.txt';
-  document.getElementById('gh-status').textContent='';
-  document.getElementById('github-sync-modal').classList.add('show');
-  toggleMenu();
+// Load saved settings
+const saved=JSON.parse(localStorage.getItem(‘gh-settings’)||’{}’);
+document.getElementById(‘gh-token’).value=saved.token||’’;
+document.getElementById(‘gh-gist-id’).value=saved.gistId||’’;
+document.getElementById(‘gh-filename’).value=saved.filename||‘mandarin-database.txt’;
+document.getElementById(‘gh-status’).textContent=’’;
+document.getElementById(‘github-sync-modal’).classList.add(‘show’);
+toggleMenu();
 
-  document.getElementById('gh-save-settings').onclick=saveGhSettings;
-  document.getElementById('gh-pull').onclick=ghPull;
-  document.getElementById('gh-push').onclick=ghPush;
+document.getElementById(‘gh-save-settings’).onclick=saveGhSettings;
+document.getElementById(‘gh-pull’).onclick=ghPull;
+document.getElementById(‘gh-push’).onclick=ghPush;
 }
 
 function getGhSettings(){
-  return JSON.parse(localStorage.getItem('gh-settings')||'{}');
+return JSON.parse(localStorage.getItem(‘gh-settings’)||’{}’);
 }
 
 function saveGhSettings(){
-  const settings={
-    token:document.getElementById('gh-token').value.trim(),
-    gistId:document.getElementById('gh-gist-id').value.trim(),
-    filename:document.getElementById('gh-filename').value.trim()||'mandarin-database.txt'
-  };
-  localStorage.setItem('gh-settings',JSON.stringify(settings));
-  document.getElementById('gh-status').textContent='✅ Setting tersimpan';
-  document.getElementById('gh-status').style.color='var(--success)';
+const settings={
+token:document.getElementById(‘gh-token’).value.trim(),
+gistId:document.getElementById(‘gh-gist-id’).value.trim(),
+filename:document.getElementById(‘gh-filename’).value.trim()||‘mandarin-database.txt’
+};
+localStorage.setItem(‘gh-settings’,JSON.stringify(settings));
+document.getElementById(‘gh-status’).textContent=‘✅ Settings saved’;
+document.getElementById(‘gh-status’).style.color=‘var(–success)’;
 }
 
-function ghSetStatus(msg,color='var(--gray)'){
-  const el=document.getElementById('gh-status');
-  el.textContent=msg;
-  el.style.color=color;
+function ghSetStatus(msg,color=‘var(–gray)’){
+const el=document.getElementById(‘gh-status’);
+el.textContent=msg;
+el.style.color=color;
 }
 
 async function ghPull(){
-  const s=getGhSettings();
-  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
-  ghSetStatus('⏳ Mengambil data dari Gist...');
-  try{
-    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
-      headers:{'Authorization':`token ${s.token}`,'Accept':'application/vnd.github.v3+json'}
-    });
-    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
-    const data=await res.json();
-    const filename=s.filename||'mandarin-database.txt';
-    const file=data.files[filename];
-    if(!file)throw new Error(`File "${filename}" tidak ditemukan di Gist`);
+const s=getGhSettings();
+if(!s.token||!s.gistId){ghSetStatus(‘⚠️ Enter token and Gist ID first’,‘var(–warning)’);return;}
+ghSetStatus(‘⏳ Fetching data from Gist…’);
+try{
+const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+headers:{‘Authorization’:`token ${s.token}`,‘Accept’:‘application/vnd.github.v3+json’}
+});
+if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+const data=await res.json();
+const filename=s.filename||‘mandarin-database.txt’;
+const file=data.files[filename];
+if(!file)throw new Error(`File "${filename}" not found in Gist`);
 
-    db.filename=filename;
-    parseTXT(file.content);
-    saveToStorage();
-    updateCardFontSize();
-    render();
-    renderSentences();
-    closeModal('github-sync-modal');
+```
+db.filename=filename;
+parseTXT(file.content);
+saveToStorage();
+updateCardFontSize();
+render();
+renderSentences();
+closeModal('github-sync-modal');
 
-    // Tampilkan modal statistik
-    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-    document.getElementById('import-stats').innerHTML=`
-      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Kata inti</span><strong>${vocabChars+vocabCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Kata pendukung</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Kata lupa</span><strong style="color:var(--warning)">${totalLupa}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Kata baru</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0">
-        <span>Kalimat</span><strong>${db.sentences.length}</strong>
-      </div>
-    `;
-    document.getElementById('import-success-modal').classList.add('show');
-  }catch(e){
-    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
-  }
+// Tampilkan modal statistik
+const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
+const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
+const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
+const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
+const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+document.getElementById('import-stats').innerHTML=`
+  <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
+  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+    <span>Core words</span><strong>${vocabChars+vocabCompounds}</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+    <span>Supporting words</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+    <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
+    <span>New words</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding:4px 0">
+    <span>Sentences</span><strong>${db.sentences.length}</strong>
+  </div>
+`;
+document.getElementById('import-success-modal').classList.add('show');
+```
+
+}catch(e){
+ghSetStatus(`❌ ${e.message}`,‘var(–danger)’);
+}
 }
 
 async function ghPush(){
-  const s=getGhSettings();
-  if(!s.token||!s.gistId){ghSetStatus('⚠️ Isi token dan Gist ID dulu','var(--warning)');return;}
-  ghSetStatus('⏳ Menyimpan ke Gist...');
-  try{
-    // Generate TXT content sama seperti exportDB
-    const txt=generateExportTXT();
-    const filename=s.filename||'mandarin-database.txt';
-    const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
-      method:'PATCH',
-      headers:{
-        'Authorization':`token ${s.token}`,
-        'Accept':'application/vnd.github.v3+json',
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({files:{[filename]:{content:txt}}})
-    });
-    if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
-    ghSetStatus('✅ Berhasil disimpan ke Gist','var(--success)');
-  }catch(e){
-    ghSetStatus(`❌ ${e.message}`,'var(--danger)');
-  }
+const s=getGhSettings();
+if(!s.token||!s.gistId){ghSetStatus(‘⚠️ Enter token and Gist ID first’,‘var(–warning)’);return;}
+ghSetStatus(‘⏳ Saving to Gist…’);
+try{
+// Generate TXT content sama seperti exportDB
+const txt=generateExportTXT();
+const filename=s.filename||‘mandarin-database.txt’;
+const res=await fetch(`https://api.github.com/gists/${s.gistId}`,{
+method:‘PATCH’,
+headers:{
+‘Authorization’:`token ${s.token}`,
+‘Accept’:‘application/vnd.github.v3+json’,
+‘Content-Type’:‘application/json’
+},
+body:JSON.stringify({files:{[filename]:{content:txt}}})
+});
+if(!res.ok)throw new Error(`GitHub error: ${res.status}`);
+const now=new Date().toLocaleString(‘id-ID’,{dateStyle:‘short’,timeStyle:‘short’});
+localStorage.setItem(‘gh-last-sync’,now);
+updateDBInfo();
+ghSetStatus(‘Saved to Gist’,‘var(–success)’);
+}catch(e){
+ghSetStatus(`❌ ${e.message}`,‘var(–danger)’);
+}
 }
 
 function generateExportTXT(){
-  let txt='========================================\n=== CHARACTERS ===\n========================================\n';
-  txt+='id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
-  db.characters.forEach(c=>{
-    txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-  });
-  txt+='\n========================================\n=== COMPOUNDS ===\n========================================\n';
-  txt+='id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n';
-  db.compounds.forEach(c=>{
-    txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
-  });
-  txt+='\n========================================\n=== SENTENCES ===\n========================================\n';
-  txt+='sentence_id,sentence_text,translation,hsk_level,category,completed\n';
-  db.sentences.forEach(s=>{
-    txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
-  });
-  txt+='\n========================================\n=== NEW_WORDS ===\n========================================\n';
-  txt+='id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n';
-  db.newWords.forEach(w=>{
-    txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
-  });
-  if(db.dictionary&&db.dictionary.length>0){
-    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
-    txt+='hanzi,pinyin,meaning\n';
-    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
-  }
-  if(db.notes&&db.notes.length>0&&db.notes[0].content){
-    txt+='\n========================================\n=== NOTES ===\n========================================\n';
-    txt+=db.notes[0].content+'\n';
-  }
-  return txt;
+let txt=’========================================\n=== CHARACTERS ===\n========================================\n’;
+txt+=‘id,hanzi,pinyin,meaning,category,hsk_level,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n’;
+db.characters.forEach(c=>{
+txt+=`${c.id},${c.hanzi},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+});
+txt+=’\n========================================\n=== COMPOUNDS ===\n========================================\n’;
+txt+=‘id,word,pinyin,meaning,category,hsk_level,char_id_1,char_id_2,char_id_3,char_id_4,show_in_list,related_ids,antonym_ids,user_notes,forgot,forgot_count,last_reviewed\n’;
+db.compounds.forEach(c=>{
+txt+=`${c.id},${c.word},${c.pinyin},${c.meaning},${c.category},${c.hsk_level},${c.char_id_1||''},${c.char_id_2||''},${c.char_id_3||''},${c.char_id_4||''},${c.show_in_list||1},"${c.related_ids||''}","${c.antonym_ids||''}","${c.user_notes||''}",${c.forgot||0},${c.forgot_count||0},${c.last_reviewed||''}\n`;
+});
+txt+=’\n========================================\n=== SENTENCES ===\n========================================\n’;
+txt+=‘sentence_id,sentence_text,translation,hsk_level,category,completed\n’;
+db.sentences.forEach(s=>{
+txt+=`${s.sentence_id},"${s.sentence_text}","${s.translation||''}",${s.hsk_level},${s.category},${s.completed||0}\n`;
+});
+txt+=’\n========================================\n=== NEW_WORDS ===\n========================================\n’;
+txt+=‘id,word,pinyin,meaning,first_seen_sentence,status,user_notes,char_id_1,char_id_2,char_id_3,char_id_4\n’;
+db.newWords.forEach(w=>{
+txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
+});
+if(db.dictionary&&db.dictionary.length>0){
+txt+=’\n========================================\n=== DICTIONARY ===\n========================================\n’;
+txt+=‘hanzi,pinyin,meaning\n’;
+db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
+}
+if(db.notes&&db.notes.length>0&&db.notes[0].content){
+txt+=’\n========================================\n=== NOTES ===\n========================================\n’;
+txt+=db.notes[0].content+’\n’;
+}
+return txt;
 }
 </script>
+
 </body>
 </html>
