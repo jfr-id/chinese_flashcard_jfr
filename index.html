@@ -1743,11 +1743,10 @@ function renderDatabase(){
     }
     if(state.dbHskFilters.length>0) nwItems=[];
     if(nwItems.length>0){
-      const offset=items.length;
       nwRows=`<tr class="nw-divider"><td colspan="6">New Words</td></tr>`
         +nwItems.map((w,i)=>{
           return `<tr class="nw-row">
-            <td>${offset+i+1}</td>
+            <td>${i+1}</td>
             <td>${w.word||''}</td>
             <td>${w.pinyin||''}</td>
             <td>${w.meaning||''}</td>
