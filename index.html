@@ -224,6 +224,8 @@ label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(--text)}
 #database-tab .db-table tbody tr:active td{background:var(--primary-tint)}
 .dbchip{display:inline-block;font-family:var(--hanzi);font-size:12px;line-height:1.2;padding:2px 7px;margin:1px 3px 1px 0;border-radius:7px;background:rgba(51,87,110,.10);color:#274a5e}
 .dbchip-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
+.refchip{cursor:pointer}
+.refchip:active{opacity:.6}
 .nw-divider td{background:var(--primary-tint);color:var(--primary);font-weight:700;text-align:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:9px}
 #database-tab .db-table tbody tr.nw-row td{background:#fdf6e6}
 @media (hover:hover){#database-tab .db-table tbody tr:hover td{background:var(--primary-tint)}}
@@ -918,6 +920,10 @@ function setupEvents(){
   document.getElementById('db-filter-isolated').addEventListener('change',renderDatabase);
   document.getElementById('db-filter-showlist').addEventListener('change',renderDatabase);
   document.getElementById('db-col-showhide').addEventListener('change',renderDatabase);
+  document.getElementById('db-tbody').addEventListener('click',e=>{
+    const chip=e.target.closest('.refchip');
+    if(chip)showRefBalloon(chip);
+  });
 
   window.addEventListener('scroll',closeBalloon);
   // Tidak tutup balloon saat scroll sentences — supaya translation tetap terbuka
@@ -1178,27 +1184,13 @@ function renderCardHTML(item,isNewWord,showPinyin,showMeaning){
     ${showMeaning&&item.meaning?`<div class="cb-mean">${item.meaning}</div>`:''}
   `;
 
-  const relatedIds=(item.related_ids||'').split(',').filter(id=>id.trim());
-  const antonymIds=(item.antonym_ids||'').split(',').filter(id=>id.trim());
-  if(relatedIds.length>0||antonymIds.length>0){
-    if(relatedIds.length>0){
-      const relatedItems=relatedIds.map(id=>{
-        const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-        return rel?`${rel.hanzi||rel.word} (${rel.pinyin} | ${rel.meaning})`:'';
-      }).filter(Boolean);
-      if(relatedItems.length>0){
-        backHTML+=`<div class="cb-chip cb-rel">${relatedItems.join(', ')}</div>`;
-      }
-    }
-    if(antonymIds.length>0){
-      const antonymItems=antonymIds.map(id=>{
-        const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-        return ant?`${ant.hanzi||ant.word} (${ant.pinyin} | ${ant.meaning})`:'';
-      }).filter(Boolean);
-      if(antonymItems.length>0){
-        backHTML+=`<div class="cb-chip cb-ant">${antonymItems.join(', ')}</div>`;
-      }
-    }
+  const relRefs=resolveRefs(item.related_ids);
+  const antRefs=resolveRefs(item.antonym_ids);
+  if(relRefs.length>0){
+    backHTML+=`<div class="cb-chip cb-rel" style="display:flex;flex-wrap:wrap;gap:3px;align-items:center"><span style="font-size:9px;opacity:.7">≈</span>${relRefs.map(r=>refChip(r,false)).join('')}</div>`;
+  }
+  if(antRefs.length>0){
+    backHTML+=`<div class="cb-chip cb-ant" style="display:flex;flex-wrap:wrap;gap:3px;align-items:center"><span style="font-size:9px;opacity:.7">↔</span>${antRefs.map(r=>refChip(r,true)).join('')}</div>`;
   }
 
   return `
@@ -1265,6 +1257,7 @@ function renderFlashcards(){
   grid.querySelectorAll('.card').forEach(card=>{
     card.addEventListener('click',e=>{
       if(e.target.classList.contains('forgot-btn')||e.target.classList.contains('hanzi-char'))return;
+      if(e.target.classList.contains('refchip')){e.stopPropagation();showRefBalloon(e.target);return;}
       toggleCard(card.dataset.cardId);
     });
   });
@@ -1608,6 +1601,47 @@ function closeBalloonOutside(e){
   if(!balloon.contains(e.target))closeBalloon();
 }
 
+// ===== Related / Antonym berbasis hanzi =====
+// Menerima 3 format per token: id angka (lama), "hanzi|arti" (baru), atau hanzi polos.
+function resolveRefs(field){
+  return (field||'').split(',').map(s=>s.trim()).filter(Boolean).map(tok=>{
+    if(tok.includes('|')){
+      const p=tok.split('|');const h=p[0].trim();
+      const it=idx.comp.get(h)||idx.char.get(h);
+      return {label:h,pinyin:it?it.pinyin:'',meaning:(p[1]||'').trim()||(it?it.meaning:'')};
+    }
+    if(/^\d+$/.test(tok)){
+      const it=db.characters.find(c=>c.id==tok)||db.compounds.find(c=>c.id==tok);
+      return it?{label:it.hanzi||it.word,pinyin:it.pinyin||'',meaning:it.meaning||''}:null;
+    }
+    const it=idx.comp.get(tok)||idx.char.get(tok);
+    return {label:tok,pinyin:it?it.pinyin:'',meaning:it?it.meaning:''};
+  }).filter(Boolean);
+}
+function refChip(r,isAnt){
+  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  return `<span class="dbchip refchip${isAnt?' dbchip-ant':''}" data-ref-label="${esc(r.label)}" data-ref-pinyin="${esc(r.pinyin)}" data-ref-meaning="${esc(r.meaning)}">${r.label}</span>`;
+}
+function showRefBalloon(el){
+  if(state.activeBalloonEl===el){closeBalloon();return;}
+  document.removeEventListener('click',closeBalloonOutside);
+  const label=el.dataset.refLabel||el.textContent.trim();
+  const pinyin=el.dataset.refPinyin||'';
+  const meaning=el.dataset.refMeaning||'';
+  const balloon=document.getElementById('balloon');
+  balloon.innerHTML=`<div style="font-size:12px;line-height:1.5">`
+    +`<div style="font-size:15px;font-weight:600;font-family:var(--hanzi);margin-bottom:2px">${label}</div>`
+    +(pinyin?`<div style="font-size:11px;color:var(--gray)">${pinyin}</div>`:'')
+    +`<div style="font-size:11px">${meaning||'—'}</div></div>`;
+  const rect=el.getBoundingClientRect();
+  balloon.style.left='0px';
+  balloon.style.top=(rect.bottom+4)+'px';
+  balloon.classList.add('show');
+  pointBalloonArrow(balloon,rect);
+  state.activeBalloonEl=el;
+  requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
+}
+
 function toggleTranslation(idx){
   const open=document.getElementById(`trans-${idx}`).classList.toggle('show');
   const eye=document.querySelector(`.eye-btn[data-idx="${idx}"]`);
@@ -1712,17 +1746,12 @@ function renderDatabase(){
       const offset=items.length;
       nwRows=`<tr class="nw-divider"><td colspan="6">New Words</td></tr>`
         +nwItems.map((w,i)=>{
-          const relArr=[w.char_id_1,w.char_id_2,w.char_id_3,w.char_id_4].filter(Boolean).map(id=>{
-            const c=db.characters.find(c=>c.id==id);
-            return c?c.hanzi:'';
-          }).filter(Boolean);
-          const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
           return `<tr class="nw-row">
             <td>${offset+i+1}</td>
             <td>${w.word||''}</td>
             <td>${w.pinyin||''}</td>
             <td>${w.meaning||''}</td>
-            <td title="${relArr.join(', ')}">${related}</td>
+            <td></td>
             <td></td>
           </tr>`;
         }).join('');
@@ -1730,24 +1759,16 @@ function renderDatabase(){
   }
 
   tbody.innerHTML=items.map((i,idx)=>{
-    const relArr=(i.related_ids||'').split(',').filter(id=>id.trim()).map(id=>{
-      const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-      return rel?(rel.hanzi||rel.word):'';
-    }).filter(Boolean);
-    const antArr=(i.antonym_ids||'').split(',').filter(id=>id.trim()).map(id=>{
-      const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-      return ant?(ant.hanzi||ant.word):'';
-    }).filter(Boolean);
-    const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
-    const antonym=antArr.map(x=>`<span class="dbchip dbchip-ant">${x}</span>`).join('');
+    const related=resolveRefs(i.related_ids).map(r=>refChip(r,false)).join('');
+    const antonym=resolveRefs(i.antonym_ids).map(r=>refChip(r,true)).join('');
     return `
       <tr${i.forgot==1?' class="forgot-row"':''}>
         <td>${idx+1}</td>
         <td>${i.hanzi||i.word}</td>
         <td>${i.pinyin}</td>
         <td>${i.meaning}</td>
-        <td title="${relArr.join(', ')}">${related}</td>
-        <td title="${antArr.join(', ')}">${antonym}</td>
+        <td>${related}</td>
+        <td>${antonym}</td>
       </tr>
     `;
   }).join('')+nwRows;
@@ -2054,7 +2075,7 @@ function editDatabase(type){
     }
   });
   document.getElementById('edit-db-title').textContent=type==='characters'?'Edit characters':'Edit compounds';
-  document.getElementById('edit-db-hint').textContent='Format: '+headers;
+  document.getElementById('edit-db-hint').textContent='Format: '+headers+'  |  related_ids & antonym_ids boleh diisi hanzi, mis. 快乐|happy,开心';
   document.getElementById('edit-db-text').value=csv;
   document.getElementById('edit-db-text').dataset.type=type;
   document.getElementById('edit-db-modal').classList.add('show');
