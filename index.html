@@ -690,6 +690,26 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
 let db={characters:[],compounds:[],sentences:[],newWords:[],notes:[],dictionary:[],filename:''};
 let state={hskFilters:[],letterFilters:[],dbHskFilters:[],dbLetterFilters:[],expandedCard:null,notesEditMode:false,activeBalloonEl:null,scrollPos:{flashcard:0,sentence:0,database:0}};
 
+// ====== Indeks pencarian (Map) — dibangun ulang tiap render, mempercepat tokenizer ======
+let idx={char:new Map(),comp:new Map(),neww:new Map(),dict:new Map()};
+function rebuildIndexes(){
+  idx.char=new Map();idx.comp=new Map();idx.neww=new Map();idx.dict=new Map();
+  db.characters.forEach(c=>{if(c.hanzi&&!idx.char.has(c.hanzi))idx.char.set(c.hanzi,c);});
+  db.compounds.forEach(c=>{if(c.word&&!idx.comp.has(c.word))idx.comp.set(c.word,c);});
+  db.newWords.forEach(w=>{if(w.word&&!idx.neww.has(w.word))idx.neww.set(w.word,w);});
+  (db.dictionary||[]).forEach(d=>{if(d.hanzi&&!idx.dict.has(d.hanzi))idx.dict.set(d.hanzi,d);});
+  deriveCharIds();
+}
+// char_id_1..4 dihitung OTOMATIS dari huruf penyusun kata — tak perlu diisi manual lagi
+function deriveCharIds(){
+  const assign=item=>{
+    const chs=[...(item.word||'')].filter(ch=>/[一-鿿]/.test(ch));
+    for(let k=1;k<=4;k++){const ch=chs[k-1];const c=ch?idx.char.get(ch):null;item['char_id_'+k]=c?c.id:'';}
+  };
+  db.compounds.forEach(assign);
+  db.newWords.forEach(assign);
+}
+
 document.addEventListener('DOMContentLoaded',init);
 
 function init(){
@@ -1069,6 +1089,7 @@ function switchPanelTab(tab){
 }
 
 function render(){
+  rebuildIndexes();
   renderHSKButtons();
   updateCardFontSize();
   renderFlashcards();
@@ -1363,15 +1384,15 @@ function tokenize(text){
     for(let len=4;len>=1;len--){
       const substr=text.substr(i,len);
 
-      // Cek vocab inti dulu (characters + compounds)
-      let item=db.compounds.find(c=>c.word===substr)||db.characters.find(c=>c.hanzi===substr);
+      // Cek vocab inti dulu (characters + compounds) — lewat indeks Map
+      let item=idx.comp.get(substr)||idx.char.get(substr);
       if(item){
         tokens.push({text:substr,found:true,source:'core',item});
         i+=len;matched=true;break;
       }
 
       // Cek new words
-      const newEntry=db.newWords.find(w=>w.word===substr);
+      const newEntry=idx.neww.get(substr);
       if(newEntry){
         const newItem={hanzi:newEntry.word,pinyin:newEntry.pinyin,meaning:newEntry.meaning,id:newEntry.word};
         tokens.push({text:substr,found:true,source:'new',item:newItem});
@@ -1379,7 +1400,7 @@ function tokenize(text){
       }
 
       // Fallback ke dictionary
-      const dictEntry=db.dictionary.find(d=>d.hanzi===substr);
+      const dictEntry=idx.dict.get(substr);
       if(dictEntry){
         const dictItem={hanzi:dictEntry.hanzi,pinyin:dictEntry.pinyin,meaning:dictEntry.meaning,id:dictEntry.hanzi};
         tokens.push({text:substr,found:true,source:'dict',item:dictItem});
@@ -1395,6 +1416,7 @@ function tokenize(text){
 }
 
 function renderSentences(){
+  rebuildIndexes();
   const container=document.getElementById('sentence-list');
   const hideDone=document.getElementById('sentence-hide-done').checked;
   const knownOnly=document.getElementById('sentence-known-only').checked;
@@ -1840,6 +1862,39 @@ function updateCounts(){
 // ========================================
 // IMPORT / EXPORT
 // ========================================
+// Statistik + diagnostik impor — dipakai bersama oleh import file/paste/gist
+function importStatsHTML(){
+  rebuildIndexes();
+  const cs=c=>db.characters.filter(x=>x.show_in_list===c).length;
+  const ks=c=>db.compounds.filter(x=>x.show_in_list===c).length;
+  const totalInti=cs('1')+ks('1'), totalSupport=cs('0')+ks('0');
+  const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+  const R=(label,val,color)=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span>${label}</span><strong${color?` style="color:${color}"`:''}>${val}</strong></div>`;
+  const Rlast=(label,val)=>`<div style="display:flex;justify-content:space-between;padding:4px 0"><span>${label}</span><strong>${val}</strong></div>`;
+  // --- Diagnostik: menangkap masalah data secara otomatis ---
+  const unreg=new Set();
+  const scan=str=>{for(const ch of(str||''))if(/[一-鿿]/.test(ch)&&!idx.char.has(ch))unreg.add(ch);};
+  db.compounds.forEach(c=>scan(c.word));db.sentences.forEach(s=>scan(s.sentence_text));db.newWords.forEach(w=>scan(w.word));
+  const deadNew=db.newWords.filter(w=>idx.comp.has(w.word)||(w.word&&w.word.length===1&&idx.char.has(w.word))).map(w=>w.word);
+  const emptyDict=(db.dictionary||[]).filter(d=>!(d.meaning||'').trim()).map(d=>d.hanzi);
+  const probs=[];
+  if(unreg.size)probs.push(['⚠️ '+unreg.size+' huruf belum terdaftar (jadi merah di kalimat)',[...unreg].join(' ')]);
+  if(deadNew.length)probs.push(['⚠️ '+deadNew.length+' new word tak tampil (kalah oleh core)',deadNew.join(' ')]);
+  if(emptyDict.length)probs.push(['⚠️ '+emptyDict.length+' dictionary tanpa arti',emptyDict.join(' ')]);
+  let diag;
+  if(probs.length){
+    diag='<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+      +probs.map(p=>`<div style="color:var(--warning);font-size:12px;font-weight:600;margin-top:6px">${p[0]}</div><div style="font-size:11px;color:var(--gray);font-family:var(--hanzi);word-break:break-all">${p[1]}</div>`).join('')
+      +'</div>';
+  }else{
+    diag='<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);color:var(--success);font-size:12px;font-weight:600">✅ Tidak ada masalah terdeteksi</div>';
+  }
+  return `<div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename||''}</div>`
+    +R('Core words',totalInti)+R('Supporting words',totalSupport,'var(--gray)')
+    +R('Forgot words',totalLupa,'var(--warning)')+R('New words',db.newWords.length,'var(--danger)')
+    +Rlast('Sentences',db.sentences.length)+diag;
+}
+
 function importFromPaste(){
   const text=document.getElementById('import-paste-text').value.trim();
   if(!text){toast('Textarea is empty.');return;}
@@ -1853,33 +1908,7 @@ function importFromPaste(){
   renderSentences();
   closeModal('import-paste-modal');
 
-  const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-  const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-  const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-  const totalInti=vocabChars+vocabCompounds;
-  const totalSupport=supportChars+supportCompounds;
-  const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-  const totalBaru=db.newWords.length;
-
-  document.getElementById('import-stats').innerHTML=`
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Core words</span><strong>${totalInti}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0">
-      <span>Sentences</span><strong>${db.sentences.length}</strong>
-    </div>
-  `;
+  document.getElementById('import-stats').innerHTML=importStatsHTML();
   document.getElementById('import-success-modal').classList.add('show');
 }
 
@@ -1900,34 +1929,7 @@ function importDB(){
       renderSentences();
       toggleMenu();
 
-      // Hitung statistik
-      const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-      const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-      const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-      const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-      const totalInti=vocabChars+vocabCompounds;
-      const totalSupport=supportChars+supportCompounds;
-      const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-      const totalBaru=db.newWords.length;
-
-      document.getElementById('import-stats').innerHTML=`
-        <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Core words</span><strong>${totalInti}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0">
-          <span>Sentences</span><strong>${db.sentences.length}</strong>
-        </div>
-      `;
+      document.getElementById('import-stats').innerHTML=importStatsHTML();
       document.getElementById('import-success-modal').classList.add('show');
     };
     reader.readAsText(file);
@@ -2233,30 +2235,7 @@ async function ghPull(){
     renderSentences();
     closeModal('github-sync-modal');
 
-    // Tampilkan modal statistik
-    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-    document.getElementById('import-stats').innerHTML=`
-      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Core words</span><strong>${vocabChars+vocabCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Supporting words</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>New words</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0">
-        <span>Sentences</span><strong>${db.sentences.length}</strong>
-      </div>
-    `;
+    document.getElementById('import-stats').innerHTML=importStatsHTML();
     document.getElementById('import-success-modal').classList.add('show');
   }catch(e){
     ghSetStatus(`❌ ${e.message}`,'var(--danger)');
