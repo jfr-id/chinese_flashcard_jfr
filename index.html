@@ -849,6 +849,7 @@ function setupEvents(){
     document.getElementById('import-paste-modal').classList.add('show');
     toggleMenu();
   });
+  document.getElementById('export-db').addEventListener('click',exportDB);
   document.getElementById('github-sync').addEventListener('click',openGithubSync);
   document.getElementById('edit-chars').addEventListener('click',()=>editDatabase('characters'));
   document.getElementById('edit-compounds').addEventListener('click',()=>editDatabase('compounds'));
