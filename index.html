@@ -536,7 +536,6 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
   <div class="menu-item" id="edit-compounds">&#9999;&#65039; Edit compounds</div>
   <div class="menu-item" id="edit-sentences">&#9999;&#65039; Edit sentences</div>
   <div class="menu-item" id="edit-newwords">&#9999;&#65039; Edit new words</div>
-  <div class="menu-item" id="edit-dictionary">&#9999;&#65039; Edit dictionary</div>
   <div style="flex:1"></div>
   <div class="menu-item" id="reset-db" style="color:var(--danger);border-top:1px solid var(--border);padding-top:12px">&#128465;&#65039; Reset data</div>
   <div class="db-info-item" id="db-info">No database loaded</div>
@@ -613,20 +612,6 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
   </div>
 </div>
 
-<div class="modal" id="edit-dictionary-modal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-dictionary-modal')">&times;</button>
-    <div class="modal-header">Edit dictionary</div>
-    <div class="modal-hint">Format: hanzi,pinyin,meaning &nbsp;|&nbsp; Words here stay <span style="color:var(--danger);font-weight:600">red</span> in Sentences</div>
-    <textarea id="edit-dictionary-text" style="width:100%;height:250px" class="modal-textarea"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-dictionary-text').value=''" class="mini-btn mini-danger">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
-      <button class="btn btn-primary" id="save-dictionary-edit" style="margin-left:auto;padding:8px 12px">Save</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="github-sync-modal">
   <div class="modal-content" style="max-width:400px">
     <button class="modal-close" onclick="closeModal('github-sync-modal')">&times;</button>
@@ -693,13 +678,12 @@ let db={characters:[],compounds:[],sentences:[],newWords:[],notes:[],dictionary:
 let state={hskFilters:[],letterFilters:[],dbHskFilters:[],dbLetterFilters:[],expandedCard:null,notesEditMode:false,activeBalloonEl:null,scrollPos:{flashcard:0,sentence:0,database:0}};
 
 // ====== Indeks pencarian (Map) — dibangun ulang tiap render, mempercepat tokenizer ======
-let idx={char:new Map(),comp:new Map(),neww:new Map(),dict:new Map()};
+let idx={char:new Map(),comp:new Map(),neww:new Map()};
 function rebuildIndexes(){
-  idx.char=new Map();idx.comp=new Map();idx.neww=new Map();idx.dict=new Map();
+  idx.char=new Map();idx.comp=new Map();idx.neww=new Map();
   db.characters.forEach(c=>{if(c.hanzi&&!idx.char.has(c.hanzi))idx.char.set(c.hanzi,c);});
   db.compounds.forEach(c=>{if(c.word&&!idx.comp.has(c.word))idx.comp.set(c.word,c);});
   db.newWords.forEach(w=>{if(w.word&&!idx.neww.has(w.word))idx.neww.set(w.word,w);});
-  (db.dictionary||[]).forEach(d=>{if(d.hanzi&&!idx.dict.has(d.hanzi))idx.dict.set(d.hanzi,d);});
   deriveCharIds();
 }
 // char_id_1..4 dihitung OTOMATIS dari huruf penyusun kata — tak perlu diisi manual lagi
@@ -857,7 +841,6 @@ function setupEvents(){
   document.getElementById('edit-compounds').addEventListener('click',()=>editDatabase('compounds'));
   document.getElementById('edit-sentences').addEventListener('click',editSentences);
   document.getElementById('edit-newwords').addEventListener('click',editNewWords);
-  document.getElementById('edit-dictionary').addEventListener('click',editDictionary);
   document.getElementById('reset-db').addEventListener('click',()=>{
     document.getElementById('reset-modal').classList.add('show');
   });
@@ -904,7 +887,6 @@ function setupEvents(){
   document.getElementById('save-db-edit').addEventListener('click',saveDBEdit);
   document.getElementById('save-sentences-edit').addEventListener('click',saveSentencesEdit);
   document.getElementById('save-newwords-edit').addEventListener('click',saveNewWordsEdit);
-  document.getElementById('save-dictionary-edit').addEventListener('click',saveDictionaryEdit);
 
   document.getElementById('reset-sentences').addEventListener('click',resetSentences);
   document.getElementById('sentence-hide-done').addEventListener('change',()=>{savePrefs();renderSentences();});
@@ -1390,14 +1372,6 @@ function tokenize(text){
       if(newEntry){
         const newItem={hanzi:newEntry.word,pinyin:newEntry.pinyin,meaning:newEntry.meaning,id:newEntry.word};
         tokens.push({text:substr,found:true,source:'new',item:newItem});
-        i+=len;matched=true;break;
-      }
-
-      // Fallback ke dictionary
-      const dictEntry=idx.dict.get(substr);
-      if(dictEntry){
-        const dictItem={hanzi:dictEntry.hanzi,pinyin:dictEntry.pinyin,meaning:dictEntry.meaning,id:dictEntry.hanzi};
-        tokens.push({text:substr,found:true,source:'dict',item:dictItem});
         i+=len;matched=true;break;
       }
     }
@@ -1897,11 +1871,9 @@ function importStatsHTML(){
   const scan=str=>{for(const ch of(str||''))if(/[一-鿿]/.test(ch)&&!idx.char.has(ch))unreg.add(ch);};
   db.compounds.forEach(c=>scan(c.word));db.sentences.forEach(s=>scan(s.sentence_text));db.newWords.forEach(w=>scan(w.word));
   const deadNew=db.newWords.filter(w=>idx.comp.has(w.word)||(w.word&&w.word.length===1&&idx.char.has(w.word))).map(w=>w.word);
-  const emptyDict=(db.dictionary||[]).filter(d=>!(d.meaning||'').trim()).map(d=>d.hanzi);
   const probs=[];
   if(unreg.size)probs.push(['⚠️ '+unreg.size+' huruf belum terdaftar (jadi merah di kalimat)',[...unreg].join(' ')]);
   if(deadNew.length)probs.push(['⚠️ '+deadNew.length+' new word tak tampil (kalah oleh core)',deadNew.join(' ')]);
-  if(emptyDict.length)probs.push(['⚠️ '+emptyDict.length+' dictionary tanpa arti',emptyDict.join(' ')]);
   let diag;
   if(probs.length){
     diag='<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
@@ -2001,7 +1973,7 @@ function parseTXT(content){
       db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
     }
     else if(currentType==='newwords') db.newWords=parseCSV(lines);
-    else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
+    // 'dictionary' section (format lama) sengaja diabaikan — lapisan dihapus
 
     currentType=null;
   });
@@ -2147,28 +2119,6 @@ function saveNewWordsEdit(){
   }catch(e){toast('Failed to parse CSV.');}
 }
 
-function editDictionary(){
-  const headers='hanzi,pinyin,meaning';
-  let csv=headers+'\n';
-  db.dictionary.forEach(d=>{
-    csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
-  });
-  document.getElementById('edit-dictionary-text').value=csv;
-  document.getElementById('edit-dictionary-modal').classList.add('show');
-  toggleMenu();
-}
-
-function saveDictionaryEdit(){
-  const text=document.getElementById('edit-dictionary-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    db.dictionary=parseCSV(lines);
-    saveToStorage();render();renderSentences();
-    closeModal('edit-dictionary-modal');
-    showSaveModal('Dictionary saved',`<div style="display:flex;justify-content:space-between"><span>Total entries</span><strong>${db.dictionary.length}</strong></div>`);
-  }catch(e){toast('Failed to parse CSV.');}
-}
-
 // ========================================
 // AUTO-PUSH (forgot/done only)
 // ========================================
@@ -2311,11 +2261,6 @@ function generateExportTXT(){
   db.newWords.forEach(w=>{
     txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
   });
-  if(db.dictionary&&db.dictionary.length>0){
-    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
-    txt+='hanzi,pinyin,meaning\n';
-    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
-  }
   if(db.notes&&db.notes.length>0&&db.notes[0].content){
     txt+='\n========================================\n=== NOTES ===\n========================================\n';
     txt+=db.notes[0].content+'\n';
