@@ -224,6 +224,8 @@ label{font-size:12px;display:flex;align-items:center;gap:4px;color:var(--text)}
 #database-tab .db-table tbody tr:active td{background:var(--primary-tint)}
 .dbchip{display:inline-block;font-family:var(--hanzi);font-size:12px;line-height:1.2;padding:2px 7px;margin:1px 3px 1px 0;border-radius:7px;background:rgba(51,87,110,.10);color:#274a5e}
 .dbchip-ant{background:rgba(201,138,30,.16);color:#7c5b1c}
+.refchip{cursor:pointer}
+.refchip:active{opacity:.6}
 .nw-divider td{background:var(--primary-tint);color:var(--primary);font-weight:700;text-align:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:9px}
 #database-tab .db-table tbody tr.nw-row td{background:#fdf6e6}
 @media (hover:hover){#database-tab .db-table tbody tr:hover td{background:var(--primary-tint)}}
@@ -534,7 +536,6 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
   <div class="menu-item" id="edit-compounds">&#9999;&#65039; Edit compounds</div>
   <div class="menu-item" id="edit-sentences">&#9999;&#65039; Edit sentences</div>
   <div class="menu-item" id="edit-newwords">&#9999;&#65039; Edit new words</div>
-  <div class="menu-item" id="edit-dictionary">&#9999;&#65039; Edit dictionary</div>
   <div style="flex:1"></div>
   <div class="menu-item" id="reset-db" style="color:var(--danger);border-top:1px solid var(--border);padding-top:12px">&#128465;&#65039; Reset data</div>
   <div class="db-info-item" id="db-info">No database loaded</div>
@@ -611,20 +612,6 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
   </div>
 </div>
 
-<div class="modal" id="edit-dictionary-modal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('edit-dictionary-modal')">&times;</button>
-    <div class="modal-header">Edit dictionary</div>
-    <div class="modal-hint">Format: hanzi,pinyin,meaning &nbsp;|&nbsp; Words here stay <span style="color:var(--danger);font-weight:600">red</span> in Sentences</div>
-    <textarea id="edit-dictionary-text" style="width:100%;height:250px" class="modal-textarea"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button onclick="document.getElementById('edit-dictionary-text').value=''" class="mini-btn mini-danger">Delete</button>
-      <button onclick="navigator.clipboard.readText().then(text=>{const el=document.getElementById('edit-dictionary-text');const pos=el.selectionStart||el.value.length;el.value=el.value.slice(0,pos)+text+el.value.slice(pos);el.selectionStart=el.selectionEnd=pos+text.length})" class="mini-btn mini-secondary">Paste</button>
-      <button class="btn btn-primary" id="save-dictionary-edit" style="margin-left:auto;padding:8px 12px">Save</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="github-sync-modal">
   <div class="modal-content" style="max-width:400px">
     <button class="modal-close" onclick="closeModal('github-sync-modal')">&times;</button>
@@ -689,6 +676,25 @@ body.dark .fab,body.dark .back-to-top{background:linear-gradient(135deg,#4d86ad,
 // ========================================
 let db={characters:[],compounds:[],sentences:[],newWords:[],notes:[],dictionary:[],filename:''};
 let state={hskFilters:[],letterFilters:[],dbHskFilters:[],dbLetterFilters:[],expandedCard:null,notesEditMode:false,activeBalloonEl:null,scrollPos:{flashcard:0,sentence:0,database:0}};
+
+// ====== Indeks pencarian (Map) — dibangun ulang tiap render, mempercepat tokenizer ======
+let idx={char:new Map(),comp:new Map(),neww:new Map()};
+function rebuildIndexes(){
+  idx.char=new Map();idx.comp=new Map();idx.neww=new Map();
+  db.characters.forEach(c=>{if(c.hanzi&&!idx.char.has(c.hanzi))idx.char.set(c.hanzi,c);});
+  db.compounds.forEach(c=>{if(c.word&&!idx.comp.has(c.word))idx.comp.set(c.word,c);});
+  db.newWords.forEach(w=>{if(w.word&&!idx.neww.has(w.word))idx.neww.set(w.word,w);});
+  deriveCharIds();
+}
+// char_id_1..4 dihitung OTOMATIS dari huruf penyusun kata — tak perlu diisi manual lagi
+function deriveCharIds(){
+  const assign=item=>{
+    const chs=[...(item.word||'')].filter(ch=>/[一-鿿]/.test(ch));
+    for(let k=1;k<=4;k++){const ch=chs[k-1];const c=ch?idx.char.get(ch):null;item['char_id_'+k]=c?c.id:'';}
+  };
+  db.compounds.forEach(assign);
+  db.newWords.forEach(assign);
+}
 
 document.addEventListener('DOMContentLoaded',init);
 
@@ -829,12 +835,12 @@ function setupEvents(){
     document.getElementById('import-paste-modal').classList.add('show');
     toggleMenu();
   });
+  document.getElementById('export-db').addEventListener('click',exportDB);
   document.getElementById('github-sync').addEventListener('click',openGithubSync);
   document.getElementById('edit-chars').addEventListener('click',()=>editDatabase('characters'));
   document.getElementById('edit-compounds').addEventListener('click',()=>editDatabase('compounds'));
   document.getElementById('edit-sentences').addEventListener('click',editSentences);
   document.getElementById('edit-newwords').addEventListener('click',editNewWords);
-  document.getElementById('edit-dictionary').addEventListener('click',editDictionary);
   document.getElementById('reset-db').addEventListener('click',()=>{
     document.getElementById('reset-modal').classList.add('show');
   });
@@ -881,7 +887,6 @@ function setupEvents(){
   document.getElementById('save-db-edit').addEventListener('click',saveDBEdit);
   document.getElementById('save-sentences-edit').addEventListener('click',saveSentencesEdit);
   document.getElementById('save-newwords-edit').addEventListener('click',saveNewWordsEdit);
-  document.getElementById('save-dictionary-edit').addEventListener('click',saveDictionaryEdit);
 
   document.getElementById('reset-sentences').addEventListener('click',resetSentences);
   document.getElementById('sentence-hide-done').addEventListener('change',()=>{savePrefs();renderSentences();});
@@ -897,6 +902,10 @@ function setupEvents(){
   document.getElementById('db-filter-isolated').addEventListener('change',renderDatabase);
   document.getElementById('db-filter-showlist').addEventListener('change',renderDatabase);
   document.getElementById('db-col-showhide').addEventListener('change',renderDatabase);
+  document.getElementById('db-tbody').addEventListener('click',e=>{
+    const chip=e.target.closest('.refchip');
+    if(chip)showRefBalloon(chip);
+  });
 
   window.addEventListener('scroll',closeBalloon);
   // Tidak tutup balloon saat scroll sentences — supaya translation tetap terbuka
@@ -1069,6 +1078,7 @@ function switchPanelTab(tab){
 }
 
 function render(){
+  rebuildIndexes();
   renderHSKButtons();
   updateCardFontSize();
   renderFlashcards();
@@ -1156,27 +1166,13 @@ function renderCardHTML(item,isNewWord,showPinyin,showMeaning){
     ${showMeaning&&item.meaning?`<div class="cb-mean">${item.meaning}</div>`:''}
   `;
 
-  const relatedIds=(item.related_ids||'').split(',').filter(id=>id.trim());
-  const antonymIds=(item.antonym_ids||'').split(',').filter(id=>id.trim());
-  if(relatedIds.length>0||antonymIds.length>0){
-    if(relatedIds.length>0){
-      const relatedItems=relatedIds.map(id=>{
-        const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-        return rel?`${rel.hanzi||rel.word} (${rel.pinyin} | ${rel.meaning})`:'';
-      }).filter(Boolean);
-      if(relatedItems.length>0){
-        backHTML+=`<div class="cb-chip cb-rel">${relatedItems.join(', ')}</div>`;
-      }
-    }
-    if(antonymIds.length>0){
-      const antonymItems=antonymIds.map(id=>{
-        const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-        return ant?`${ant.hanzi||ant.word} (${ant.pinyin} | ${ant.meaning})`:'';
-      }).filter(Boolean);
-      if(antonymItems.length>0){
-        backHTML+=`<div class="cb-chip cb-ant">${antonymItems.join(', ')}</div>`;
-      }
-    }
+  const relRefs=resolveRefs(item.related_ids);
+  const antRefs=resolveRefs(item.antonym_ids);
+  if(relRefs.length>0){
+    backHTML+=`<div class="cb-chip cb-rel" style="display:flex;flex-wrap:wrap;gap:3px;align-items:center"><span style="font-size:9px;opacity:.7">≈</span>${relRefs.map(r=>refChip(r,false)).join('')}</div>`;
+  }
+  if(antRefs.length>0){
+    backHTML+=`<div class="cb-chip cb-ant" style="display:flex;flex-wrap:wrap;gap:3px;align-items:center"><span style="font-size:9px;opacity:.7">↔</span>${antRefs.map(r=>refChip(r,true)).join('')}</div>`;
   }
 
   return `
@@ -1243,6 +1239,7 @@ function renderFlashcards(){
   grid.querySelectorAll('.card').forEach(card=>{
     card.addEventListener('click',e=>{
       if(e.target.classList.contains('forgot-btn')||e.target.classList.contains('hanzi-char'))return;
+      if(e.target.classList.contains('refchip')){e.stopPropagation();showRefBalloon(e.target);return;}
       toggleCard(card.dataset.cardId);
     });
   });
@@ -1363,26 +1360,18 @@ function tokenize(text){
     for(let len=4;len>=1;len--){
       const substr=text.substr(i,len);
 
-      // Cek vocab inti dulu (characters + compounds)
-      let item=db.compounds.find(c=>c.word===substr)||db.characters.find(c=>c.hanzi===substr);
+      // Cek vocab inti dulu (characters + compounds) — lewat indeks Map
+      let item=idx.comp.get(substr)||idx.char.get(substr);
       if(item){
         tokens.push({text:substr,found:true,source:'core',item});
         i+=len;matched=true;break;
       }
 
       // Cek new words
-      const newEntry=db.newWords.find(w=>w.word===substr);
+      const newEntry=idx.neww.get(substr);
       if(newEntry){
         const newItem={hanzi:newEntry.word,pinyin:newEntry.pinyin,meaning:newEntry.meaning,id:newEntry.word};
         tokens.push({text:substr,found:true,source:'new',item:newItem});
-        i+=len;matched=true;break;
-      }
-
-      // Fallback ke dictionary
-      const dictEntry=db.dictionary.find(d=>d.hanzi===substr);
-      if(dictEntry){
-        const dictItem={hanzi:dictEntry.hanzi,pinyin:dictEntry.pinyin,meaning:dictEntry.meaning,id:dictEntry.hanzi};
-        tokens.push({text:substr,found:true,source:'dict',item:dictItem});
         i+=len;matched=true;break;
       }
     }
@@ -1395,6 +1384,7 @@ function tokenize(text){
 }
 
 function renderSentences(){
+  rebuildIndexes();
   const container=document.getElementById('sentence-list');
   const hideDone=document.getElementById('sentence-hide-done').checked;
   const knownOnly=document.getElementById('sentence-known-only').checked;
@@ -1585,6 +1575,47 @@ function closeBalloonOutside(e){
   if(!balloon.contains(e.target))closeBalloon();
 }
 
+// ===== Related / Antonym berbasis hanzi =====
+// Menerima 3 format per token: id angka (lama), "hanzi|arti" (baru), atau hanzi polos.
+function resolveRefs(field){
+  return (field||'').split(',').map(s=>s.trim()).filter(Boolean).map(tok=>{
+    if(tok.includes('|')){
+      const p=tok.split('|');const h=p[0].trim();
+      const it=idx.comp.get(h)||idx.char.get(h);
+      return {label:h,pinyin:it?it.pinyin:'',meaning:(p[1]||'').trim()||(it?it.meaning:'')};
+    }
+    if(/^\d+$/.test(tok)){
+      const it=db.characters.find(c=>c.id==tok)||db.compounds.find(c=>c.id==tok);
+      return it?{label:it.hanzi||it.word,pinyin:it.pinyin||'',meaning:it.meaning||''}:null;
+    }
+    const it=idx.comp.get(tok)||idx.char.get(tok);
+    return {label:tok,pinyin:it?it.pinyin:'',meaning:it?it.meaning:''};
+  }).filter(Boolean);
+}
+function refChip(r,isAnt){
+  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  return `<span class="dbchip refchip${isAnt?' dbchip-ant':''}" data-ref-label="${esc(r.label)}" data-ref-pinyin="${esc(r.pinyin)}" data-ref-meaning="${esc(r.meaning)}">${r.label}</span>`;
+}
+function showRefBalloon(el){
+  if(state.activeBalloonEl===el){closeBalloon();return;}
+  document.removeEventListener('click',closeBalloonOutside);
+  const label=el.dataset.refLabel||el.textContent.trim();
+  const pinyin=el.dataset.refPinyin||'';
+  const meaning=el.dataset.refMeaning||'';
+  const balloon=document.getElementById('balloon');
+  balloon.innerHTML=`<div style="font-size:12px;line-height:1.5">`
+    +`<div style="font-size:15px;font-weight:600;font-family:var(--hanzi);margin-bottom:2px">${label}</div>`
+    +(pinyin?`<div style="font-size:11px;color:var(--gray)">${pinyin}</div>`:'')
+    +`<div style="font-size:11px">${meaning||'—'}</div></div>`;
+  const rect=el.getBoundingClientRect();
+  balloon.style.left='0px';
+  balloon.style.top=(rect.bottom+4)+'px';
+  balloon.classList.add('show');
+  pointBalloonArrow(balloon,rect);
+  state.activeBalloonEl=el;
+  requestAnimationFrame(()=>{document.addEventListener('click',closeBalloonOutside);});
+}
+
 function toggleTranslation(idx){
   const open=document.getElementById(`trans-${idx}`).classList.toggle('show');
   const eye=document.querySelector(`.eye-btn[data-idx="${idx}"]`);
@@ -1686,20 +1717,14 @@ function renderDatabase(){
     }
     if(state.dbHskFilters.length>0) nwItems=[];
     if(nwItems.length>0){
-      const offset=items.length;
       nwRows=`<tr class="nw-divider"><td colspan="6">New Words</td></tr>`
         +nwItems.map((w,i)=>{
-          const relArr=[w.char_id_1,w.char_id_2,w.char_id_3,w.char_id_4].filter(Boolean).map(id=>{
-            const c=db.characters.find(c=>c.id==id);
-            return c?c.hanzi:'';
-          }).filter(Boolean);
-          const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
           return `<tr class="nw-row">
-            <td>${offset+i+1}</td>
+            <td>${i+1}</td>
             <td>${w.word||''}</td>
             <td>${w.pinyin||''}</td>
             <td>${w.meaning||''}</td>
-            <td title="${relArr.join(', ')}">${related}</td>
+            <td></td>
             <td></td>
           </tr>`;
         }).join('');
@@ -1707,24 +1732,16 @@ function renderDatabase(){
   }
 
   tbody.innerHTML=items.map((i,idx)=>{
-    const relArr=(i.related_ids||'').split(',').filter(id=>id.trim()).map(id=>{
-      const rel=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-      return rel?(rel.hanzi||rel.word):'';
-    }).filter(Boolean);
-    const antArr=(i.antonym_ids||'').split(',').filter(id=>id.trim()).map(id=>{
-      const ant=db.characters.find(c=>c.id==id.trim())||db.compounds.find(c=>c.id==id.trim());
-      return ant?(ant.hanzi||ant.word):'';
-    }).filter(Boolean);
-    const related=relArr.map(x=>`<span class="dbchip">${x}</span>`).join('');
-    const antonym=antArr.map(x=>`<span class="dbchip dbchip-ant">${x}</span>`).join('');
+    const related=resolveRefs(i.related_ids).map(r=>refChip(r,false)).join('');
+    const antonym=resolveRefs(i.antonym_ids).map(r=>refChip(r,true)).join('');
     return `
       <tr${i.forgot==1?' class="forgot-row"':''}>
         <td>${idx+1}</td>
         <td>${i.hanzi||i.word}</td>
         <td>${i.pinyin}</td>
         <td>${i.meaning}</td>
-        <td title="${relArr.join(', ')}">${related}</td>
-        <td title="${antArr.join(', ')}">${antonym}</td>
+        <td>${related}</td>
+        <td>${antonym}</td>
       </tr>
     `;
   }).join('')+nwRows;
@@ -1840,6 +1857,37 @@ function updateCounts(){
 // ========================================
 // IMPORT / EXPORT
 // ========================================
+// Statistik + diagnostik impor — dipakai bersama oleh import file/paste/gist
+function importStatsHTML(){
+  rebuildIndexes();
+  const cs=c=>db.characters.filter(x=>x.show_in_list===c).length;
+  const ks=c=>db.compounds.filter(x=>x.show_in_list===c).length;
+  const totalInti=cs('1')+ks('1'), totalSupport=cs('0')+ks('0');
+  const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
+  const R=(label,val,color)=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><span>${label}</span><strong${color?` style="color:${color}"`:''}>${val}</strong></div>`;
+  const Rlast=(label,val)=>`<div style="display:flex;justify-content:space-between;padding:4px 0"><span>${label}</span><strong>${val}</strong></div>`;
+  // --- Diagnostik: menangkap masalah data secara otomatis ---
+  const unreg=new Set();
+  const scan=str=>{for(const ch of(str||''))if(/[一-鿿]/.test(ch)&&!idx.char.has(ch))unreg.add(ch);};
+  db.compounds.forEach(c=>scan(c.word));db.sentences.forEach(s=>scan(s.sentence_text));db.newWords.forEach(w=>scan(w.word));
+  const deadNew=db.newWords.filter(w=>idx.comp.has(w.word)||(w.word&&w.word.length===1&&idx.char.has(w.word))).map(w=>w.word);
+  const probs=[];
+  if(unreg.size)probs.push(['⚠️ '+unreg.size+' huruf belum terdaftar (jadi merah di kalimat)',[...unreg].join(' ')]);
+  if(deadNew.length)probs.push(['⚠️ '+deadNew.length+' new word tak tampil (kalah oleh core)',deadNew.join(' ')]);
+  let diag;
+  if(probs.length){
+    diag='<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">'
+      +probs.map(p=>`<div style="color:var(--warning);font-size:12px;font-weight:600;margin-top:6px">${p[0]}</div><div style="font-size:11px;color:var(--gray);font-family:var(--hanzi);word-break:break-all">${p[1]}</div>`).join('')
+      +'</div>';
+  }else{
+    diag='<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);color:var(--success);font-size:12px;font-weight:600">✅ Tidak ada masalah terdeteksi</div>';
+  }
+  return `<div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename||''}</div>`
+    +R('Core words',totalInti)+R('Supporting words',totalSupport,'var(--gray)')
+    +R('Forgot words',totalLupa,'var(--warning)')+R('New words',db.newWords.length,'var(--danger)')
+    +Rlast('Sentences',db.sentences.length)+diag;
+}
+
 function importFromPaste(){
   const text=document.getElementById('import-paste-text').value.trim();
   if(!text){toast('Textarea is empty.');return;}
@@ -1853,33 +1901,7 @@ function importFromPaste(){
   renderSentences();
   closeModal('import-paste-modal');
 
-  const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-  const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-  const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-  const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-  const totalInti=vocabChars+vocabCompounds;
-  const totalSupport=supportChars+supportCompounds;
-  const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-  const totalBaru=db.newWords.length;
-
-  document.getElementById('import-stats').innerHTML=`
-    <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Core words</span><strong>${totalInti}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-      <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
-    </div>
-    <div style="display:flex;justify-content:space-between;padding:4px 0">
-      <span>Sentences</span><strong>${db.sentences.length}</strong>
-    </div>
-  `;
+  document.getElementById('import-stats').innerHTML=importStatsHTML();
   document.getElementById('import-success-modal').classList.add('show');
 }
 
@@ -1900,34 +1922,7 @@ function importDB(){
       renderSentences();
       toggleMenu();
 
-      // Hitung statistik
-      const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-      const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-      const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-      const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-      const totalInti=vocabChars+vocabCompounds;
-      const totalSupport=supportChars+supportCompounds;
-      const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-      const totalBaru=db.newWords.length;
-
-      document.getElementById('import-stats').innerHTML=`
-        <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${db.filename}</div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Core words</span><strong>${totalInti}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Supporting words</span><strong style="color:var(--gray)">${totalSupport}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-          <span>New words</span><strong style="color:var(--danger)">${totalBaru}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:4px 0">
-          <span>Sentences</span><strong>${db.sentences.length}</strong>
-        </div>
-      `;
+      document.getElementById('import-stats').innerHTML=importStatsHTML();
       document.getElementById('import-success-modal').classList.add('show');
     };
     reader.readAsText(file);
@@ -1978,7 +1973,7 @@ function parseTXT(content){
       db.sentences.forEach(s=>{if(!s.translation)s.translation='';if(!s.completed)s.completed=0});
     }
     else if(currentType==='newwords') db.newWords=parseCSV(lines);
-    else if(currentType==='dictionary') db.dictionary=parseCSV(lines);
+    // 'dictionary' section (format lama) sengaja diabaikan — lapisan dihapus
 
     currentType=null;
   });
@@ -2051,7 +2046,7 @@ function editDatabase(type){
     }
   });
   document.getElementById('edit-db-title').textContent=type==='characters'?'Edit characters':'Edit compounds';
-  document.getElementById('edit-db-hint').textContent='Format: '+headers;
+  document.getElementById('edit-db-hint').textContent='Format: '+headers+'  |  related_ids & antonym_ids boleh diisi hanzi, mis. 快乐|happy,开心';
   document.getElementById('edit-db-text').value=csv;
   document.getElementById('edit-db-text').dataset.type=type;
   document.getElementById('edit-db-modal').classList.add('show');
@@ -2121,28 +2116,6 @@ function saveNewWordsEdit(){
     saveToStorage();render();renderSentences();
     closeModal('edit-newwords-modal');
     showSaveModal('New Words saved',`<div style="display:flex;justify-content:space-between"><span>Total new words</span><strong style="color:var(--danger)">${db.newWords.length}</strong></div>`);
-  }catch(e){toast('Failed to parse CSV.');}
-}
-
-function editDictionary(){
-  const headers='hanzi,pinyin,meaning';
-  let csv=headers+'\n';
-  db.dictionary.forEach(d=>{
-    csv+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;
-  });
-  document.getElementById('edit-dictionary-text').value=csv;
-  document.getElementById('edit-dictionary-modal').classList.add('show');
-  toggleMenu();
-}
-
-function saveDictionaryEdit(){
-  const text=document.getElementById('edit-dictionary-text').value;
-  const lines=text.trim().split('\n');
-  try{
-    db.dictionary=parseCSV(lines);
-    saveToStorage();render();renderSentences();
-    closeModal('edit-dictionary-modal');
-    showSaveModal('Dictionary saved',`<div style="display:flex;justify-content:space-between"><span>Total entries</span><strong>${db.dictionary.length}</strong></div>`);
   }catch(e){toast('Failed to parse CSV.');}
 }
 
@@ -2233,30 +2206,7 @@ async function ghPull(){
     renderSentences();
     closeModal('github-sync-modal');
 
-    // Tampilkan modal statistik
-    const vocabChars=db.characters.filter(c=>c.show_in_list==='1').length;
-    const vocabCompounds=db.compounds.filter(c=>c.show_in_list==='1').length;
-    const supportChars=db.characters.filter(c=>c.show_in_list==='0').length;
-    const supportCompounds=db.compounds.filter(c=>c.show_in_list==='0').length;
-    const totalLupa=[...db.characters,...db.compounds].filter(i=>i.forgot==1).length;
-    document.getElementById('import-stats').innerHTML=`
-      <div style="font-size:11px;color:var(--gray);margin-bottom:8px;word-break:break-all">${filename}</div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Core words</span><strong>${vocabChars+vocabCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Supporting words</span><strong style="color:var(--gray)">${supportChars+supportCompounds}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>Forgot words</span><strong style="color:var(--warning)">${totalLupa}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)">
-        <span>New words</span><strong style="color:var(--danger)">${db.newWords.length}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:4px 0">
-        <span>Sentences</span><strong>${db.sentences.length}</strong>
-      </div>
-    `;
+    document.getElementById('import-stats').innerHTML=importStatsHTML();
     document.getElementById('import-success-modal').classList.add('show');
   }catch(e){
     ghSetStatus(`❌ ${e.message}`,'var(--danger)');
@@ -2311,11 +2261,6 @@ function generateExportTXT(){
   db.newWords.forEach(w=>{
     txt+=`${w.id},${w.word||''},${w.pinyin||''},${w.meaning||''},${w.first_seen_sentence||''},${w.status||''},"${w.user_notes||''}",${w.char_id_1||''},${w.char_id_2||''},${w.char_id_3||''},${w.char_id_4||''}\n`;
   });
-  if(db.dictionary&&db.dictionary.length>0){
-    txt+='\n========================================\n=== DICTIONARY ===\n========================================\n';
-    txt+='hanzi,pinyin,meaning\n';
-    db.dictionary.forEach(d=>{txt+=`${d.hanzi},${d.pinyin},${d.meaning}\n`;});
-  }
   if(db.notes&&db.notes.length>0&&db.notes[0].content){
     txt+='\n========================================\n=== NOTES ===\n========================================\n';
     txt+=db.notes[0].content+'\n';
